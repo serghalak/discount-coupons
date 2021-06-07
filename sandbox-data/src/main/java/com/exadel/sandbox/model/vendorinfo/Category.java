@@ -45,4 +45,5 @@ public class Category extends BaseEntity {
     public void setProducts(Set<Product> products) {
         this.products = products;
     }
+
 }
