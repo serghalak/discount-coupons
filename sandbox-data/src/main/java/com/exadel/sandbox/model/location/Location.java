@@ -1,21 +1,24 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.location;
+
+import com.exadel.sandbox.model.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "location")
-public class Location extends BaseEntity{
+public class Location extends BaseEntity {
 
-    @Column(name="lotitude")
-    private BigDecimal lotitude;
-    @Column(name="longitude")
-    private BigDecimal longitude;
-    @Column(name="street")
+    @Column(name = "latitude")
+    private double latitude;
+
+    @Column(name = "longitude")
+    private double longitude;
+
+    @Column(name = "street")
     private String street;
-    @Column(name="number")
+
+    @Column(name = "number")
     private String number;
 
     @ManyToOne
@@ -25,22 +28,22 @@ public class Location extends BaseEntity{
 //    @ManyToMany(mappedBy = "locations")
 //    private Set<Event> events=new HashSet<>();
 
-    @OneToMany(mappedBy = "location")
-    private Set<User>users=new HashSet<>();
+//    @OneToMany(mappedBy = "location")
+//    private Set<User>users=new HashSet<>();
 
-    public BigDecimal getLotitude() {
-        return lotitude;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLotitude(BigDecimal lotitude) {
-        this.lotitude = lotitude;
+    public void setLatitude(double lotitude) {
+        this.latitude = lotitude;
     }
 
-    public BigDecimal getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(BigDecimal longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
@@ -69,12 +72,11 @@ public class Location extends BaseEntity{
     }
 
 
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
+//    public Set<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Set<User> users) {
+//        this.users = users;
+//    }
 }

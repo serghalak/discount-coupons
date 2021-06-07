@@ -1,6 +1,6 @@
 package com.exadel.sandbox.repository;
 
-import com.exadel.sandbox.model.User;
+import com.exadel.sandbox.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

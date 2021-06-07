@@ -1,6 +1,9 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.vendorinfo;
+
+import com.exadel.sandbox.model.BaseEntity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "product")
@@ -8,8 +11,10 @@ public class Product extends BaseEntity {
 
     @Column(name = "name")
     private String name;
+
     @Column(name = "description")
     private String description;
+
     @Column(name="link")
     private String link;
 
@@ -21,6 +26,11 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
 
+    @ManyToMany
+    @JoinTable(name = "event_product",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private Set<Event> events;
 
     public String getName() {
         return name;
@@ -60,5 +70,13 @@ public class Product extends BaseEntity {
 
     public void setVendor(Vendor vendor) {
         this.vendor = vendor;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 }

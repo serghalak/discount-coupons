@@ -1,4 +1,8 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.vendorinfo;
+
+import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.location.Location;
+import com.exadel.sandbox.model.user.User;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -12,21 +16,25 @@ public class Event extends BaseEntity {
 
     @Column(name="name")
     private String name;
+
     @Column(name="description")
     private String description;
+
     @Column(name = "date_begin")
     private LocalDate dateBegin;
+
     @Column(name="date_end")
     private LocalDate dateEnd;
 
-    @Column(name="count")
-    private int count;
+    @Column(name="total_count")
+    private int totalCount;
 
 //    @Column("discount")
 //    private int discount;
 
     @Column(name = "price")
     private BigDecimal price;
+
     @Column(name="phone_number")
     private String phoneNumber;
 
@@ -39,6 +47,9 @@ public class Event extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
+
+    @Column(nullable = false)
+    private boolean isOnline;
 
     @ManyToMany
     @JoinTable(name = "event_product"
@@ -56,7 +67,7 @@ public class Event extends BaseEntity {
     @JoinTable(name = "saved_event"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> userEvents=new HashSet<>();
+    private Set<User> userSavedEvents =new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "user_order"
@@ -103,12 +114,12 @@ public class Event extends BaseEntity {
         this.dateEnd = dateEnd;
     }
 
-    public int getCount() {
-        return count;
+    public int getTotalCount() {
+        return totalCount;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
     public BigDecimal getPrice() {
@@ -167,12 +178,12 @@ public class Event extends BaseEntity {
         this.locations = locations;
     }
 
-    public Set<User> getUserEvents() {
-        return userEvents;
+    public Set<User> getUserSavedEvents() {
+        return userSavedEvents;
     }
 
-    public void setUserEvents(Set<User> userEvents) {
-        this.userEvents = userEvents;
+    public void setUserSavedEvents(Set<User> userEvents) {
+        this.userSavedEvents = userEvents;
     }
 
     public Set<User> getUserOrders() {
@@ -189,5 +200,13 @@ public class Event extends BaseEntity {
 
     public void setUserFeedbacks(Set<User> userFeedbacks) {
         this.userFeedbacks = userFeedbacks;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
     }
 }

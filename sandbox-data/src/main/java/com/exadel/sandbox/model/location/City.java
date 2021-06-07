@@ -1,22 +1,24 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.location;
+
+import com.exadel.sandbox.model.BaseEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="city")
-public class City extends BaseEntity{
+@Table(name = "city")
+public class City extends BaseEntity {
 
-    @Column(name="name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "country_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
     @OneToMany(mappedBy = "city")
-    private Set<Location>locations=new HashSet<>();
+    private Set<Location> locations = new HashSet<>();
 
 
     public String getName() {

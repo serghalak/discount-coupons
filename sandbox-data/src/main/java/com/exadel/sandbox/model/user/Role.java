@@ -1,4 +1,7 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.user;
+
+import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.user.User;
 
 import javax.persistence.*;
 import java.util.HashSet;

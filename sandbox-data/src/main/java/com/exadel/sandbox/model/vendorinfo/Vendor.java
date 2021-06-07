@@ -1,4 +1,6 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.vendorinfo;
+
+import com.exadel.sandbox.model.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,14 +11,19 @@ import java.util.Set;
 
 @Entity
 @Table(name = "vendor")
-public class Vendor extends BaseEntity{
+public class Vendor extends BaseEntity {
 
     @Column(name="name")
     private String name;
+
     @Column(name="description")
     private String description;
+
     @Column(name="phone_number")
     private String phoneNumber;
+
+    @Column(name = "email")
+    private String email;
 
     @OneToMany(mappedBy = "vendor")
     private Set<Product>products=new HashSet<>();
@@ -51,5 +58,13 @@ public class Vendor extends BaseEntity{
 
     public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

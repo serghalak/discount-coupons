@@ -1,4 +1,6 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.vendorinfo;
+
+import com.exadel.sandbox.model.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,13 +11,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "status")
-public class Status extends BaseEntity{
+public class Status extends BaseEntity {
 
     @Column(name="name")
     private String name;
 
-    @OneToMany(mappedBy = "status")
-    private Set<Event> events=new HashSet<>();
+//    @OneToMany(mappedBy = "status")
+//    private Set<Event> events=new HashSet<>();
 
     public String getName() {
         return name;
@@ -25,11 +27,11 @@ public class Status extends BaseEntity{
         this.name = name;
     }
 
-    public Set<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(Set<Event> events) {
-        this.events = events;
-    }
+//    public Set<Event> getEvents() {
+//        return events;
+//    }
+//
+//    public void setEvents(Set<Event> events) {
+//        this.events = events;
+//    }
 }

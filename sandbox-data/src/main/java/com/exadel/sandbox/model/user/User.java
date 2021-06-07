@@ -1,13 +1,18 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.user;
+
+import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.location.Location;
+import com.exadel.sandbox.model.vendorinfo.Event;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "user")
 public class User extends BaseEntity {
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
@@ -22,7 +27,7 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
 //    @Column(name = "phone_number")
@@ -36,6 +41,18 @@ public class User extends BaseEntity {
     @JoinColumn(name = "location_id")
     private Location location;
 
+
+    @OneToMany
+    @JoinTable(name = "saved_event",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private Set<Event> savedEvents = new HashSet<>();
+
+    @OneToMany
+    @JoinTable(name = "user_order",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private Set<Event> usersOrder = new HashSet<>();
 
     public String getUsername() {
         return username;
@@ -99,5 +116,21 @@ public class User extends BaseEntity {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public Set<Event> getSavedEvents() {
+        return savedEvents;
+    }
+
+    public void setSavedEvents(Set<Event> savedEvents) {
+        this.savedEvents = savedEvents;
+    }
+
+    public Set<Event> getUsersOrder() {
+        return usersOrder;
+    }
+
+    public void setUsersOrder(Set<Event> usersOrder) {
+        this.usersOrder = usersOrder;
     }
 }

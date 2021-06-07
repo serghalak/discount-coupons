@@ -1,4 +1,6 @@
-package com.exadel.sandbox.model;
+package com.exadel.sandbox.model.location;
+
+import com.exadel.sandbox.model.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="country")
-public class Country extends BaseEntity{
+public class Country extends BaseEntity {
 
     @Column(name = "name")
     private String name;
