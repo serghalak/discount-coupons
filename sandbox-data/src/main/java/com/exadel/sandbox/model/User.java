@@ -29,7 +29,7 @@ public class User extends BaseEntity {
 //    private String phoneNumber;
 
     @ManyToOne
-    @JoinColumn(name = "authority_id")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @ManyToOne
