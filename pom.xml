@@ -6,6 +6,7 @@
 	<modules>
 		<module>sandbox-data</module>
 		<module>sandbox-web</module>
+		<module>sandbox-service</module>
 
 	</modules>
 	<parent>

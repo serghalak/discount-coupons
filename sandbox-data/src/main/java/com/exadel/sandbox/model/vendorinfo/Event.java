@@ -11,34 +11,34 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="event")
+@Table(name = "event")
 public class Event extends BaseEntity {
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
 
     @Column(name = "date_begin")
     private LocalDate dateBegin;
 
-    @Column(name="date_end")
+    @Column(name = "date_end")
     private LocalDate dateEnd;
 
-    @Column(name="total_count")
+    @Column(name = "total_count")
     private int totalCount;
 
-//    @Column("discount")
-//    private int discount;
+    @Column(name = "discount")
+    private int discount;
 
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name="phone_number")
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name="limitation")
+    @Column(name = "limitation")
     private int limitation;
 
     @Column(name = "email")
@@ -51,35 +51,36 @@ public class Event extends BaseEntity {
     @Column(nullable = false)
     private boolean isOnline;
 
+
     @ManyToMany
     @JoinTable(name = "event_product"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> products=new HashSet<>();
+    private Set<Product> products = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "event_location"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "location_id"))
-    private Set<Location> locations=new HashSet<>();
+    private Set<Location> locations = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "saved_event"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> userSavedEvents =new HashSet<>();
+    private Set<User> userSavedEvents = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "user_order"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> userOrders=new HashSet<>();
+    private Set<User> userOrders = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "feedback"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> userFeedbacks=new HashSet<>();
+    private Set<User> userFeedbacks = new HashSet<>();
 
 
     public String getName() {
@@ -208,5 +209,13 @@ public class Event extends BaseEntity {
 
     public void setOnline(boolean online) {
         isOnline = online;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
 }
