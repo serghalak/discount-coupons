@@ -25,8 +25,7 @@ public class User extends BaseEntity {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "enable")
-    private boolean isEnabled;
+
 
     @Column(name = "first_name")
     private String firstName;
@@ -40,6 +39,19 @@ public class User extends BaseEntity {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Builder.Default
+    private Boolean accountNonExpired = true;
+
+    @Builder.Default
+    private Boolean accountNonLocked = true;
+
+    @Builder.Default
+    private Boolean credentialsNonExpired = true;
+
+    @Builder.Default
+    @Column(name = "enable")
+    private Boolean enabled = true;
 
     @ManyToOne
     @JoinColumn(name = "location_id")
