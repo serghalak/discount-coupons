@@ -105,7 +105,6 @@ create table vendor (
 alter table saved_event add constraint UK_event_id unique (event_id);
 alter table user add constraint UK_email unique (email);
 alter table user add constraint UK_username unique (username);
--- alter table user_order add constraint UK_qilm4u28ph7xk5p0ty6e518o5 unique (event_id);
 alter table city add constraint FK_city_country_id foreign key (country_id) references country (id);
 alter table event add constraint FK_event_status_id foreign key (status_id) references status (id);
 alter table event_location add constraint FK_event_location_location_id foreign key (location_id) references location (id);

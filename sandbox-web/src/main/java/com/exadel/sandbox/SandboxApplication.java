@@ -6,11 +6,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class SandboxApplication /*extends SpringBootServletInitializer */{
-//	@Override
-//	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-//		return builder.sources(SandboxApplication.class);
-//	}
+public class SandboxApplication {
+
 	public static void main(String[] args) {
 		SpringApplication.run(SandboxApplication.class, args);
 	}

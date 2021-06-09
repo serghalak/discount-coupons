@@ -17,7 +17,6 @@ public class Role extends BaseEntity {
     @OneToMany(mappedBy = "role")
     private Set<User> users=new HashSet<>();
 
-
     public String getName() {
         return name;
     }

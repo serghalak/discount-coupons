@@ -16,9 +16,6 @@ public class Status extends BaseEntity {
     @Column(name="name")
     private String name;
 
-//    @OneToMany(mappedBy = "status")
-//    private Set<Event> events=new HashSet<>();
-
     public String getName() {
         return name;
     }
@@ -27,11 +24,4 @@ public class Status extends BaseEntity {
         this.name = name;
     }
 
-//    public Set<Event> getEvents() {
-//        return events;
-//    }
-//
-//    public void setEvents(Set<Event> events) {
-//        this.events = events;
-//    }
 }

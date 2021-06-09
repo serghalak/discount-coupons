@@ -25,12 +25,6 @@ public class Location extends BaseEntity {
     @JoinColumn(name = "city_id")
     private City city;
 
-//    @ManyToMany(mappedBy = "locations")
-//    private Set<Event> events=new HashSet<>();
-
-//    @OneToMany(mappedBy = "location")
-//    private Set<User>users=new HashSet<>();
-
     public double getLatitude() {
         return latitude;
     }
@@ -71,12 +65,4 @@ public class Location extends BaseEntity {
         this.city = city;
     }
 
-
-//    public Set<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(Set<User> users) {
-//        this.users = users;
-//    }
 }
