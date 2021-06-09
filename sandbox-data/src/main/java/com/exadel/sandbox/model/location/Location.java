@@ -1,14 +1,19 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "location")
+@Data
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = false)
 public class Location extends BaseEntity {
 
+    @NonNull
     @Column(name = "latitude")
     private double latitude;
 
@@ -24,45 +29,5 @@ public class Location extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double lotitude) {
-        this.latitude = lotitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
 
 }

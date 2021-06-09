@@ -1,6 +1,7 @@
 package com.exadel.sandbox.model.vendorinfo;
 
 import com.exadel.sandbox.model.BaseEntity;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "category")
+@Data
+@NoArgsConstructor
+@Builder
+@ToString(exclude = "products")
+@EqualsAndHashCode(callSuper = false, exclude = "products")
 public class Category extends BaseEntity {
 
     @Column(name = "name")
@@ -21,29 +27,5 @@ public class Category extends BaseEntity {
 
     @OneToMany(mappedBy = "category")
     private Set<Product> products = new HashSet<>();
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String desciption) {
-        this.description = desciption;
-    }
-
-    public Set<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
 
 }
