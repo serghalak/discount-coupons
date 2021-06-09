@@ -14,6 +14,7 @@ import java.util.Set;
 @Table(name = "vendor")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @ToString(exclude = "products")
 @EqualsAndHashCode(callSuper = false, exclude = "products")

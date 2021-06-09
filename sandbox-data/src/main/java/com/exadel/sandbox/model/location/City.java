@@ -11,6 +11,7 @@ import java.util.Set;
 @Table(name = "city")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @ToString(exclude = {"locations", "country"})
 @EqualsAndHashCode(callSuper = false, exclude = "locations")
