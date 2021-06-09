@@ -6,6 +6,7 @@
 	<modules>
 		<module>sandbox-data</module>
 		<module>sandbox-web</module>
+		<module>sandbox-service</module>
 
 	</modules>
 	<parent>
@@ -24,6 +25,11 @@
 	</properties>
 	<dependencies>
 
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--			<scope>provided</scope>-->
+<!--		</dependency>-->
 
 	</dependencies>
 
