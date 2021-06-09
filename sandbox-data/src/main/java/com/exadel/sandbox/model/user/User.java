@@ -13,7 +13,6 @@ import java.util.Set;
 @Table(name = "user")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString(exclude = {"savedEvents", "usersOrder"})
 @EqualsAndHashCode(callSuper = false, exclude = {"savedEvents", "usersOrder"})

@@ -10,7 +10,6 @@ import java.util.Set;
 @Table(name = "product")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString(exclude = "events")
 @EqualsAndHashCode(callSuper = false, exclude = "events")

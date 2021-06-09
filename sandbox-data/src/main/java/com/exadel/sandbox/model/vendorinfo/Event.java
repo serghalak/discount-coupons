@@ -15,7 +15,6 @@ import java.util.Set;
 @Table(name = "event")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString(exclude = {"products", "locations", "userSavedEvents", "userOrders", "userFeedbacks"})
 @EqualsAndHashCode(callSuper = false, exclude = {"products", "locations", "userSavedEvents", "userOrders", "userFeedbacks"})

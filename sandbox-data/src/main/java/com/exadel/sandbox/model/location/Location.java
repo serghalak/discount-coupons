@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Table(name = "location")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class Location extends BaseEntity {
