@@ -1,8 +1,8 @@
-alter table user_order
-    add order_count integer;
+ALTER TABLE user_order
+    ADD COLUMN order_count INTEGER;
 
-alter table feedback
-    ADD  evaluate integer;
+ALTER TABLE feedback
+    ADD COLUMN evaluate INTEGER;
 
-alter table event
-    ADD  discount integer
+ALTER TABLE event
+    ADD COLUMN discount INTEGER
