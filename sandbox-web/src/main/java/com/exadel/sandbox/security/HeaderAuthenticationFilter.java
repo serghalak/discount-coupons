@@ -30,7 +30,7 @@ public class HeaderAuthenticationFilter extends AbstractAuthenticationProcessing
             password="";
         }
 
-        log.debug("HeaderAuthenticationFilte User: " + userName);
+        log.debug(">>>>>HeaderAuthenticationFilte User: " + userName);
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(userName, password);
         return getAuthenticationManager().authenticate(token);
