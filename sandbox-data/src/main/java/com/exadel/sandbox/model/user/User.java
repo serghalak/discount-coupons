@@ -37,7 +37,7 @@ public class User extends BaseEntity {
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "role")
+    @Column(name = "role", columnDefinition = "ENUM('USER', 'MODERATOR', 'ADMIN')")
     @Enumerated(EnumType.STRING)
     private Role role;
 
