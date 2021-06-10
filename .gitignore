@@ -13,6 +13,8 @@ node_tmp/
 node_modules/
 npm-debug.log.*
 
+
+
 ######################
 # SASS
 ######################
@@ -82,7 +84,7 @@ target/**
 *.jar
 *.war
 *.ear
-*.db
+#*.db
 
 ######################
 # Windows
