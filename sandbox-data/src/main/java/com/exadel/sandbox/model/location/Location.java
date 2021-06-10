@@ -1,6 +1,7 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class Location extends BaseEntity {
     private String number;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "city_id")
     private City city;
 

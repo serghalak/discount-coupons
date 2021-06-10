@@ -3,6 +3,7 @@ package com.exadel.sandbox.model.user;
 import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,21 +38,24 @@ public class User extends BaseEntity {
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "role")
+    @Column(name = "role", columnDefinition = "ENUM('USER', 'MODERATOR', 'ADMIN')")
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "location_id")
     private Location location;
 
     @OneToMany
+    @JsonIgnore
     @JoinTable(name = "saved_event",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> savedEvents = new HashSet<>();
 
     @OneToMany
+    @JsonIgnore
     @JoinTable(name = "user_order",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))

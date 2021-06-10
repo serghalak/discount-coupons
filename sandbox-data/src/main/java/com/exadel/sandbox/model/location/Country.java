@@ -1,6 +1,7 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -21,7 +22,7 @@ public class Country extends BaseEntity {
 
     @Column(name = "name")
     private String name;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "country")
     private Set<City> cities;
 

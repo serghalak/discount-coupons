@@ -51,7 +51,7 @@ public class Event extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "ENUM('NEW', 'ACTIVE', 'EXPIRED')")
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -59,8 +59,6 @@ public class Event extends BaseEntity {
     @Column
     private boolean isOnline;
 
-    @Column
-    private int evaluate;
 
     @ManyToMany
     @JoinTable(name = "event_product"

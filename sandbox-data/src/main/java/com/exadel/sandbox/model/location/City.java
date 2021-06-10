@@ -1,6 +1,7 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,10 +23,11 @@ public class City extends BaseEntity {
     private String name;
 
     @NonNull
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "city")
     private Set<Location> locations = new HashSet<>();
 
