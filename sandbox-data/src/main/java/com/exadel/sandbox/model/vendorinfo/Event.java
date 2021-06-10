@@ -59,8 +59,8 @@ public class Event extends BaseEntity {
     @Column
     private boolean isOnline;
 
-    @Column
-    private int evaluate;
+//    @Column
+//    private int evaluate;
 
     @ManyToMany
     @JoinTable(name = "event_product"

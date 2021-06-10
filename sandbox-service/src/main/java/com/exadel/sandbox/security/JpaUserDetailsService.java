@@ -13,14 +13,13 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class JpaUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -29,13 +28,18 @@ public class JpaUserDetailsService implements UserDetailsService {
             return new UsernameNotFoundException("User name: " + email + " not found");
         });
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
-                user.getEnabled(), user.getAccountNonExpired(), user.getCredentialsNonExpired(),
-                user.getAccountNonLocked(), convertToSpringAuthorities(user.getRole().name()));
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail()
+                , user.getPassword()
+                , user.getEnabled()
+                , user.getAccountNonExpired()
+                , user.getCredentialsNonExpired()
+                , user.getAccountNonLocked()
+                , convertToSpringAuthorities(user.getRole().name()));
     }
 
     private Collection<? extends GrantedAuthority> convertToSpringAuthorities(String role) {
-        if (role != null ){
+        if (role != null) {
             return Collections.singletonList(new SimpleGrantedAuthority(role));
         } else {
             return new HashSet<>();

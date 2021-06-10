@@ -41,12 +41,15 @@ public class User extends BaseEntity {
     private Role role;
 
     @Builder.Default
+    @Transient
     private Boolean accountNonExpired = true;
 
     @Builder.Default
+    @Transient
     private Boolean accountNonLocked = true;
 
     @Builder.Default
+    @Transient
     private Boolean credentialsNonExpired = true;
 
     @Builder.Default
