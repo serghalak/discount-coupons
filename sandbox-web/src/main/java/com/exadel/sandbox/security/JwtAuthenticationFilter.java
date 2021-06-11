@@ -1,11 +1,14 @@
 package com.exadel.sandbox.security;
 
 import com.exadel.sandbox.security.jwt.JwtConfig;
-import com.google.common.base.Strings;
+
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,36 +41,57 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String jwt = httpServletRequest.getHeader(jwtConfig.getAuthorizationHeader());
 
-        if(Strings.isNullOrEmpty(jwt) || !jwt.startsWith(jwtConfig.getTokenPrefix())){
-            filterChain.doFilter(httpServletRequest,httpServletResponse);
-            return;
-        }
         String token=jwt.replace(jwtConfig.getTokenPrefix(),"");
 
         SecretKey key = secretKey;
 
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims=null;
 
-        String username = String.valueOf(claims.get("username"));
-        //var authorities=(List<Map<String,String>>)claims.get("authorities");
-        String role = String.valueOf(claims.get("authorities"));
-        log.debug(">>>>>>>>>>>Role: " + role);
-        //GrantedAuthority a = new SimpleGrantedAuthority("user");
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities =
-                Collections.singletonList(new SimpleGrantedAuthority(role));
-        var auth = new UsernamePasswordAuthenticationToken(username
-                , null
-                , simpleGrantedAuthorities);
+        try{
+             claims= Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-        SecurityContextHolder.getContext()
-                .setAuthentication(auth);
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
-        log.debug(">>>>>>>>>>Check token is done");
+            String username = String.valueOf(claims.get("username"));
+            //var authorities=(List<Map<String,String>>)claims.get("authorities");
+            String role = String.valueOf(claims.get("authorities"));
+            log.debug(">>>>>>>>>>>Role: " + role);
+            //GrantedAuthority a = new SimpleGrantedAuthority("user");
+            List<SimpleGrantedAuthority> simpleGrantedAuthorities =
+                    Collections.singletonList(new SimpleGrantedAuthority(role));
+            var auth = new UsernamePasswordAuthenticationToken(username
+                    , null
+                    , simpleGrantedAuthorities);
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
+            log.debug(">>>>>>>>>>Check token is done");
+        }catch (JwtException e){
+            log.error(">>>>>>>Token Authentication  Failed", e);
+            unsuccessfulAuthentication(httpServletRequest, httpServletResponse, e);
+        }
+        return;
     }
+
+    private void unsuccessfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response
+                                        , JwtException failed)
+            throws IOException, ServletException {
+
+        SecurityContextHolder.clearContext();
+
+        if (log.isDebugEnabled()) {
+            log.debug(">>>>>Clear SecurityContext...Token Authentication request failed: "
+                    + failed.toString(),failed);
+        }
+
+        //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, failed.getMessage());
+        response.sendError(HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase());
+    }
+
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
