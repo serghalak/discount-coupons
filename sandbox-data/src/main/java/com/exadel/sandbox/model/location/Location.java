@@ -1,7 +1,9 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
 
 import javax.persistence.*;
 
@@ -11,7 +13,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = false)
+@ToString(exclude = "city")
+@EqualsAndHashCode(callSuper = false,exclude = "city")
 public class Location extends BaseEntity {
 
     @NonNull
@@ -29,6 +32,7 @@ public class Location extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "city_id")
+    @JsonIgnore
     private City city;
 
 }

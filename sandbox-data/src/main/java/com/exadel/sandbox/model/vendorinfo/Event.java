@@ -3,7 +3,9 @@ package com.exadel.sandbox.model.vendorinfo;
 import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -59,37 +61,40 @@ public class Event extends BaseEntity {
     @Column
     private boolean isOnline;
 
-    @Column
-    private int evaluate;
 
     @ManyToMany
     @JoinTable(name = "event_product"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "event_location"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "location_id"))
+    @JsonIgnore
     private Set<Location> locations = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "saved_event"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> userSavedEvents = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "user_order"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> userOrders = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "feedback"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> userFeedbacks = new HashSet<>();
 
 }
