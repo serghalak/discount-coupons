@@ -1,7 +1,9 @@
 package com.exadel.sandbox.model.vendorinfo;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +29,7 @@ public class Category extends BaseEntity {
     private String description;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
 }

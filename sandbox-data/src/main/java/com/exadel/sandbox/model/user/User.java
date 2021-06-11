@@ -3,7 +3,9 @@ package com.exadel.sandbox.model.user;
 import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -15,8 +17,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"savedEvents", "usersOrder"})
-@EqualsAndHashCode(callSuper = false, exclude = {"savedEvents", "usersOrder"})
+@ToString(exclude = {"location","savedEvents", "usersOrder"})
+@EqualsAndHashCode(callSuper = false, exclude = {"location","savedEvents", "usersOrder"})
 public class User extends BaseEntity {
 
     @Column(name = "username", unique = true)
@@ -43,18 +45,21 @@ public class User extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "location_id")
+    @JsonIgnore
     private Location location;
 
     @OneToMany
     @JoinTable(name = "saved_event",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
+    @JsonIgnore
     private Set<Event> savedEvents = new HashSet<>();
 
     @OneToMany
     @JoinTable(name = "user_order",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
+    @JsonIgnore
     private Set<Event> usersOrder = new HashSet<>();
 
 }
