@@ -53,8 +53,7 @@ public class UserSecurityController {
 
     @GetMapping("/getAllTest")
     public ResponseEntity<?> getAll() {
-        System.out.println(userService.findAll());
-        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+          return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
     private UserResponse getUser() {
