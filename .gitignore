@@ -4,6 +4,9 @@
 /build/www/**
 /src/test/javascript/coverage/
 /src/test/javascript/PhantomJS*/
+/mysql/
+/client/
+/dist/
 
 ######################
 # Node
@@ -12,6 +15,7 @@
 node_tmp/
 node_modules/
 npm-debug.log.*
+
 
 
 
