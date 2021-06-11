@@ -1,6 +1,5 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,7 +52,6 @@ public class DetailsUser implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
 
 
 }

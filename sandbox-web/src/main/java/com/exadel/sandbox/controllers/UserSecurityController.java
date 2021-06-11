@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+
+@RestController
 public class UserSecurityController {
 
     @Autowired
@@ -33,12 +36,12 @@ public class UserSecurityController {
 
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody UserRequest userRequest) throws Exception{
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody UserRequest userRequest) throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userRequest.getUsername(), userRequest.getPassword())
             );
-        }catch (BadCredentialsException e ){
+        } catch (BadCredentialsException e) {
             throw new Exception("Incorrect email or password");
         }
         final UserDetails userDetails = userService.loadUserByUsername(userRequest.getUsername());
@@ -49,12 +52,12 @@ public class UserSecurityController {
     }
 
     @GetMapping("/getAllTest")
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll() {
         System.out.println(userService.findAll());
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
-    private UserResponse getUser(){
+    private UserResponse getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         UserDto dto = userService.findByName(currentPrincipalName);
@@ -67,4 +70,5 @@ public class UserSecurityController {
                 .role(dto.getRole())
                 .build();
     }
+
 }

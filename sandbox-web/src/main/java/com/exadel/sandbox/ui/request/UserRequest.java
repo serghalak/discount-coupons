@@ -1,13 +1,16 @@
 package com.exadel.sandbox.ui.request;
 
 public class UserRequest {
+
     private String username;
-    private  String password;
+
+    private String password;
 
     public UserRequest() {
     }
 
     public UserRequest(String logan, String password) {
+
         this.username = logan;
         this.password = password;
     }
