@@ -1,5 +1,4 @@
-package com.exadel.sandbox.ui.response;
-
+package com.exadel.sandbox.dto.request;
 
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.Role;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Setter
 @Builder
 @Component
-public class UserResponse {
+public class UserDto {
 
     private String username;
 

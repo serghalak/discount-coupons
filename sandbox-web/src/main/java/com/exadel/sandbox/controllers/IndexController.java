@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IndexController {
 
-    @GetMapping({"","/","/index","/index.html"})
-    public String index(){
-        return "rest test";
+    @GetMapping({"", "/"})
+    public String index() {
+        return "String";
     }
+
 }

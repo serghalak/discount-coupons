@@ -4,8 +4,13 @@ import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -60,7 +65,6 @@ public class Event extends BaseEntity {
     @NonNull
     @Column
     private boolean isOnline;
-
 
     @ManyToMany
     @JoinTable(name = "event_product"
