@@ -1,3 +1,4 @@
+
 ALTER TABLE `user` DROP FOREIGN KEY `FK_user_role_id`;
 
 DROP TABLE if EXISTS `role`;
