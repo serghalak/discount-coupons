@@ -1,5 +1,6 @@
 package com.exadel.sandbox.security;
 
+import com.exadel.sandbox.security.jwt.JwtConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,30 +16,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-//@AllArgsConstructor
+import javax.crypto.SecretKey;
+
+@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    public HeaderAuthenticationFilter headerAuthenticationFilter(AuthenticationManager authenticationManager){
-//        HeaderAuthenticationFilter filter = new HeaderAuthenticationFilter(
-//                new AntPathRequestMatcher("/api/**"));
-//        filter.setAuthenticationManager(authenticationManager);
-//        return filter;
-//    }
+    private SecretKey secretKey;
+    private JwtConfig jwtConfig;
 
-
-    @Value("${jwt.signing.key}")
-    private String signingKey;
-
-    public InitialAuthenticationFilter initialAuthenticationFilter(AuthenticationManager authenticationManager){
+    public InitialAuthenticationFilter initialAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
         InitialAuthenticationFilter filter =
-                new InitialAuthenticationFilter(authenticationManager,signingKey);
+                new InitialAuthenticationFilter(authenticationManager(), secretKey,jwtConfig);
         return filter;
     }
     public JwtAuthenticationFilter jwtAuthenticationFilter(){
         JwtAuthenticationFilter filter =
-                new JwtAuthenticationFilter(signingKey);
+                new JwtAuthenticationFilter(secretKey,jwtConfig);
         return filter;
     }
 
@@ -49,10 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-//        http.addFilterBefore(headerAuthenticationFilter(authenticationManager()),
-//                UsernamePasswordAuthenticationFilter.class)
-//        .csrf().disable();
 
         http.csrf().disable();
 
@@ -67,9 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 } )
                 .authorizeRequests()
                 .anyRequest().authenticated();
-//                .and()
-//                .formLogin().and()
-//                .httpBasic();
+
     }
 
 

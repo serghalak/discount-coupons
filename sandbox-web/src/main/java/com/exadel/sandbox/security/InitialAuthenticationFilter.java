@@ -1,18 +1,14 @@
 package com.exadel.sandbox.security;
 
+import com.exadel.sandbox.security.jwt.JwtConfig;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
@@ -21,24 +17,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 
 @Slf4j
-//@Component
 public class InitialAuthenticationFilter extends OncePerRequestFilter {
 
-
     private AuthenticationManager authenticationManager;
+    private SecretKey secretKey;
+    private JwtConfig jwtConfig;
 
     public InitialAuthenticationFilter(AuthenticationManager authenticationManager
-            ,String signingKey) {
+            ,SecretKey secretKey, JwtConfig jwtConfig) {
         this.authenticationManager = authenticationManager;
-        this.signingKey = signingKey;
+        this.secretKey=secretKey;
+        this.jwtConfig=jwtConfig;
     }
-
-    //@Value("${jwt.signing.key}")
-    private String signingKey;
 
 
     @Override
@@ -72,31 +67,35 @@ public class InitialAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)
             throws ServletException {
-        return !request.getServletPath().equals("/login");
+        return !request.getServletPath().equals(jwtConfig.getUrlLogin());
     }
 
 
     //-------------------------------------------------------------------
 
-    private Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
+    private Authentication attemptAuthentication(HttpServletRequest httpServletRequest
+            , HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
+
         String userName=getUsername(httpServletRequest);
         String password=getPassword(httpServletRequest);
+
         if(userName==null){
             userName="";
         }
+
         if(password==null){
             password="";
         }
 
-        log.debug(">>>>>HeaderAuthenticationFilte User: " + userName);
+        log.debug(">>>>>HeaderAuthenticationFilter User: " + userName);
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(userName, password);
+
         if(!userName.isEmpty()){
             return authenticationManager.authenticate(token);
         }else{
             return null;
         }
-
     }
 
 
@@ -112,14 +111,20 @@ public class InitialAuthenticationFilter extends OncePerRequestFilter {
 
         String username=getUsername(request);
 
-        SecretKey key = Keys.hmacShaKeyFor(
-                signingKey.getBytes(StandardCharsets.UTF_8));
+        SecretKey key = secretKey;
+
         String jwt = Jwts.builder()
-                .setClaims(Map.of("username", username,"authorities",authResult.getAuthorities()))
+                .setClaims(Map.of("username", username
+                                ,"authorities",authResult.getAuthorities()))
+                .setIssuedAt(new Date())
+                .setExpiration(java.sql.Date.valueOf(
+                        LocalDate.now().plusDays(
+                                jwtConfig.getTokenExpirationAfterDays())))
                 .signWith(key)
                 .compact();
 
-        response.addHeader("Authorization", jwt);
+        response.addHeader(jwtConfig.getAuthorizationHeader()
+                , jwtConfig.getTokenPrefix()+jwt);
 
         SecurityContextHolder.getContext().setAuthentication(authResult);
 
@@ -143,12 +148,12 @@ public class InitialAuthenticationFilter extends OncePerRequestFilter {
 
     private String getPassword(HttpServletRequest request) {
 
-        return request.getHeader("Api-Secret");
+        return request.getHeader(jwtConfig.getHeaderPassword());
     }
 
     private String getUsername(HttpServletRequest request) {
 
-        return request.getHeader("Api-Key");
+        return request.getHeader(jwtConfig.getHeaderUsername());
     }
 
 }
