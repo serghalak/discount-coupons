@@ -1,12 +1,8 @@
 package com.exadel.sandbox.model.vendorinfo;
 
 import com.exadel.sandbox.model.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +34,7 @@ public class Vendor extends BaseEntity {
     private String email;
 
     @OneToMany(mappedBy = "vendor")
+    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
 }

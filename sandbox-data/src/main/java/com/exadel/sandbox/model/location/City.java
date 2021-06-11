@@ -2,13 +2,8 @@ package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +22,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = {"locations", "country"})
-@EqualsAndHashCode(callSuper = false, exclude = "locations")
+@EqualsAndHashCode(callSuper = false, exclude = {"locations", "country"})
 public class City extends BaseEntity {
 
     @NonNull
@@ -35,13 +30,13 @@ public class City extends BaseEntity {
     private String name;
 
     @NonNull
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id", nullable = false)
+    @JsonIgnore
     private Country country;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "city")
+    @JsonIgnore
     private Set<Location> locations = new HashSet<>();
 
 }

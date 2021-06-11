@@ -3,6 +3,7 @@ package com.exadel.sandbox.model.vendorinfo;
 import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,14 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -72,35 +66,39 @@ public class Event extends BaseEntity {
     @Column
     private boolean isOnline;
 
-
     @ManyToMany
     @JoinTable(name = "event_product"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "event_location"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "location_id"))
+    @JsonIgnore
     private Set<Location> locations = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "saved_event"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> userSavedEvents = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "user_order"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> userOrders = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "feedback"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> userFeedbacks = new HashSet<>();
 
 }

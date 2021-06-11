@@ -1,20 +1,10 @@
 package com.exadel.sandbox.model.vendorinfo;
 
 import com.exadel.sandbox.model.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -23,8 +13,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "events")
-@EqualsAndHashCode(callSuper = false, exclude = "events")
+@ToString(exclude = {"events","vendor","category"})
+@EqualsAndHashCode(callSuper = false, exclude = {"events","vendor","category"})
 public class Product extends BaseEntity {
 
     @Column(name = "name")
@@ -38,16 +28,19 @@ public class Product extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
 
     @ManyToOne
     @JoinColumn(name = "vendor_id")
+    @JsonIgnore
     private Vendor vendor;
 
     @ManyToMany
     @JoinTable(name = "event_product",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
+    @JsonIgnore
     private Set<Event> events;
 
 }
