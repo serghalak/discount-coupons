@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class UserServiceImpl implements UserDetailsService,UserService {
+public class UserSecurityServiceImpl implements UserDetailsService,UserService {
         @Autowired
         private UserRepository userRepository;
 

@@ -1,7 +1,7 @@
 package com.exadel.sandbox.security;
 
 import com.exadel.sandbox.security.filters.JwtRequestFilter;
-import com.exadel.sandbox.service.impl.UserServiceImpl;
+import com.exadel.sandbox.service.impl.UserSecurityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private  UserServiceImpl userService;
+    private UserSecurityServiceImpl userService;
     @Autowired
     private  PasswordEncoder passwordEncoder;
 

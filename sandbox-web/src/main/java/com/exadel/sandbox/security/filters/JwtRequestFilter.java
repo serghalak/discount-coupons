@@ -1,7 +1,7 @@
 package com.exadel.sandbox.security.filters;
 
 import com.exadel.sandbox.security.utill.JwtUtil;
-import com.exadel.sandbox.service.impl.UserServiceImpl;
+import com.exadel.sandbox.service.impl.UserSecurityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
-    private UserServiceImpl userService;
+    private UserSecurityServiceImpl userService;
 
     @Autowired
     JwtUtil jwtTokenUtil;
