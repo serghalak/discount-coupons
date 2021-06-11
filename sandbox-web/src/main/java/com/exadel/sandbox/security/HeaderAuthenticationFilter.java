@@ -19,99 +19,99 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public class HeaderAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class HeaderAuthenticationFilter /*extends AbstractAuthenticationProcessingFilter*/ {
 
-    public HeaderAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
-        super(requiresAuthenticationRequestMatcher);
-    }
-
-
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
-
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
-
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(">>>>>>Request is to process authentication");
-        }
-
-        try {
-            Authentication authResult = attemptAuthentication(request, response);
-
-            if (authResult != null) {
-                successfulAuthentication(request, response, chain, authResult);
-            } else {
-                chain.doFilter(request, response);
-            }
-        } catch (AuthenticationException e) {
-            log.error(">>>>>>>Authentication Failed", e);
-            unsuccessfulAuthentication(request, response, e);
-        }
-    }
-
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
-        String userName=getUsername(httpServletRequest);
-        String password=getPassword(httpServletRequest);
-        if(userName==null){
-            userName="";
-        }
-        if(password==null){
-            password="";
-        }
-
-        log.debug(">>>>>HeaderAuthenticationFilte User: " + userName);
-        UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(userName, password);
-        if(!userName.isEmpty()){
-            return this.getAuthenticationManager().authenticate(token);
-        }else{
-            return null;
-        }
-
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response, FilterChain chain, Authentication authResult)
-            throws IOException, ServletException {
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Authentication success. Updating SecurityContextHolder to contain: "
-                    + authResult);
-        }
-
-        SecurityContextHolder.getContext().setAuthentication(authResult);
-
-    }
-
-    @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request,
-                                              HttpServletResponse response, AuthenticationException failed)
-            throws IOException, ServletException {
-
-        SecurityContextHolder.clearContext();
-
-        if (log.isDebugEnabled()) {
-            log.debug(">>>>>Clear SecurityContext... Authentication request failed: "
-                    + failed.toString(),failed);
-        }
-
-        response.sendError(HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED.getReasonPhrase());
-    }
-
-
-    private String getPassword(HttpServletRequest request) {
-
-        return request.getHeader("Api-Secret");
-    }
-
-    private String getUsername(HttpServletRequest request) {
-
-        return request.getHeader("Api-Key");
-    }
+//    public HeaderAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
+//        super(requiresAuthenticationRequestMatcher);
+//    }
+//
+//
+//    @Override
+//    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+//            throws IOException, ServletException {
+//
+//        HttpServletRequest request = (HttpServletRequest) req;
+//        HttpServletResponse response = (HttpServletResponse) res;
+//
+//
+//        if (logger.isDebugEnabled()) {
+//            logger.debug(">>>>>>Request is to process authentication");
+//        }
+//
+//        try {
+//            Authentication authResult = attemptAuthentication(request, response);
+//
+//            if (authResult != null) {
+//                successfulAuthentication(request, response, chain, authResult);
+//            } else {
+//                chain.doFilter(request, response);
+//            }
+//        } catch (AuthenticationException e) {
+//            log.error(">>>>>>>Authentication Failed", e);
+//            unsuccessfulAuthentication(request, response, e);
+//        }
+//    }
+//
+//    @Override
+//    public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
+//        String userName=getUsername(httpServletRequest);
+//        String password=getPassword(httpServletRequest);
+//        if(userName==null){
+//            userName="";
+//        }
+//        if(password==null){
+//            password="";
+//        }
+//
+//        log.debug(">>>>>HeaderAuthenticationFilte User: " + userName);
+//        UsernamePasswordAuthenticationToken token =
+//                new UsernamePasswordAuthenticationToken(userName, password);
+//        if(!userName.isEmpty()){
+//            return this.getAuthenticationManager().authenticate(token);
+//        }else{
+//            return null;
+//        }
+//
+//    }
+//
+//    @Override
+//    protected void successfulAuthentication(HttpServletRequest request,
+//                                            HttpServletResponse response, FilterChain chain, Authentication authResult)
+//            throws IOException, ServletException {
+//
+//        if (logger.isDebugEnabled()) {
+//            logger.debug("Authentication success. Updating SecurityContextHolder to contain: "
+//                    + authResult);
+//        }
+//
+//        SecurityContextHolder.getContext().setAuthentication(authResult);
+//
+//    }
+//
+//    @Override
+//    protected void unsuccessfulAuthentication(HttpServletRequest request,
+//                                              HttpServletResponse response, AuthenticationException failed)
+//            throws IOException, ServletException {
+//
+//        SecurityContextHolder.clearContext();
+//
+//        if (log.isDebugEnabled()) {
+//            log.debug(">>>>>Clear SecurityContext... Authentication request failed: "
+//                    + failed.toString(),failed);
+//        }
+//
+//        response.sendError(HttpStatus.UNAUTHORIZED.value(),
+//                HttpStatus.UNAUTHORIZED.getReasonPhrase());
+//    }
+//
+//
+//    private String getPassword(HttpServletRequest request) {
+//
+//        return request.getHeader("Api-Secret");
+//    }
+//
+//    private String getUsername(HttpServletRequest request) {
+//
+//        return request.getHeader("Api-Key");
+//    }
 }
