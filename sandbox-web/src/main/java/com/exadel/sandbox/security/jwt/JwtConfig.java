@@ -25,6 +25,11 @@ public class JwtConfig {
     private String headerPassword;
     @Value("${application.security.url.login}")
     private String urlLogin;
+    @Value("${application.jwt.username}")
+    private String username;
+    @Value("${application.jwt.authorities}")
+    private String authorities;
+
 
     public String getAuthorizationHeader(){
         return HttpHeaders.AUTHORIZATION;

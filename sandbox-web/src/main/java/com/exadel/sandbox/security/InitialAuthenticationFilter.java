@@ -114,8 +114,8 @@ public class InitialAuthenticationFilter extends OncePerRequestFilter {
         SecretKey key = secretKey;
 
         String jwt = Jwts.builder()
-                .setClaims(Map.of("username", username
-                                ,"authorities",authResult.getAuthorities()))
+                .setClaims(Map.of(jwtConfig.getUsername(), username
+                                ,jwtConfig.getAuthorities(),authResult.getAuthorities()))
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(
                         LocalDate.now().plusDays(

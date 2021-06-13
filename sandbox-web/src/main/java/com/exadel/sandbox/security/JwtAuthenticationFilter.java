@@ -54,9 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .parseClaimsJws(token)
                     .getBody();
 
-            String username = String.valueOf(claims.get("username"));
+            String username = String.valueOf(claims.get(jwtConfig.getUsername()));
             //var authorities=(List<Map<String,String>>)claims.get("authorities");
-            String role = String.valueOf(claims.get("authorities"));
+            String role = String.valueOf(claims.get(jwtConfig.getAuthorities()));
             log.debug(">>>>>>>>>>>Role: " + role);
             //GrantedAuthority a = new SimpleGrantedAuthority("user");
             List<SimpleGrantedAuthority> simpleGrantedAuthorities =
@@ -95,7 +95,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getServletPath().equals("/login");
+        return request.getServletPath().equals(jwtConfig.getUrlLogin());
     }
 }
 
