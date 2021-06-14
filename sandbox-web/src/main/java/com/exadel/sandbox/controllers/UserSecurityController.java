@@ -51,23 +51,4 @@ public class UserSecurityController {
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
-    @GetMapping("/getAllTest")
-    public ResponseEntity<?> getAll() {
-          return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
-    }
-
-    private UserResponse getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        UserDto dto = userService.findByName(currentPrincipalName);
-        return UserResponse.builder()
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .username(dto.getUsername())
-                .email(dto.getEmail())
-                .location(dto.getLocation())
-                .role(dto.getRole())
-                .build();
-    }
-
 }
