@@ -22,32 +22,19 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserService 
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-        DetailsUser detailsUser = DetailsUser.builder()
-                .username(user.getUsername())
+        var user = userRepository.findByEmail(email);
+        return DetailsUser.builder()
+                .username(user.getEmail())
                 .password(user.getPassword())
                 .email(user.getEmail())
                 .isEnabled(true)
                 .role(Set.of(user.getRole()))
                 .build();
-        return detailsUser;
-    }
-
-    public UserDetails loadUserByUsernameName(String name) throws UsernameNotFoundException {
-        User user = userRepository.findUserByUsername(name);
-        DetailsUser detailsUser = DetailsUser.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .email(user.getEmail())
-                .isEnabled(true)
-                .role(Set.of(user.getRole()))
-                .build();
-        return detailsUser;
     }
 
     @Override
     public UserDto findByName(String name) {
-        User user = userRepository.findByEmail(name);
+        var user = userRepository.findByEmail(name);
         return UserDto.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
