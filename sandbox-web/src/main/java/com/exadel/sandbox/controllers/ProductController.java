@@ -1,9 +1,9 @@
 package com.exadel.sandbox.controllers;
 
 import com.exadel.sandbox.model.vendorinfo.Category;
-import com.exadel.sandbox.service.CategoryService;
+import com.exadel.sandbox.model.vendorinfo.Product;
+import com.exadel.sandbox.service.ProductService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +19,14 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/")
 @RestController
-public class CategoryController {
+public class ProductController {
 
-    private static final Integer DEFAULT_PAGE_NUMBER = 0;
-    private static final Integer DEFAULT_PAGE_SIZE = 2;
+    private ProductService productService;
 
-    private CategoryService categoryService;
-
-    @GetMapping(produces = {"application/json"}, path = "category")
-    public ResponseEntity<?>listCategories(){
-        log.debug(">>>>List all categories");
-        List<Category> categories = categoryService.listCategories();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+    @GetMapping(produces = {"application/json"}, path = "product")
+    public ResponseEntity<?> listProducts(){
+        log.debug(">>>>List all products");
+        List<Product> products = productService.listProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }
