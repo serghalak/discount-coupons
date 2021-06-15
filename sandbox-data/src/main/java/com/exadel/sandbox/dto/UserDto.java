@@ -2,7 +2,11 @@ package com.exadel.sandbox.dto;
 
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.Role;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
