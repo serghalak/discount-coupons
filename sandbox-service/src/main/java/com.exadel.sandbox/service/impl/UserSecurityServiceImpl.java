@@ -1,7 +1,5 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.request.UserDto;
-import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.service.DetailsUser;
 import com.exadel.sandbox.service.UserService;
@@ -11,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @Service
