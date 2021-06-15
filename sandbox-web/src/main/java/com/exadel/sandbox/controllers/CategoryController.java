@@ -32,6 +32,32 @@ public class CategoryController {
     private UICategoryMapper uiCategoryMapper;
 
 
+    @GetMapping(produces = {"application/json"}, path = "categoryname/{name}")
+    public ResponseEntity<CategoryPagedList> getCategoriesByPartOfName(
+            @PathVariable("name") String categoryName
+            ,@RequestParam(value = "pageNumber", required = false) Integer pageNumber
+            ,@RequestParam(value = "pageSize", required = false) Integer pageSize){
+
+        log.debug(">>>>>>>>>>Category List by part of name: " + categoryName);
+
+        if (pageNumber == null || pageNumber < 0){
+            pageNumber = DEFAULT_PAGE_NUMBER;
+        }
+
+        if (pageSize == null || pageSize < 1) {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+
+        CategoryPagedList categoryList = categoryService.listCategoriesByPartOfName(categoryName,
+                PageRequest.of(
+                        pageNumber
+                        , pageSize
+                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return new ResponseEntity<>(categoryList, HttpStatus.OK);
+    }
+
+
     @GetMapping(produces = {"application/json"}, path = "category/{categoryId}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("categoryId") Long categoryId ){
 

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface CategoryService {
 
+    CategoryPagedList listCategoriesByPartOfName(String categoryName, PageRequest pageRequest);
+
     CategoryDto findCategoryById(Long categoryId);
 
     CategoryPagedList listCategories(PageRequest pageRequest);

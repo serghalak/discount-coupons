@@ -27,6 +27,28 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
     private CategoryMapper categoryMapper;
 
+
+    @Override
+    public CategoryPagedList listCategoriesByPartOfName(String categoryName, PageRequest pageRequest) {
+
+        log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
+
+        CategoryPagedList categoryPagedList;
+        Page<Category> categoryPage;
+        categoryPage = categoryRepository.findAll(pageRequest);
+        categoryPagedList=new CategoryPagedList(categoryPage
+                .getContent()
+                .stream()
+                .filter(category ->  category.getName().matches("(.*)" + categoryName + "(.*)"))//add search use only part of category name
+                .map(categoryMapper::categoryToCategoryDto)
+                .collect(Collectors.toList()),
+                PageRequest
+                        .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
+                categoryPage.getTotalElements()  );
+
+        return categoryPagedList;
+    }
+
     @Override
     public CategoryDto findCategoryById(Long categoryId) {
 
@@ -44,6 +66,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryPagedList listCategories(PageRequest pageRequest) {
+
+        log.debug(">>>>>>>>>>>>>ListCategory ....");
 
         CategoryPagedList categoryPagedList;
         Page<Category> categoryPage;
