@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,8 +22,8 @@ public class EventController {
 
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAllEvents() {
-        List<EventDto> eventList = eventService.getAllEvents();
+    public ResponseEntity<?> getAllEventsByUserLocation(Principal principal) {
+        List<EventDto> eventList = eventService.getAllEventsByUserLocation(principal);
         return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
 }

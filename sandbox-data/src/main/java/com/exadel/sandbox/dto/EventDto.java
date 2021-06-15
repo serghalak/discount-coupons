@@ -1,10 +1,12 @@
 package com.exadel.sandbox.dto;
 
+import com.exadel.sandbox.model.location.Location;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,13 +35,7 @@ public class EventDto {
 
     private String city;
 
-    private String street;
-
-    private String streetNumber;
-
-    private double latitude;
-
-    private double longitude;
+    private Set<Location> location;
 
     private LocalDate dateBegin;
 
