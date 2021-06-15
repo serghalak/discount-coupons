@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +36,7 @@ public class UserSecurityController {
     @Autowired
     JwtUtil jwtTokenUtil;
 
-       @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+       @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody UserRequest userRequest) throws Exception {
         try {
             authenticationManager.authenticate(
