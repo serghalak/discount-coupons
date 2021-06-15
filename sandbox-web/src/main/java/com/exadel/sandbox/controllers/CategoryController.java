@@ -31,6 +31,18 @@ public class CategoryController {
     private CategoryService categoryService;
     private UICategoryMapper uiCategoryMapper;
 
+
+    @GetMapping(produces = {"application/json"}, path = "category/{categoryId}")
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("categoryId") Long categoryId ){
+
+        log.debug(">>>>>>getCategoryById " + categoryId);
+        CategoryDto categoryDto = categoryService.findCategoryById(categoryId);
+        CategoryResponse categoryResponse = uiCategoryMapper.categoryDtoToCategoryResponse(categoryDto);
+
+        return new ResponseEntity<>(categoryResponse,HttpStatus.OK);
+    }
+
+
     @GetMapping(produces = {"application/json"}, path = "category")
     public ResponseEntity<CategoryPagedList> listCategories(
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -69,4 +81,7 @@ public class CategoryController {
         return new ResponseEntity(categoryResponse, HttpStatus.OK);
 
     }
+
+
+
 }
