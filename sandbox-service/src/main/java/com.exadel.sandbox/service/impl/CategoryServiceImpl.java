@@ -29,6 +29,29 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
+    public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
+
+        log.debug(">>>>>update category with id: " + categoryId);
+
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+
+
+        categoryOptional.ifPresentOrElse(category -> {
+            category.setName(categoryDto.getName());
+            category.setDescription(categoryDto.getDescription());
+            categoryRepository.save(category);
+        }, () -> {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. CategoryId: " + categoryId);
+        });
+
+        Optional<Category> updateCategory=categoryRepository.findById(categoryId);
+        if(updateCategory.isPresent()){
+            return categoryMapper.categoryToCategoryDto(updateCategory.get());
+        }
+        return null;
+    }
+
+    @Override
     public CategoryPagedList listCategoriesByPartOfName(String categoryName, PageRequest pageRequest) {
 
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
