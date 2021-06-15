@@ -1,6 +1,6 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.request.LocationDto;
+import com.exadel.sandbox.dto.LocationDto;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.location.Location;
 

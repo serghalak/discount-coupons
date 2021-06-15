@@ -1,6 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.request.LocationDto;
+import com.exadel.sandbox.dto.LocationDto;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.repository.location_repository.LocationRepository;
@@ -27,11 +27,17 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<Location> findByCity(City city) {
+        if (city == null) {
+            throw new IllegalArgumentException();
+        }
         return locationRepository.findByCity(city);
     }
 
     @Override
     public List<Location> getAllLocationByCity(String cityName) {
+        if (cityName == null) {
+            throw new IllegalArgumentException();
+        }
         return locationRepository.getLocationsByCityName(cityName);
     }
 
