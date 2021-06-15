@@ -15,10 +15,13 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class UserSecurityServiceImpl implements UserDetailsService, UserService {
+public class UserSecurityServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -30,29 +33,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserService 
                 .isEnabled(true)
                 .role(Set.of(user.getRole()))
                 .build();
-    }
-
-    @Override
-    public UserDto findByName(String name) {
-        var user = userRepository.findByEmail(name);
-        return UserDto.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .location(user.getLocation())
-                .role(user.getRole())
-                .build();
-    }
-
-    @Override
-    public DetailsUser findUser(String email) {
-        return null;
-    }
-
-    @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
     }
 
 }

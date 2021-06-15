@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    List<UserDto> findAll();
+    List<User> findAll();
 
     UserDto findByName(final String name);
 
