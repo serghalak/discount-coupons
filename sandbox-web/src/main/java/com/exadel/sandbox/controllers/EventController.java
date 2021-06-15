@@ -1,5 +1,6 @@
 package com.exadel.sandbox.controllers;
 
+import com.exadel.sandbox.dto.EventDto;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class EventController {
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllEvents() {
-        List<Event> eventList = eventService.getAllEvents();
+        List<EventDto> eventList = eventService.getAllEvents();
         return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
 }
