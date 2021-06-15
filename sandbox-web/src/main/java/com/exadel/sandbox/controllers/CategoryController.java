@@ -30,8 +30,17 @@ public class CategoryController {
     private UICategoryMapper uiCategoryMapper;
 
 
+    @DeleteMapping(path = {"category/{categoryId}"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable("categoryId") Long categoryId){
+
+        log.debug(">>>>>>>>>>controller delete category by Id");
+
+        categoryService.deleteCategoryById(categoryId);
+    }
+
     @PutMapping(path = {"category/{categoryId}"}, produces = {"application/json"})
-    public ResponseEntity<CategoryResponse> updateBeer(@PathVariable("categoryId") Long categoryId
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("categoryId") Long categoryId
             , @Valid @RequestBody CategoryRequest categoryRequest) {
 
         if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {

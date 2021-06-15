@@ -6,8 +6,11 @@ import com.exadel.sandbox.model.vendorinfo.Category;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CategoryService {
+
+    void deleteCategoryById(Long categoryId);
 
     CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto);
 
