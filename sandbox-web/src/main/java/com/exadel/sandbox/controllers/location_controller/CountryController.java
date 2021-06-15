@@ -1,6 +1,6 @@
 package com.exadel.sandbox.controllers.location_controller;
 
-import com.exadel.sandbox.dto.request.CountryDto;
+import com.exadel.sandbox.dto.CountryDto;
 import com.exadel.sandbox.model.location.Country;
 import com.exadel.sandbox.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;

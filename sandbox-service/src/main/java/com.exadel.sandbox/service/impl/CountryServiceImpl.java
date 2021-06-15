@@ -1,6 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.request.CountryDto;
+import com.exadel.sandbox.dto.CountryDto;
 import com.exadel.sandbox.model.location.Country;
 import com.exadel.sandbox.repository.location_repository.CountryRepository;
 import com.exadel.sandbox.service.CountryService;
