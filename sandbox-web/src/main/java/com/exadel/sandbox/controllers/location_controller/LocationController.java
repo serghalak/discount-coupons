@@ -4,6 +4,8 @@ import com.exadel.sandbox.dto.LocationDto;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.service.CountryService;
 import com.exadel.sandbox.service.LocationService;
+import com.exadel.sandbox.ui.mappers.UILocationMappers;
+import com.exadel.sandbox.ui.request.LocationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +17,13 @@ public class LocationController {
 
     private final LocationService locationService;
     private final CountryService countryService;
+    private final UILocationMappers uiLocationMappers;
 
     @Autowired
-    public LocationController(LocationService locationService, CountryService countryService) {
+    public LocationController(LocationService locationService, CountryService countryService, UILocationMappers uiLocationMappers) {
         this.locationService = locationService;
         this.countryService = countryService;
+        this.uiLocationMappers = uiLocationMappers;
     }
 
     @GetMapping("/getAllLocation")
@@ -38,8 +42,8 @@ public class LocationController {
     }
 
     @PostMapping("/createLocation")
-    public ResponseEntity<?> createLocation(@RequestBody final LocationDto locationDto) {
-        final Location newLocation = locationService.create(locationDto);
+    public ResponseEntity<?> createLocation(@RequestBody final LocationRequest locationRequest) {
+        final Location newLocation = locationService.create(uiLocationMappers.locationRequestToLocationDto(locationRequest));
         return ResponseEntity.ok(newLocation);
     }
 
