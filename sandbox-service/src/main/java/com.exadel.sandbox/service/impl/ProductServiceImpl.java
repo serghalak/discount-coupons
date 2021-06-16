@@ -106,11 +106,41 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductPagedList listProducts(PageRequest pageRequest) {
-        return null;
+
+        log.debug(">>>>>>>>>>>>>ListCategories...." );
+
+        ProductPagedList productPagedList;
+        Page<Product> productPage;
+        productPage = productRepository.findAll(pageRequest);
+        productPagedList=new ProductPagedList(productPage
+                .getContent()
+                .stream()
+                .map(productMapper::productToProductDto)
+                .collect(Collectors.toList()),
+                PageRequest
+                        .of(productPage.getPageable().getPageNumber(), productPage.getPageable().getPageSize()),
+                productPage.getTotalElements()  );
+
+        return productPagedList;
+
     }
 
     @Override
     public ProductDto saveProduct(ProductDto productDto) {
-        return null;
+
+        Product product = productMapper.productDtoToProduct(productDto);
+
+        Product savedProduct = productRepository.save(product);
+        if(savedProduct==null)
+            return null;
+
+        return productMapper.productToProductDto(savedProduct);
+    }
+
+    @Override
+    public boolean isCategoryIdUses(Long categoryId) {
+
+        List<Product> allByCategoryId = productRepository.findAllByCategoryId(categoryId);
+        return !allByCategoryId.isEmpty();
     }
 }

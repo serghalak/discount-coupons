@@ -17,4 +17,6 @@ public interface ProductService {
     ProductPagedList listProducts(PageRequest pageRequest);
 
     ProductDto saveProduct(ProductDto productDto);
+
+    boolean isCategoryIdUses(Long categoryId);
 }
