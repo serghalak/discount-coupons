@@ -85,6 +85,18 @@ public class ProductController {
     }
 
 
+    @GetMapping(produces = {"application/json"}, path = "product/{productId}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable("productId") Long productId) {
+
+        log.debug(">>>>>>getProductById " + productId);
+        ProductDto productDto = productService.findProductById(productId);
+        ProductResponse productResponse = uiProductMapper.productDtoToProductResponse(productDto);
+
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+
+
+
     @GetMapping(produces = {"application/json"}, path = "product")
     public ResponseEntity<ProductPagedList> listProducts(
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
