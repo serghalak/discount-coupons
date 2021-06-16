@@ -4,8 +4,6 @@ import com.exadel.sandbox.model.location.Location;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -14,22 +12,23 @@ import java.util.Set;
 @Setter
 @Builder
 @Component
-public class EventDto {
+public class EventShortDto {
     private Long id;
 
     private String name;
+
+    private int discount;
 
     private String shortDescription;
 
     private String vendor;
 
-    private BigDecimal price;
+//    private BigDecimal price;
 
-    private int discount;
 
-    private String status;
-
-    private String online;
+//    private String status;
+//
+//    private String online;
 
     private String country;
 
@@ -37,14 +36,13 @@ public class EventDto {
 
     private Set<Location> location;
 
-    private LocalDate dateBegin;
+    private String dateBegin;
 
-    private LocalDate dateEnd;
-
-    private int quantityOfCoupons;
-
-    private int maxQuantityPerCustomer;
-
-    private String detailedDescription;
-
+    private String dateEnd;
+//
+//    private int quantityOfCoupons;
+//
+//    private int maxQuantityPerCustomer;
+//
+//    private String detailedDescription;
 }

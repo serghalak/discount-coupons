@@ -1,11 +1,15 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.EventDto;
+import com.exadel.sandbox.dto.EventDetailedDto;
+import com.exadel.sandbox.dto.EventShortDto;
+
 import java.security.Principal;
 import java.util.List;
 
 
 public interface EventService {
 
-    List<EventDto> getAllEventsByUserLocation(Principal principal);
+    List<EventShortDto> getAllEventsByUserLocation(Principal principal);
+    List<EventDetailedDto> getAllEventsById(Long eventId);
+
 }
