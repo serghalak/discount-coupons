@@ -39,6 +39,12 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public UserDto updateUser(UserDto userDto) {
+        return null;
+    }
+
+
     private UserLocationDto getLocation(User user) {
         Location userLocation = user.getLocation();
         return UserLocationDto.builder()

@@ -13,4 +13,6 @@ public interface UserService {
 
     UserDto findByName(final String name);
 
+    UserDto updateUser(final UserDto userDto);
+
 }
