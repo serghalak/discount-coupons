@@ -62,6 +62,29 @@ public class ProductController {
 
     }
 
+
+    @GetMapping(produces = {"application/json"}, path = "productname/{name}")
+    public ResponseEntity<ProductPagedList> getProductsByPartOfName(
+            @PathVariable("name") String productName
+            , @RequestParam(value = "pageNumber", required = false) Integer pageNumber
+            , @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+
+        log.debug(">>>>>>>>>>Product List by part of name: " + productName);
+
+        pageNumber=getPageNumber(pageNumber);
+        pageSize=getPageSize(pageSize);
+
+
+        ProductPagedList productList = productService.listProductsByPartOfName(productName,
+                PageRequest.of(
+                        pageNumber
+                        , pageSize
+                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return new ResponseEntity<>(productList, HttpStatus.OK);
+    }
+
+
     @GetMapping(produces = {"application/json"}, path = "product")
     public ResponseEntity<ProductPagedList> listProducts(
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
