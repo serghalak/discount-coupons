@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                .authorizeRequests()
                 .antMatchers("/authenticate").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
