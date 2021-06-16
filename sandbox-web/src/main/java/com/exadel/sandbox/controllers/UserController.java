@@ -1,8 +1,10 @@
 package com.exadel.sandbox.controllers;
 
+import com.exadel.sandbox.dto.UserDto;
 import com.exadel.sandbox.service.UserService;
 import com.exadel.sandbox.ui.request.UpdateUserRequest;
 import com.exadel.sandbox.ui.response.UserResponse;
+
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
