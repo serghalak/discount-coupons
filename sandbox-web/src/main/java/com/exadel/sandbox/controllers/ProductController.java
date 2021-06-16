@@ -1,11 +1,17 @@
 package com.exadel.sandbox.controllers;
 
+import com.exadel.sandbox.dto.CategoryDto;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
+import com.exadel.sandbox.dto.request.ProductDto;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Product;
 import com.exadel.sandbox.service.ProductService;
 import com.exadel.sandbox.ui.mappers.UIProductMapper;
+import com.exadel.sandbox.ui.request.CategoryRequest;
+import com.exadel.sandbox.ui.request.ProductRequest;
+import com.exadel.sandbox.ui.response.CategoryResponse;
+import com.exadel.sandbox.ui.response.ProductResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin
@@ -32,11 +39,27 @@ public class ProductController {
 
     @DeleteMapping(path = {"product/{productId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable("categoryId") Long categoryId){
+    public void deleteProduct(@PathVariable("productId") Long productId){
 
         log.debug(">>>>>>>>>>controller delete product by Id");
-
+        log.debug(">>>>>>>>this method is not implemented yet");
         //productService.deleteProductById(productId);
+    }
+
+    @PutMapping(path ={"product/{productId}"}, produces = {"application/json"})
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable("productId") Long productId
+            , @Valid @RequestBody ProductRequest productRequest) {
+
+        if (productRequest.getName() == null || productRequest.getName().equals("")) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        ProductDto productDto = uiProductMapper.productRequestToProductDto(productRequest);
+        ProductDto updateProduct = productService.updateProduct(productId, productDto);
+        ProductResponse productResponse = uiProductMapper.productDtoToProductResponse(updateProduct);
+
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+
     }
 
     @GetMapping(produces = {"application/json"}, path = "product")

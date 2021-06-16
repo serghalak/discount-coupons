@@ -18,7 +18,7 @@ public class UIProductMapper {
 
     private ModelMapper mapper;
 
-    public ProductResponse productDtoToCategoryResponse(ProductDto productDto){
+    public ProductResponse productDtoToProductResponse(ProductDto productDto){
         return Objects.isNull(productDto) ? null : mapper.map(productDto, ProductResponse.class);
 
     }
