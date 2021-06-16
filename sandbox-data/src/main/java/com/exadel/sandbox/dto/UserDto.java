@@ -1,6 +1,5 @@
 package com.exadel.sandbox.dto;
 
-import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
