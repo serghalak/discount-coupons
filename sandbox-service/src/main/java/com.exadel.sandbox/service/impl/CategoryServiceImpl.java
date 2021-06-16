@@ -31,9 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategoryById(Long categoryId) {
 
-        log.debug("delete category id " + categoryId);
+        log.debug(">>>>>>>>delete category id " + categoryId);
         //to do if this category uses in product we cannot delete category!!!
-
 
         categoryRepository.deleteById(categoryId);
     }
