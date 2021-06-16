@@ -91,7 +91,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto findProductById(Long productId) {
-        return null;
+
+        log.debug(">>>>>>ProductService find product by Id: " + productId);
+
+        Optional<Product> product = productRepository.findById(productId);
+        if(product.isPresent()){
+            log.debug(">>>>>Product is found: " + productId);
+            return productMapper.productToProductDto(product.get());
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. UUID: " + productId);
+        }
+
     }
 
     @Override
