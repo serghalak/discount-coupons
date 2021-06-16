@@ -1,10 +1,20 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.model.vendorinfo.Product;
-
-import java.util.List;
+import com.exadel.sandbox.dto.pagelist.ProductPagedList;
+import com.exadel.sandbox.dto.request.ProductDto;
+import org.springframework.data.domain.PageRequest;
 
 public interface ProductService {
 
-    List<Product>listProducts();
+    void deleteProductById(Long productId);
+
+    ProductDto updateProduct(Long productId, ProductDto productDto);
+
+    ProductPagedList listProductsByPartOfName(String productsName, PageRequest pageRequest);
+
+    ProductDto findProductById(Long productId);
+
+    ProductPagedList listProducts(PageRequest pageRequest);
+
+    ProductDto saveProduct(ProductDto productDto);
 }

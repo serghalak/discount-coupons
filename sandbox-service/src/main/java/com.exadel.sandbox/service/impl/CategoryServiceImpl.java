@@ -34,6 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug("delete category id " + categoryId);
         //to do if this category uses in product we cannot delete category!!!
 
+
         categoryRepository.deleteById(categoryId);
     }
 
