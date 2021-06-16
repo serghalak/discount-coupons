@@ -44,8 +44,7 @@ public class User extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "location_id")
-    @JsonIgnore
-    private Location location;
+     private Location location;
 
     @OneToMany
     @JoinTable(name = "saved_event",

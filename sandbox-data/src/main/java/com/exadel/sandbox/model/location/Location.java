@@ -31,7 +31,6 @@ public class Location extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "city_id")
-    @JsonIgnore
     private City city;
 
 }

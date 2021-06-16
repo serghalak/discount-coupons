@@ -17,10 +17,7 @@ public class UserSecurityServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    UserService userService;
-
-    @Override
+     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(email);
         return DetailsUser.builder()
