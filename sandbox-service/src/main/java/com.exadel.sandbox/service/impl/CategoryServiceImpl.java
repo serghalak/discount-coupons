@@ -6,6 +6,7 @@ import com.exadel.sandbox.mappers.CategoryMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.repository.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
+import com.exadel.sandbox.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,15 +27,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     private CategoryRepository categoryRepository;
     private CategoryMapper categoryMapper;
+    private ProductService productService;
 
 
     @Override
     public void deleteCategoryById(Long categoryId) {
 
         log.debug(">>>>>>>>delete category id " + categoryId);
-        //to do if this category uses in product we cannot delete category!!!
 
-        categoryRepository.deleteById(categoryId);
+        if(productService.isCategoryIdUses(categoryId)){
+            categoryRepository.deleteById(categoryId);
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED
+                    , "You cannot delete category. Category is uses");
+        }
+
     }
 
     @Override
@@ -91,7 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
             log.debug(">>>>>Category is found: " + categoryId);
             return categoryMapper.categoryToCategoryDto(category.get());
         }else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. UUID: " + categoryId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Category" );
         }
 
     }
