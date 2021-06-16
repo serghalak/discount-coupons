@@ -44,7 +44,6 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-
     private UserLocationDto getLocation(User user) {
         Location userLocation = user.getLocation();
         return UserLocationDto.builder()
