@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
 import com.exadel.sandbox.dto.request.ProductDto;
 import com.exadel.sandbox.mappers.CategoryMapper;
@@ -11,6 +12,7 @@ import com.exadel.sandbox.repository.ProductRepository;
 import com.exadel.sandbox.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -66,8 +69,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductPagedList listProductsByPartOfName(String productsName, PageRequest pageRequest) {
-        return null;
+    public ProductPagedList listProductsByPartOfName(String productName, PageRequest pageRequest) {
+
+        log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + productName);
+
+        ProductPagedList productPagedList;
+        Page<Product> productPage;
+        productPage = productRepository.findAll(pageRequest);
+        productPagedList=new ProductPagedList(productPage
+                .getContent()
+                .stream()
+                .filter(product ->  product.getName().matches("(.*)" + productName + "(.*)"))//add search use only part of category name
+                .map(productMapper::productToProductDto)
+                .collect(Collectors.toList()),
+                PageRequest
+                        .of(productPage.getPageable().getPageNumber(), productPage.getPageable().getPageSize()),
+                productPage.getTotalElements()  );
+
+        return productPagedList;
     }
 
     @Override
