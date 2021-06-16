@@ -14,7 +14,7 @@ public interface LocationService {
 
     List<Location> getAllLocationByCity(String cityName);
 
-    Location create(LocationDto locationDto);
+    LocationDto create(LocationDto locationDto);
 
-    Location update(Long locationId, LocationDto locationDto);
+    LocationDto update(Long locationId, LocationDto locationDto);
 }

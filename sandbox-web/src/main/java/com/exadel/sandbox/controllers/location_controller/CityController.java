@@ -20,12 +20,17 @@ public class CityController {
         this.cityService = cityService;
     }
 
-    @GetMapping("/getAllCity")
+    @GetMapping("/allCities")
     public ResponseEntity<?> getAllCity() {
         return new ResponseEntity<>(cityService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/getAllCityByCountry")
+    @GetMapping("/allActiveCities")
+    public ResponseEntity<?> findCitiesByEventStatusActive() {
+        return new ResponseEntity<>(cityService.findCitiesByEventStatusActive(), HttpStatus.OK);
+    }
+
+    @GetMapping("/allCitiesByCountry")
     public ResponseEntity<?> getAllCityByCountry(@RequestParam(name = "countryName") String countryName) {
         return new ResponseEntity<>(cityService.findCitiesByCountryNameOrderByName(countryName), HttpStatus.OK);
     }

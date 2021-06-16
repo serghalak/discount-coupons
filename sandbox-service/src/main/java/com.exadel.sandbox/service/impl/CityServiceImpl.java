@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.model.location.City;
+import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
 import com.exadel.sandbox.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CityServiceImpl implements CityService {
@@ -27,5 +29,10 @@ public class CityServiceImpl implements CityService {
     @Override
     public List<City> findCitiesByCountryNameOrderByName(String countryName) {
         return cityRepository.findCitiesByCountryNameOrderByName(countryName);
+    }
+
+    @Override
+    public Set<City> findCitiesByEventStatusActive() {
+        return cityRepository.findCitiesByEventStatus(Status.ACTIVE);
     }
 }
