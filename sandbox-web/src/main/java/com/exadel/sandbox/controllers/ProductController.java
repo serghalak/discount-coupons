@@ -117,6 +117,26 @@ public class ProductController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
+
+    @PostMapping(produces = {"application/json"}
+            , consumes = {"application/json"}
+            , path = "product/create")
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest) {
+
+        if (productRequest.getName() == null || productRequest.getName().equals("")) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        ProductDto productDto = uiProductMapper.productRequestToProductDto(productRequest);
+
+        ProductDto savedProductDto = productService.saveProduct(productDto);
+
+        ProductResponse productResponse = uiProductMapper.productDtoToProductResponse(savedProductDto);
+
+        return new ResponseEntity(productResponse, HttpStatus.OK);
+
+    }
+
     //-----------------------------------------------------------
     private int getPageNumber(Integer pageNumber) {
         if (pageNumber == null || pageNumber < 0) {
