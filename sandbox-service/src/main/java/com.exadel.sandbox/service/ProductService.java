@@ -19,4 +19,6 @@ public interface ProductService {
     ProductDto saveProduct(ProductDto productDto);
 
     boolean isCategoryIdUses(Long categoryId);
+
+    boolean isProductNameExists(String productName);
 }

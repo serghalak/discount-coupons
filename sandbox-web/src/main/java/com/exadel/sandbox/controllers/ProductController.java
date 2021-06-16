@@ -123,7 +123,15 @@ public class ProductController {
             , path = "product/create")
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest) {
 
-        if (productRequest.getName() == null || productRequest.getName().equals("")) {
+        String productName=productRequest.getName();
+
+        if (productName == null || productName.equals("")) {
+
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        if (productService.isProductNameExists(productName)){
+
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 

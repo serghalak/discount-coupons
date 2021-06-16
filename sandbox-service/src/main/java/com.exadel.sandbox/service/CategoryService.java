@@ -17,4 +17,6 @@ public interface CategoryService {
     CategoryPagedList listCategories(PageRequest pageRequest);
 
     CategoryDto saveCategory(CategoryDto categoryDto);
+
+    boolean isCategoryNameExists(String categoryName);
 }

@@ -4,6 +4,7 @@ import com.exadel.sandbox.dto.CategoryDto;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.mappers.CategoryMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
+import com.exadel.sandbox.model.vendorinfo.Product;
 import com.exadel.sandbox.repository.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.ProductService;
@@ -133,5 +134,14 @@ public class CategoryServiceImpl implements CategoryService {
             return null;
 
         return categoryMapper.categoryToCategoryDto(savedCategory);
+    }
+
+    @Override
+    public boolean isCategoryNameExists(String categoryName) {
+        Category categoryByName = categoryRepository.findByName(categoryName);
+        if(categoryByName==null){
+            return false;
+        }
+        return true;
     }
 }

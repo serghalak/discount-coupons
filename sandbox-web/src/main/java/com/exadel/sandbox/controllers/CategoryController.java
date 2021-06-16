@@ -112,7 +112,12 @@ public class CategoryController {
             , path = "category/create")
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
 
-        if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
+        String categoryName=categoryRequest.getName();
+        if ( categoryName== null || categoryName.equals("")) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        if(categoryService.isCategoryNameExists(categoryName)){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 

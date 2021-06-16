@@ -143,4 +143,13 @@ public class ProductServiceImpl implements ProductService {
         List<Product> allByCategoryId = productRepository.findAllByCategoryId(categoryId);
         return !allByCategoryId.isEmpty();
     }
+
+    @Override
+    public boolean isProductNameExists(String productName) {
+        Product productByName = productRepository.findByName(productName);
+        if(productByName==null){
+            return false;
+        }
+        return true;
+    }
 }

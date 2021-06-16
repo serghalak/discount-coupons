@@ -1,6 +1,7 @@
 package com.exadel.sandbox.repository;
 
 import com.exadel.sandbox.model.vendorinfo.Category;
+import com.exadel.sandbox.model.vendorinfo.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -8,5 +9,5 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category,Long> {
 
     //List<Category> findAll();
-
+    Category findByName(String categoryName);
 }
