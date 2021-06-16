@@ -19,4 +19,10 @@ public interface CityRepository extends JpaRepository<City, Long> {
             "WHERE e.status = ?1")
     Set<City> findCitiesByEventStatus(Status status);
 
+    @Query("select l.city from Location l " +
+            "where l.id in (SELECT sav_ev.locations from User u " +
+            "join u.savedEvents sav_ev " +
+            "WHERE u.id = ?1)")
+    Set<City> findCitiesByFavoriteEvents(Long id);
+
 }

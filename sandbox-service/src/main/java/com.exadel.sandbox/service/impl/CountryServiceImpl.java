@@ -2,6 +2,7 @@ package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.CountryDto;
 import com.exadel.sandbox.model.location.Country;
+import com.exadel.sandbox.repository.location_repository.CityRepository;
 import com.exadel.sandbox.repository.location_repository.CountryRepository;
 import com.exadel.sandbox.service.CountryService;
 import org.modelmapper.ModelMapper;
@@ -15,11 +16,13 @@ import java.util.List;
 @Service
 public class CountryServiceImpl implements CountryService {
 
+    private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
     private final ModelMapper mapper;
 
     @Autowired
-    public CountryServiceImpl(CountryRepository countryRepository, ModelMapper mapper) {
+    public CountryServiceImpl(CityRepository cityRepository, CountryRepository countryRepository, ModelMapper mapper) {
+        this.cityRepository = cityRepository;
         this.countryRepository = countryRepository;
         this.mapper = mapper;
     }
@@ -46,10 +49,6 @@ public class CountryServiceImpl implements CountryService {
         }
         return countryRepository.save(
                 mapper.map(countryDto, Country.class)
-//                Country.builder()
-//                        .name(countryDto.getName())
-//                        .cities(countryDto.getCities())
-//                        .build()
         );
     }
 
@@ -58,10 +57,7 @@ public class CountryServiceImpl implements CountryService {
         if (countryDto == null || id == null) {
             throw new IllegalArgumentException();
         }
-        final Country build = Country.builder()
-                .name(countryDto.getName())
-                .cities(countryDto.getCities())
-                .build();
+        final Country build = mapper.map(countryDto, Country.class);
         build.setId(id);
         return countryRepository.save(build);
     }

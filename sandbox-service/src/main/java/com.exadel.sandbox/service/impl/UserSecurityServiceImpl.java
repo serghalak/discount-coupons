@@ -5,6 +5,7 @@ import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.service.DetailsUser;
 import com.exadel.sandbox.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +20,9 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserService 
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper mapper;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

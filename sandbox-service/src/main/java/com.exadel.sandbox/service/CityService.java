@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service;
 
+import com.exadel.sandbox.dto.CityDto;
 import com.exadel.sandbox.model.location.City;
 
 import java.util.List;
@@ -11,6 +12,8 @@ public interface CityService {
 
     List<City> findCitiesByCountryNameOrderByName(String countryName);
 
-    Set<City> findCitiesByEventStatusActive();
+    Set<CityDto> findCitiesByEventStatusActive();
+
+    Set<CityDto> findCitiesByFavoriteEvent(Long userId);
 
 }

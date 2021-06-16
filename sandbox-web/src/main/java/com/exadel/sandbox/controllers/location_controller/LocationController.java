@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,28 +28,37 @@ public class LocationController {
         this.mapper = modelMapper;
     }
 
-    @GetMapping("/allLocations")
+    @GetMapping(produces = {"application/json"}, path = "/allLocations")
     public ResponseEntity<?> getAllLocation() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getPrincipal());
+        System.out.println(authentication.getDetails());
+        System.out.println(authentication.getName());
+        System.out.println(authentication.getCredentials());
         return new ResponseEntity<>(locationService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/allLocationsByCity")
+    @GetMapping(produces = {"application/json"}, path = "/allLocationsByCity")
     public ResponseEntity<?> getAllLocationByCity(@RequestParam(name = "cityName") String cityName) {
         return new ResponseEntity<>(locationService.getAllLocationByCity(cityName), HttpStatus.OK);
     }
 
-    @GetMapping("/newLocation")
+    @GetMapping(produces = {"application/json"}, path = "/newLocation")
     public ResponseEntity<?> create() {
         return new ResponseEntity<>(countryService.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping("/newLocation")
+    @PostMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = "/newLocation")
     public ResponseEntity<?> createLocation(@RequestBody final LocationRequest locationRequest) {
         final LocationDto newLocation = locationService.create(mapper.map(locationRequest, LocationDto.class));
         return ResponseEntity.ok(mapper.map(newLocation, LocationResponse.class));
     }
 
-    @PutMapping(value = "/updateLocation/{locationId}")
+    @PutMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = "/updateLocation/{locationId}")
     public ResponseEntity<?> updateLocation(@PathVariable("locationId") Long locationId,
                                             @RequestBody final LocationDto locationDto) {
         final LocationDto newLocation = locationService.update(locationId, locationDto);
