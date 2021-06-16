@@ -1,7 +1,6 @@
 package com.exadel.sandbox.dto.pagelist;
 
-import com.exadel.sandbox.dto.CategoryDto;
-import com.exadel.sandbox.dto.request.ProductDto;
+import com.exadel.sandbox.dto.ProductDto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;

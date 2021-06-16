@@ -1,8 +1,6 @@
 package com.exadel.sandbox.mappers;
 
-import com.exadel.sandbox.dto.CategoryDto;
-import com.exadel.sandbox.dto.request.VendorDto;
-import com.exadel.sandbox.model.vendorinfo.Category;
+import com.exadel.sandbox.dto.VendorDto;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;

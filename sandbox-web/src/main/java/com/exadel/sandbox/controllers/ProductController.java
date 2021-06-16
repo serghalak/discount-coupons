@@ -1,19 +1,15 @@
 package com.exadel.sandbox.controllers;
 
-import com.exadel.sandbox.dto.CategoryDto;
-import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
-import com.exadel.sandbox.dto.request.ProductDto;
-import com.exadel.sandbox.model.vendorinfo.Category;
-import com.exadel.sandbox.model.vendorinfo.Product;
+import com.exadel.sandbox.dto.ProductDto;
 import com.exadel.sandbox.service.ProductService;
 import com.exadel.sandbox.ui.mappers.UIProductMapper;
-import com.exadel.sandbox.ui.request.CategoryRequest;
+import com.exadel.sandbox.ui.pagelist.ProductResponsePagedList;
 import com.exadel.sandbox.ui.request.ProductRequest;
-import com.exadel.sandbox.ui.response.CategoryResponse;
 import com.exadel.sandbox.ui.response.ProductResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -21,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @Slf4j
@@ -98,7 +94,7 @@ public class ProductController {
 
 
     @GetMapping(produces = {"application/json"}, path = "product")
-    public ResponseEntity<ProductPagedList> listProducts(
+    public ResponseEntity<ProductResponsePagedList> listProducts(
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize  ){
 
@@ -108,13 +104,26 @@ public class ProductController {
         pageNumber=getPageNumber(pageNumber);
         pageSize=getPageSize(pageSize);
 
-        ProductPagedList productList = productService.listProducts(
+//
+        Page<ProductDto> productDtoPage= productService.listProducts(
                 PageRequest.of(
                         pageNumber
                         , pageSize
                         , Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
-        return new ResponseEntity<>(productList, HttpStatus.OK);
+
+
+        ProductResponsePagedList productResponses=
+                new ProductResponsePagedList(productDtoPage.getContent().stream()
+                .map(uiProductMapper::productDtoToProductResponse)
+                .collect(Collectors.toList())
+                ,PageRequest.of(productDtoPage.getPageable().getPageNumber()
+                        ,productDtoPage.getPageable().getPageSize()
+                        ,productDtoPage.getPageable().getSort())
+                        ,productDtoPage.getTotalElements() );
+
+
+        return new ResponseEntity<>(productResponses, HttpStatus.OK);
     }
 
 

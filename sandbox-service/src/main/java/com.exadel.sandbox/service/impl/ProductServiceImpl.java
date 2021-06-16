@@ -1,12 +1,10 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
-import com.exadel.sandbox.dto.request.ProductDto;
+import com.exadel.sandbox.dto.ProductDto;
 import com.exadel.sandbox.mappers.CategoryMapper;
 import com.exadel.sandbox.mappers.ProductMapper;
 import com.exadel.sandbox.mappers.VendorMapper;
-import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Product;
 import com.exadel.sandbox.repository.ProductRepository;
 import com.exadel.sandbox.service.ProductService;
@@ -105,23 +103,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductPagedList listProducts(PageRequest pageRequest) {
+    public Page<ProductDto> listProducts(PageRequest pageRequest) {
 
         log.debug(">>>>>>>>>>>>>ListCategories...." );
 
         ProductPagedList productPagedList;
         Page<Product> productPage;
-        productPage = productRepository.findAll(pageRequest);
-        productPagedList=new ProductPagedList(productPage
-                .getContent()
-                .stream()
-                .map(productMapper::productToProductDto)
-                .collect(Collectors.toList()),
-                PageRequest
-                        .of(productPage.getPageable().getPageNumber(), productPage.getPageable().getPageSize()),
-                productPage.getTotalElements()  );
 
-        return productPagedList;
+        productPage = productRepository.findAll(pageRequest);
+
+        Page<ProductDto> productDtoPage = productPage.map(productMapper::productToProductDto);
+
+        return productDtoPage;
 
     }
 

@@ -1,6 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.request.UserDto;
+import com.exadel.sandbox.dto.UserDto;
 import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.service.DetailsUser;

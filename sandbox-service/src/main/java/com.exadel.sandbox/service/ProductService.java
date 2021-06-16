@@ -1,7 +1,8 @@
 package com.exadel.sandbox.service;
 
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
-import com.exadel.sandbox.dto.request.ProductDto;
+import com.exadel.sandbox.dto.ProductDto;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 public interface ProductService {
@@ -14,7 +15,7 @@ public interface ProductService {
 
     ProductDto findProductById(Long productId);
 
-    ProductPagedList listProducts(PageRequest pageRequest);
+    Page<ProductDto> listProducts(PageRequest pageRequest);
 
     ProductDto saveProduct(ProductDto productDto);
 

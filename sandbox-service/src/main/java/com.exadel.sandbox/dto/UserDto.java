@@ -1,4 +1,4 @@
-package com.exadel.sandbox.dto.request;
+package com.exadel.sandbox.dto;
 
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.Role;

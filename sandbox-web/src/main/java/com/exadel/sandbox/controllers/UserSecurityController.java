@@ -1,6 +1,6 @@
 package com.exadel.sandbox.controllers;
 
-import com.exadel.sandbox.dto.request.UserDto;
+import com.exadel.sandbox.dto.UserDto;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.impl.UserSecurityServiceImpl;
 import com.exadel.sandbox.ui.request.UserRequest;

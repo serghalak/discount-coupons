@@ -1,6 +1,6 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.request.UserDto;
+import com.exadel.sandbox.dto.UserDto;
 import com.exadel.sandbox.model.user.User;
 import org.springframework.stereotype.Service;
 

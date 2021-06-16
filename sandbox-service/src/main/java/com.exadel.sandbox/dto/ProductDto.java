@@ -1,6 +1,5 @@
-package com.exadel.sandbox.dto.request;
+package com.exadel.sandbox.dto;
 
-import com.exadel.sandbox.dto.CategoryDto;
 import com.exadel.sandbox.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;

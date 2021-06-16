@@ -4,7 +4,6 @@ import com.exadel.sandbox.dto.CategoryDto;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.mappers.CategoryMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
-import com.exadel.sandbox.model.vendorinfo.Product;
 import com.exadel.sandbox.repository.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.ProductService;
@@ -16,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
