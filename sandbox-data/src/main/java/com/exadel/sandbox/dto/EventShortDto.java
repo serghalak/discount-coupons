@@ -1,10 +1,7 @@
 package com.exadel.sandbox.dto;
 
-import com.exadel.sandbox.model.location.Location;
 import lombok.*;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +31,7 @@ public class EventShortDto {
 
     private String city;
 
-    private Set<Location> location;
+//    private Set<Location> location;
 
     private String dateBegin;
 
