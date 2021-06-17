@@ -62,7 +62,7 @@ public class ProductController {
     @GetMapping(produces = {"application/json"}, path = "productname/{name}")
     public ResponseEntity<ProductPagedList> getProductsByPartOfName(
             @PathVariable("name") String productName
-            , @RequestParam(value = "pageNumber", required = false) Integer pageNumber
+            , @RequestParam(value = "pageNumber", required = false, defaultValue ="0" ) Integer pageNumber
             , @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
         log.debug(">>>>>>>>>>Product List by part of name: " + productName);
@@ -98,30 +98,15 @@ public class ProductController {
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize  ){
 
-
         log.debug(">>>>List all products");
 
         pageNumber=getPageNumber(pageNumber);
         pageSize=getPageSize(pageSize);
 
-//
         Page<ProductDto> productDtoPage= productService.listProducts(
-                PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+                PageRequest.of(pageNumber , pageSize , Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
-
-
-        ProductResponsePagedList productResponses=
-                new ProductResponsePagedList(productDtoPage.getContent().stream()
-                .map(uiProductMapper::productDtoToProductResponse)
-                .collect(Collectors.toList())
-                ,PageRequest.of(productDtoPage.getPageable().getPageNumber()
-                        ,productDtoPage.getPageable().getPageSize()
-                        ,productDtoPage.getPageable().getSort())
-                        ,productDtoPage.getTotalElements() );
-
+        ProductResponsePagedList productResponses=getProductResponsePagedList(productDtoPage);
 
         return new ResponseEntity<>(productResponses, HttpStatus.OK);
     }
@@ -135,12 +120,10 @@ public class ProductController {
         String productName=productRequest.getName();
 
         if (productName == null || productName.equals("")) {
-
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
         if (productService.isProductNameExists(productName)){
-
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
@@ -167,5 +150,16 @@ public class ProductController {
             return DEFAULT_PAGE_SIZE;
         }
         return pageSize;
+    }
+
+    private ProductResponsePagedList getProductResponsePagedList(Page<ProductDto> productDtoPage){
+        return new ProductResponsePagedList(
+                productDtoPage.getContent().stream()
+                        .map(uiProductMapper::productDtoToProductResponse)
+                        .collect(Collectors.toList())
+                ,PageRequest.of(productDtoPage.getPageable().getPageNumber()
+                                ,productDtoPage.getPageable().getPageSize()
+                                ,productDtoPage.getPageable().getSort())
+                ,productDtoPage.getTotalElements() );
     }
 }
