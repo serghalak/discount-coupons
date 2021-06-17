@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = "city")
-@EqualsAndHashCode(callSuper = false,exclude = "city")
+@EqualsAndHashCode(callSuper = false, exclude = "city")
 public class Location extends BaseEntity {
 
     @NonNull

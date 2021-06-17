@@ -1,14 +1,14 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.mappers.CategoryMapper;
 import com.exadel.sandbox.repository.CategoryRepository;
 import com.exadel.sandbox.repository.EventRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.VendorService;
 import com.exadel.sandbox.service.vendor.dto.VendorDto;
 import com.exadel.sandbox.service.vendor.dto.VendorFullDto;
-import com.exadel.sandbox.service.vendor.mappers.CategoryMapper;
-import com.exadel.sandbox.service.vendor.mappers.EventMapper;
-import com.exadel.sandbox.service.vendor.mappers.VendorMapper;
+import com.exadel.sandbox.mappers.EventMapper;
+import com.exadel.sandbox.mappers.VendorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

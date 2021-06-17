@@ -1,13 +1,7 @@
 package com.exadel.sandbox.dto;
 
-import com.exadel.sandbox.model.location.City;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Component;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,4 +22,5 @@ public class UserLocationDto {
     private double latitude;
 
     private double longitude;
+
 }

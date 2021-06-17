@@ -33,6 +33,7 @@ public class LocationServiceImpl implements LocationService {
         if (city == null) {
             throw new IllegalArgumentException();
         }
+
         return locationRepository.findByCity(city);
     }
 
@@ -41,6 +42,7 @@ public class LocationServiceImpl implements LocationService {
         if (cityName == null) {
             throw new IllegalArgumentException();
         }
+
         return locationRepository.getLocationsByCityName(cityName);
     }
 
@@ -53,15 +55,6 @@ public class LocationServiceImpl implements LocationService {
                 locationRepository.save(mapper.map(locationDto, Location.class)),
                 LocationDto.class
         );
-//        return locationRepository.save(
-////                Location.builder()
-////                        .latitude(locationDto.getLatitude())
-////                        .longitude(locationDto.getLongitude())
-////                        .city(locationDto.getCity())
-////                        .street(locationDto.getStreet())
-////                        .number(locationDto.getNumber())
-////                        .build()
-//        );
     }
 
     @Override
@@ -69,15 +62,11 @@ public class LocationServiceImpl implements LocationService {
         if (locationDto == null || locationId == null) {
             throw new IllegalArgumentException();
         }
+
         final var updatedLocation = mapper.map(locationDto, Location.class);
-//        final Location updatedLocation = Location.builder()
-//                .latitude(locationDto.getLatitude())
-//                .longitude(locationDto.getLongitude())
-//                .city(locationDto.getCity())
-//                .street(locationDto.getStreet())
-//                .number(locationDto.getNumber())
-//                .build();
+
         updatedLocation.setId(locationId);
+
         return mapper.map(locationRepository.save(updatedLocation), LocationDto.class);
     }
 }

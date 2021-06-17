@@ -40,7 +40,6 @@ public class EventServiceImp implements EventService {
                         .vendor(event.getProducts().stream().iterator().next().getVendor().getName())
                         .country(event.getLocations().stream().iterator().next().getCity().getCountry().getName())
                         .city(event.getLocations().stream().iterator().next().getCity().getName())
-//                        .location(event.getLocations().iterator().next().getCity().getLocations())
                         .dateBegin(formatter.format(event.getDateBegin()))
                         .dateEnd(formatter.format(event.getDateEnd()))
                         .build()).collect(Collectors.toList());
@@ -65,7 +64,6 @@ public class EventServiceImp implements EventService {
                         .discount(event.getDiscount())
                         .country(event.getLocations().stream().iterator().next().getCity().getCountry().getName())
                         .city(event.getLocations().stream().iterator().next().getCity().getName())
-//                        .location(event.getLocations().iterator().next().getCity().getLocations())
                         .detailedDescription(event.getProducts().stream().iterator().next().getDescription())
                         .build()).collect(Collectors.toList());
     }

@@ -21,4 +21,5 @@ public class CityResponse implements Serializable {
     private String countryName;
 
     private Long countryId;
+
 }

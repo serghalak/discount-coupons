@@ -1,6 +1,7 @@
 package com.exadel.sandbox.controllers.location_controller;
 
 import com.exadel.sandbox.dto.CountryDto;
+import com.exadel.sandbox.model.location.Country;
 import com.exadel.sandbox.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,12 +45,14 @@ public class CountryController {
     public ResponseEntity<?> updateCountry(@PathVariable("countryId") long countryId,
                                            @RequestBody final CountryDto countryDto) {
         final var newCountry = countryService.update(countryId, countryDto);
+
         return ResponseEntity.ok(newCountry);
     }
 
     @GetMapping("/deleteCountry/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         countryService.delete(id);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

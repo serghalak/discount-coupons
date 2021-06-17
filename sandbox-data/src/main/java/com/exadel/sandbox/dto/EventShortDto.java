@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Builder
 @Component
 public class EventShortDto {
+
     private Long id;
 
     private String name;
@@ -20,26 +21,12 @@ public class EventShortDto {
 
     private String vendor;
 
-//    private BigDecimal price;
-
-
-//    private String status;
-//
-//    private String online;
-
     private String country;
 
     private String city;
 
-//    private Set<Location> location;
-
     private String dateBegin;
 
     private String dateEnd;
-//
-//    private int quantityOfCoupons;
-//
-//    private int maxQuantityPerCustomer;
-//
-//    private String detailedDescription;
+
 }

@@ -1,18 +1,13 @@
 package com.exadel.sandbox.service;
 
 import com.exadel.sandbox.model.user.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Set;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,6 +47,5 @@ public class DetailsUser implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
 
 }

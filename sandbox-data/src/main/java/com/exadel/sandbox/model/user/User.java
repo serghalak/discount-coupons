@@ -16,8 +16,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"location","savedEvents", "usersOrder"})
-@EqualsAndHashCode(callSuper = false, exclude = {"location","savedEvents", "usersOrder"})
+@ToString(exclude = {"location", "savedEvents", "usersOrder"})
+@EqualsAndHashCode(callSuper = false, exclude = {"location", "savedEvents", "usersOrder"})
 public class User extends BaseEntity {
 
     @Column(name = "username", unique = true)
@@ -44,7 +44,7 @@ public class User extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "location_id")
-     private Location location;
+    private Location location;
 
     @ManyToMany(mappedBy = "userSavedEvents")
     @JsonIgnore

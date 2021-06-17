@@ -21,4 +21,5 @@ public class LocationDto extends BaseEntity {
     private String number;
 
     private CityDto city;
+
 }

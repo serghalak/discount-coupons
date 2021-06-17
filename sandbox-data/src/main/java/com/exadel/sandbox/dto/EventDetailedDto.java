@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -15,6 +14,7 @@ import java.util.Set;
 @Builder
 @Component
 public class EventDetailedDto {
+
     private Long id;
 
     private String name;
@@ -27,10 +27,6 @@ public class EventDetailedDto {
 
     private int discount;
 
-//    private String status;
-//
-//    private String online;
-
     private String country;
 
     private String city;
@@ -40,10 +36,6 @@ public class EventDetailedDto {
     private String dateBegin;
 
     private String dateEnd;
-
-//    private int quantityOfCoupons;
-//
-//    private int maxQuantityPerCustomer;
 
     private String detailedDescription;
 

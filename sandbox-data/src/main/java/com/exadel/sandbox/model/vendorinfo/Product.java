@@ -13,8 +13,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"events","vendor","category"})
-@EqualsAndHashCode(callSuper = false, exclude = {"events","vendor","category"})
+@ToString(exclude = {"events", "vendor", "category"})
+@EqualsAndHashCode(callSuper = false, exclude = {"events", "vendor", "category"})
 public class Product extends BaseEntity {
 
     @Column(name = "name")

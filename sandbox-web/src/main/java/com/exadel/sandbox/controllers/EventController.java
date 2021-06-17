@@ -19,8 +19,7 @@ import java.util.List;
 @RequestMapping("/event")
 public class EventController {
 
-    private EventService eventService;
-
+    private final EventService eventService;
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllEventsByUserLocation(Principal principal) {

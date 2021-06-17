@@ -1,13 +1,8 @@
 package com.exadel.sandbox.ui.response;
 
-
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
@@ -29,4 +24,5 @@ public class UserResponse {
     private Role role;
 
     private Location location;
+
 }
