@@ -22,4 +22,8 @@ public class VendorMapper {
     public VendorDto vendorToVendorDto(Vendor vendor){
         return Objects.isNull(vendor) ? null : mapper.map(vendor,VendorDto.class);
     }
+
+    public com.exadel.sandbox.service.vendor.dto.VendorDto toDto(Vendor vendor){
+        return Objects.isNull(vendor) ? null : mapper.map(vendor, com.exadel.sandbox.service.vendor.dto.VendorDto.class);
+    }
 }

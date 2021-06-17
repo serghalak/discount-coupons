@@ -1,12 +1,15 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.model.vendorinfo.Event;
-import org.springframework.stereotype.Service;
+import com.exadel.sandbox.dto.EventDetailedDto;
+import com.exadel.sandbox.dto.EventShortDto;
 
+import java.security.Principal;
 import java.util.List;
 
-@Service
 public interface EventService {
 
-    List<Event> getAllEvents();
+    List<EventShortDto> getAllEventsByUserLocation(Principal principal);
+
+    List<EventDetailedDto> getAllEventsById(Long eventId);
+
 }

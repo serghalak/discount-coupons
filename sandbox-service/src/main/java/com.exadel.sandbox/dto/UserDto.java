@@ -1,6 +1,5 @@
 package com.exadel.sandbox.dto;
 
-import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserDto {
 
+    private long id;
+
     private String username;
 
     private String firstName;
@@ -27,5 +28,5 @@ public class UserDto {
 
     private Role role;
 
-    private Location location;
+    private UserLocationDto location;
 }
