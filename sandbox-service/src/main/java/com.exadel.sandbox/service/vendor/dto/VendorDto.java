@@ -8,9 +8,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VendorDto {
+
     private Long id;
+
     private String name;
+
     private String description;
+
     private String phoneNumber;
+
     private String email;
+
 }

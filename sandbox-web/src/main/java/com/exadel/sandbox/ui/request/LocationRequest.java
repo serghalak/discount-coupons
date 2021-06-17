@@ -21,4 +21,5 @@ public class LocationRequest {
     private String number;
 
     private City city;
+
 }

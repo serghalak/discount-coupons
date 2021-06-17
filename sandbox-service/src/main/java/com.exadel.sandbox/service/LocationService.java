@@ -17,4 +17,5 @@ public interface LocationService {
     LocationDto create(LocationDto locationDto);
 
     LocationDto update(Long locationId, LocationDto locationDto);
+
 }

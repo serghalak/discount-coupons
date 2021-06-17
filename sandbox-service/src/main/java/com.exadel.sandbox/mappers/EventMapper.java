@@ -1,4 +1,4 @@
-package com.exadel.sandbox.service.vendor.mappers;
+package com.exadel.sandbox.mappers;
 
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.service.vendor.dto.EventDto;
@@ -13,12 +13,12 @@ import java.util.Objects;
 public class EventMapper {
     private ModelMapper mapper;
 
-    public Event toEntity(EventDto dto){
+    public Event toEntity(EventDto dto) {
         return Objects.isNull(dto) ? null : mapper.map(dto, Event.class);
 
     }
 
-    public EventDto toDto(Event event){
+    public EventDto toDto(Event event) {
         return Objects.isNull(event) ? null : mapper.map(event, EventDto.class);
     }
 }

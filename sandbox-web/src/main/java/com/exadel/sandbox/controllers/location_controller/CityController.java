@@ -45,9 +45,7 @@ public class CityController {
     }
 
     @GetMapping(produces = {"application/json"}, path = "/allFavoriteCities")
-    public ResponseEntity<?> findCitiesByFavoriteEvent(
-//            @RequestBody AuthenticationResponse authenticationResponse
-    ) {
+    public ResponseEntity<?> findCitiesByFavoriteEvent() {
         Long userId = 2L;
         Set<CityDto> cityDtos = cityService.findCitiesByFavoriteEvent(userId);
         return ResponseEntity.ok()

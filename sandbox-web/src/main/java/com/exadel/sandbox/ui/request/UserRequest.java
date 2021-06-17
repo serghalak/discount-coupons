@@ -10,7 +10,6 @@ public class UserRequest {
     }
 
     public UserRequest(String logan, String password) {
-
         this.username = logan;
         this.password = password;
     }
@@ -30,4 +29,5 @@ public class UserRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

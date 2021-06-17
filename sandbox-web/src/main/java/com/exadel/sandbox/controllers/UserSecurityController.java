@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +26,7 @@ public class UserSecurityController {
     @Autowired
     JwtUtil jwtTokenUtil;
 
-       @PostMapping("/authenticate")
+    @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody UserRequest userRequest) throws Exception {
         try {
             authenticationManager.authenticate(
@@ -36,11 +35,10 @@ public class UserSecurityController {
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect email or password");
         }
-        final UserDetails userDetails = userService.loadUserByUsername(userRequest.getUsername());
+        final var userDetails = userService.loadUserByUsername(userRequest.getUsername());
 
         final String jwt = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
-
 }
