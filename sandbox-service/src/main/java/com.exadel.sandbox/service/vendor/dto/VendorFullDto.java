@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service.vendor.dto;
 
+import com.exadel.sandbox.dto.CategoryDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

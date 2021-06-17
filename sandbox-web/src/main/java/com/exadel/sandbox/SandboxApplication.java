@@ -11,10 +11,4 @@ public class SandboxApplication {
     public static void main(String[] args) {
         SpringApplication.run(SandboxApplication.class, args);
     }
-
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
-
 }

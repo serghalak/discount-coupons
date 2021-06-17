@@ -1,4 +1,4 @@
-package com.exadel.sandbox.service.vendor.mappers;
+package com.exadel.sandbox.mappers;
 
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.service.vendor.dto.EventDto;
