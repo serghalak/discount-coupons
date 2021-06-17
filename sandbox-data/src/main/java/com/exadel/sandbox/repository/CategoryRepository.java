@@ -1,13 +1,13 @@
 package com.exadel.sandbox.repository;
 
-import java.util.List;
 import com.exadel.sandbox.model.vendorinfo.Category;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface CategoryRepository extends JpaRepository<Category,Long> {
+import java.util.List;
 
-    //List<Category> findAll();
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+
     Category findByName(String categoryName);
 
     @Query(value = "SELECT * FROM category JOIN product ON category.id = product.category_id WHERE vendor_id = :id",

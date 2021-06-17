@@ -1,7 +1,6 @@
 package com.exadel.sandbox.ui.mappers;
 
 import com.exadel.sandbox.dto.CategoryDto;
-import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.ui.request.CategoryRequest;
 import com.exadel.sandbox.ui.response.CategoryResponse;
 import lombok.AllArgsConstructor;
@@ -14,11 +13,10 @@ import java.util.Objects;
 @Component
 public class UICategoryMapper {
 
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
 
     public CategoryResponse categoryDtoToCategoryResponse(CategoryDto categoryDto){
         return Objects.isNull(categoryDto) ? null : mapper.map(categoryDto, CategoryResponse.class);
-
     }
 
     public CategoryDto categoryRequestToCategoryDto(CategoryRequest categoryRequest){

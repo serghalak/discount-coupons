@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class CategoryDto extends BaseEntity {
 
-    //private Long id;
     private String name;
+
     private String description;
 
 }

@@ -36,6 +36,7 @@ public class CountryController {
             path = "/newCountry")
     public ResponseEntity<?> createCountry(@RequestBody final CountryDto countryDto) {
         final Country country = countryService.create(countryDto);
+
         return ResponseEntity.ok(country);
     }
 
@@ -45,12 +46,14 @@ public class CountryController {
     public ResponseEntity<?> updateCountry(@PathVariable("countryId") long countryId,
                                            @RequestBody final CountryDto countryDto) {
         final var newCountry = countryService.update(countryId, countryDto);
+
         return ResponseEntity.ok(newCountry);
     }
 
     @GetMapping("/deleteCountry/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         countryService.delete(id);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

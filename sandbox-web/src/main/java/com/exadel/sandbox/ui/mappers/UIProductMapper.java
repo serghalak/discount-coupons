@@ -16,48 +16,39 @@ import java.util.Objects;
 @Component
 public class UIProductMapper {
 
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
 
+    public ProductResponse productDtoToProductResponse(ProductDto productDto) {
 
-    public ProductResponse productDtoToProductResponse(ProductDto productDto){
+        CategoryDto categoryDto = productDto.getCategoryDto();
 
-        CategoryDto categoryDto=productDto.getCategoryDto();
-        //VendorDto vendorDto=productDto.getVendorDto();
+        CategoryResponse categoryResponse = Objects.isNull(categoryDto) ? null : mapper.map(categoryDto, CategoryResponse.class);
 
-        CategoryResponse categoryResponse=Objects.isNull(categoryDto) ? null : mapper.map(categoryDto,CategoryResponse.class);
-        //VendorResponse vendorResponse=Objects.isNull(vendorDto) ? null : mapper.map(vendorDto,VendorResponse.class);
+        ProductResponse productResponse = Objects.isNull(productDto) ? null : mapper.map(productDto, ProductResponse.class);
 
-        ProductResponse productResponse=Objects.isNull(productDto) ? null : mapper.map(productDto,ProductResponse.class) ;
-
-        if(productResponse==null){
+        if (productResponse == null) {
             return null;
-        }else{
+        } else {
             productResponse.setCategoryResponse(categoryResponse);
-            //productResponse.setVendorResponse(vendorResponse);
         }
 
         return productResponse;
-
     }
 
-    public ProductDto productRequestToProductDto(ProductRequest productRequest){
+    public ProductDto productRequestToProductDto(ProductRequest productRequest) {
 
-        CategoryRequest categoryRequest=productRequest.getCategoryRequest();
-        //VendorRequest vendorRequest=productRequest.getVendorRequest();
+        CategoryRequest categoryRequest = productRequest.getCategoryRequest();
 
-        CategoryDto categoryDto=Objects.isNull(categoryRequest) ? null : mapper.map(categoryRequest,CategoryDto.class);
-        //VendorDto vendorDto=Objects.isNull(vendorRequest) ? null : mapper.map(vendorRequest,VendorDto.class);
+        CategoryDto categoryDto = Objects.isNull(categoryRequest) ? null : mapper.map(categoryRequest, CategoryDto.class);
 
-        ProductDto productDto=Objects.isNull(productRequest) ? null : mapper.map(productRequest,ProductDto.class) ;
+        ProductDto productDto = Objects.isNull(productRequest) ? null : mapper.map(productRequest, ProductDto.class);
 
-        if(productDto==null){
+        if (productDto == null) {
             return null;
-        }else{
+        } else {
             productDto.setCategoryDto(categoryDto);
-            //productDto.setVendorDto(vendorDto);
         }
 
         return productDto;
-
     }
 }

@@ -13,12 +13,12 @@ import java.util.Objects;
 public class EventMapper {
     private ModelMapper mapper;
 
-    public Event toEntity(EventDto dto){
+    public Event toEntity(EventDto dto) {
         return Objects.isNull(dto) ? null : mapper.map(dto, Event.class);
 
     }
 
-    public EventDto toDto(Event event){
+    public EventDto toDto(Event event) {
         return Objects.isNull(event) ? null : mapper.map(event, EventDto.class);
     }
 }

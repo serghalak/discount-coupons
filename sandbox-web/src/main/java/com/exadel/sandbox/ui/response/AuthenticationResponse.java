@@ -1,6 +1,7 @@
 package com.exadel.sandbox.ui.response;
 
 public class AuthenticationResponse {
+
     private final String jwt;
 
     public AuthenticationResponse(String jwt) {
@@ -10,4 +11,5 @@ public class AuthenticationResponse {
     public String getJwt() {
         return jwt;
     }
+
 }

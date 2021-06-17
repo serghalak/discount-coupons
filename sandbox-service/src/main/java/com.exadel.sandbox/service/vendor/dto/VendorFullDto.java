@@ -11,7 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VendorFullDto {
+
     private VendorDto vendorDto;
+
     private List<EventDto> eventDtos;
+
     private List<CategoryDto> categoryDtos;
+
 }

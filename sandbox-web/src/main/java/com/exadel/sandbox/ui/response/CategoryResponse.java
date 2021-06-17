@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class CategoryResponse extends BaseEntity {
 
-
     private String name;
+
     private String description;
+
 }

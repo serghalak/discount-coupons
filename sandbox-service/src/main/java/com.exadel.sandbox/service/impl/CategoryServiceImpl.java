@@ -18,29 +18,26 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @AllArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    private CategoryRepository categoryRepository;
-    private CategoryMapper categoryMapper;
-    private ProductService productService;
-
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+    private final ProductService productService;
 
     @Override
     public void deleteCategoryById(Long categoryId) {
 
         log.debug(">>>>>>>>delete category id " + categoryId);
 
-        if(productService.isCategoryIdUses(categoryId)){
+        if (productService.isCategoryIdUses(categoryId)) {
             categoryRepository.deleteById(categoryId);
-        }else {
-            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED
-                    , "You cannot delete category. Category is uses");
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED,
+                    "You cannot delete category. Category is uses");
         }
-
     }
 
     @Override
@@ -59,11 +56,8 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. CategoryId: " + categoryId);
         });
 
-        Optional<Category> updateCategory=categoryRepository.findById(categoryId);
-        if(updateCategory.isPresent()){
-            return categoryMapper.categoryToCategoryDto(updateCategory.get());
-        }
-        return null;
+        Optional<Category> updateCategory = categoryRepository.findById(categoryId);
+        return updateCategory.map(categoryMapper::categoryToCategoryDto).orElse(null);
     }
 
     @Override
@@ -74,15 +68,15 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryPagedList categoryPagedList;
         Page<Category> categoryPage;
         categoryPage = categoryRepository.findAll(pageRequest);
-        categoryPagedList=new CategoryPagedList(categoryPage
+        categoryPagedList = new CategoryPagedList(categoryPage
                 .getContent()
                 .stream()
-                .filter(category ->  category.getName().matches("(.*)" + categoryName + "(.*)"))//add search use only part of category name
+                .filter(category -> category.getName().matches("(.*)" + categoryName + "(.*)"))//add search use only part of category name
                 .map(categoryMapper::categoryToCategoryDto)
                 .collect(Collectors.toList()),
                 PageRequest
                         .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
-                categoryPage.getTotalElements()  );
+                categoryPage.getTotalElements());
 
         return categoryPagedList;
     }
@@ -90,14 +84,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto findCategoryById(Long categoryId) {
 
-      log.debug(">>>>>>CategoryService find by Id: " + categoryId);
+        log.debug(">>>>>>CategoryService find by Id: " + categoryId);
 
         Optional<Category> category = categoryRepository.findById(categoryId);
-        if(category.isPresent()){
+
+        if (category.isPresent()) {
             log.debug(">>>>>Category is found: " + categoryId);
             return categoryMapper.categoryToCategoryDto(category.get());
-        }else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Category" );
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Category");
         }
 
     }
@@ -110,14 +105,14 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryPagedList categoryPagedList;
         Page<Category> categoryPage;
         categoryPage = categoryRepository.findAll(pageRequest);
-        categoryPagedList=new CategoryPagedList(categoryPage
+        categoryPagedList = new CategoryPagedList(categoryPage
                 .getContent()
                 .stream()
                 .map(categoryMapper::categoryToCategoryDto)
                 .collect(Collectors.toList()),
                 PageRequest
-                    .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
-                categoryPage.getTotalElements()  );
+                        .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
+                categoryPage.getTotalElements());
 
         return categoryPagedList;
     }
@@ -128,8 +123,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryMapper.categoryDtoToCategory(categoryDto);
 
         Category savedCategory = categoryRepository.save(category);
-        if(savedCategory==null)
-            return null;
 
         return categoryMapper.categoryToCategoryDto(savedCategory);
     }
@@ -137,9 +130,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public boolean isCategoryNameExists(String categoryName) {
         Category categoryByName = categoryRepository.findByName(categoryName);
-        if(categoryByName==null){
-            return false;
-        }
-        return true;
+
+        return categoryByName != null;
     }
 }

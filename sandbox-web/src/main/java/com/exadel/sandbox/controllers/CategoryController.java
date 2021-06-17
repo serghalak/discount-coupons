@@ -26,13 +26,14 @@ public class CategoryController {
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
     private static final Integer DEFAULT_PAGE_SIZE = 3;
     private static final String DEFAULT_FIELD_SORT = "name";
-    private CategoryService categoryService;
-    private UICategoryMapper uiCategoryMapper;
+
+    private final CategoryService categoryService;
+    private final UICategoryMapper uiCategoryMapper;
 
 
     @DeleteMapping(path = {"category/{categoryId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable("categoryId") Long categoryId){
+    public void deleteCategory(@PathVariable("categoryId") Long categoryId) {
 
         log.debug(">>>>>>>>>>controller delete category by Id");
 
@@ -40,8 +41,8 @@ public class CategoryController {
     }
 
     @PutMapping(path = {"category/{categoryId}"}, produces = {"application/json"})
-    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("categoryId") Long categoryId
-            , @Valid @RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("categoryId") Long categoryId,
+                                                           @Valid @RequestBody CategoryRequest categoryRequest) {
 
         if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -52,26 +53,21 @@ public class CategoryController {
         CategoryResponse categoryResponse = uiCategoryMapper.categoryDtoToCategoryResponse(updateCategory);
 
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
-
     }
 
     @GetMapping(produces = {"application/json"}, path = "categoryname/{name}")
     public ResponseEntity<CategoryPagedList> getCategoriesByPartOfName(
-            @PathVariable("name") String categoryName
-            , @RequestParam(value = "pageNumber", required = false) Integer pageNumber
-            , @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+            @PathVariable("name") String categoryName,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
         log.debug(">>>>>>>>>>Category List by part of name: " + categoryName);
 
-        pageNumber=getPageNumber(pageNumber);
-        pageSize=getPageSize(pageSize);
-
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
 
         CategoryPagedList categoryList = categoryService.listCategoriesByPartOfName(categoryName,
-                PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+                PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
         return new ResponseEntity<>(categoryList, HttpStatus.OK);
     }
@@ -81,6 +77,7 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("categoryId") Long categoryId) {
 
         log.debug(">>>>>>getCategoryById " + categoryId);
+
         CategoryDto categoryDto = categoryService.findCategoryById(categoryId);
         CategoryResponse categoryResponse = uiCategoryMapper.categoryDtoToCategoryResponse(categoryDto);
 
@@ -95,30 +92,28 @@ public class CategoryController {
 
         log.debug(">>>>List all categories");
 
-        pageNumber=getPageNumber(pageNumber);
-        pageSize=getPageSize(pageSize);
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
 
         CategoryPagedList categoryList = categoryService.listCategories(
-                PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+                PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
         return new ResponseEntity<>(categoryList, HttpStatus.OK);
     }
 
-    @PostMapping(produces = {"application/json"}
-            , consumes = {"application/json"}
-            , path = "category/create")
+    @PostMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = "category/create")
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
 
-        String categoryName=categoryRequest.getName();
-        if ( categoryName== null || categoryName.equals("")) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        String categoryName = categoryRequest.getName();
+
+        if (categoryName == null || categoryName.equals("")) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if(categoryService.isCategoryNameExists(categoryName)){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if (categoryService.isCategoryNameExists(categoryName)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         CategoryDto categoryDto = uiCategoryMapper.categoryRequestToCategoryDto(categoryRequest);
@@ -127,24 +122,15 @@ public class CategoryController {
 
         CategoryResponse categoryResponse = uiCategoryMapper.categoryDtoToCategoryResponse(savedCategoryDto);
 
-        return new ResponseEntity(categoryResponse, HttpStatus.OK);
-
+        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
-
     private int getPageNumber(Integer pageNumber) {
-        if (pageNumber == null || pageNumber < 0) {
-            return DEFAULT_PAGE_NUMBER;
-        }
-        return pageNumber;
+        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
     }
 
     private int getPageSize(Integer pageSize) {
-        if (pageSize == null || pageSize < 1) {
-            return DEFAULT_PAGE_SIZE;
-        }
-        return pageSize;
+        return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
-
 
 }

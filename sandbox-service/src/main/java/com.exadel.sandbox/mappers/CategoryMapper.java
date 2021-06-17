@@ -14,12 +14,11 @@ public class CategoryMapper {
 
     private ModelMapper mapper;
 
-    public Category categoryDtoToCategory(CategoryDto categoryDto){
+    public Category categoryDtoToCategory(CategoryDto categoryDto) {
         return Objects.isNull(categoryDto) ? null : mapper.map(categoryDto, Category.class);
-
     }
 
-    public CategoryDto categoryToCategoryDto(Category category){
-        return Objects.isNull(category) ? null : mapper.map(category,CategoryDto.class);
+    public CategoryDto categoryToCategoryDto(Category category) {
+        return Objects.isNull(category) ? null : mapper.map(category, CategoryDto.class);
     }
 }

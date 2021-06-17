@@ -15,10 +15,13 @@ import java.util.Set;
 public class ProductDto extends BaseEntity {
 
     private String name;
+
     private String description;
+
     private String link;
 
     private CategoryDto categoryDto;
+
     private VendorDto vendorDto;
 
     private Set<EventDto> eventDtos;

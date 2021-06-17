@@ -1,7 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.pagelist.ProductPagedList;
 import com.exadel.sandbox.dto.ProductDto;
+import com.exadel.sandbox.dto.pagelist.ProductPagedList;
 import com.exadel.sandbox.mappers.CategoryMapper;
 import com.exadel.sandbox.mappers.ProductMapper;
 import com.exadel.sandbox.mappers.VendorMapper;
@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private ProductRepository productRepository;
-    private ProductMapper productMapper;
-    private CategoryMapper categoryMapper;
-    private VendorMapper vendorMapper;
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
+    private final CategoryMapper categoryMapper;
+    private final VendorMapper vendorMapper;
 
     @Override
     public void deleteProductById(Long productId) {

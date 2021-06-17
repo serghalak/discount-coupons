@@ -1,9 +1,10 @@
 package com.exadel.sandbox.ui.request;
 
 import com.exadel.sandbox.model.BaseEntity;
-import lombok.*;
-
-import javax.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -12,6 +13,7 @@ import javax.persistence.UniqueConstraint;
 public class CategoryRequest extends BaseEntity {
 
     private String name;
+
     private String description;
 
 }

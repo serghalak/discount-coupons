@@ -20,6 +20,7 @@ public class VendorController {
     @GetMapping
     public ResponseEntity<List<VendorDto>> getAllByUserLocation() {
         var email = SecurityContextHolder.getContext().getAuthentication().getName();
+
         return ResponseEntity.ok(service.findAllByUserLocation(email));
     }
 

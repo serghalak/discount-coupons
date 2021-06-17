@@ -19,4 +19,5 @@ public interface CategoryService {
     CategoryDto saveCategory(CategoryDto categoryDto);
 
     boolean isCategoryNameExists(String categoryName);
+
 }

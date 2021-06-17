@@ -1,6 +1,5 @@
 package com.exadel.sandbox.ui.request;
 
-
 import com.exadel.sandbox.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,11 +13,13 @@ import lombok.NoArgsConstructor;
 public class ProductRequest extends BaseEntity {
 
     private String name;
+
     private String description;
+
     private String link;
 
     private CategoryRequest categoryRequest;
-    private VendorRequest vendorRequest;
 
+    private VendorRequest vendorRequest;
 
 }
