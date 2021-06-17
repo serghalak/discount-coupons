@@ -1,7 +1,6 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,7 +30,6 @@ public class Location extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "city_id")
-    @JsonIgnore
     private City city;
 
 }
