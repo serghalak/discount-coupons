@@ -5,6 +5,7 @@ import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.repository.location_repository.LocationRepository;
 import com.exadel.sandbox.service.LocationService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ import java.util.List;
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
+    private final ModelMapper mapper;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository) {
+    public LocationServiceImpl(LocationRepository locationRepository, ModelMapper mapper) {
         this.locationRepository = locationRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -42,34 +45,39 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Location create(LocationDto locationDto) {
+    public LocationDto create(LocationDto locationDto) {
         if (locationDto == null) {
             throw new IllegalArgumentException();
         }
-        return locationRepository.save(
-                Location.builder()
-                        .latitude(locationDto.getLatitude())
-                        .longitude(locationDto.getLongitude())
-                        .city(locationDto.getCity())
-                        .street(locationDto.getStreet())
-                        .number(locationDto.getNumber())
-                        .build()
+        return mapper.map(
+                locationRepository.save(mapper.map(locationDto, Location.class)),
+                LocationDto.class
         );
+//        return locationRepository.save(
+////                Location.builder()
+////                        .latitude(locationDto.getLatitude())
+////                        .longitude(locationDto.getLongitude())
+////                        .city(locationDto.getCity())
+////                        .street(locationDto.getStreet())
+////                        .number(locationDto.getNumber())
+////                        .build()
+//        );
     }
 
     @Override
-    public Location update(Long locationId, LocationDto locationDto) {
+    public LocationDto update(Long locationId, LocationDto locationDto) {
         if (locationDto == null || locationId == null) {
             throw new IllegalArgumentException();
         }
-        final Location updatedLocation = Location.builder()
-                .latitude(locationDto.getLatitude())
-                .longitude(locationDto.getLongitude())
-                .city(locationDto.getCity())
-                .street(locationDto.getStreet())
-                .number(locationDto.getNumber())
-                .build();
+        final var updatedLocation = mapper.map(locationDto, Location.class);
+//        final Location updatedLocation = Location.builder()
+//                .latitude(locationDto.getLatitude())
+//                .longitude(locationDto.getLongitude())
+//                .city(locationDto.getCity())
+//                .street(locationDto.getStreet())
+//                .number(locationDto.getNumber())
+//                .build();
         updatedLocation.setId(locationId);
-        return locationRepository.save(updatedLocation);
+        return mapper.map(locationRepository.save(updatedLocation), LocationDto.class);
     }
 }

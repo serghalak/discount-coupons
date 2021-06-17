@@ -9,6 +9,8 @@ public interface CountryService {
 
     List<Country> findAll();
 
+    CountryDto getCountryById(Long id);
+
     Country create(CountryDto country);
 
     Country update(Long id, CountryDto countryDto);

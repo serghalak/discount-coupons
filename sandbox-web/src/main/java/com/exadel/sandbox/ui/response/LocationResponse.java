@@ -1,6 +1,6 @@
-package com.exadel.sandbox.dto;
+package com.exadel.sandbox.ui.response;
 
-import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.location.City;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 @Setter
 @Builder
 @Component
-public class LocationDto extends BaseEntity {
+public class LocationResponse {
+
+    private Long id;
 
     private double latitude;
 
@@ -20,5 +22,6 @@ public class LocationDto extends BaseEntity {
 
     private String number;
 
-    private CityDto city;
+    private City city;
+
 }
