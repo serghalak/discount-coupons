@@ -4,9 +4,22 @@ import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,8 +57,7 @@ public class User extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "location_id")
-    @JsonIgnore
-    private Location location;
+     private Location location;
 
     @OneToMany
     @JoinTable(name = "saved_event",

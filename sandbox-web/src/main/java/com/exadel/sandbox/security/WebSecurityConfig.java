@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://exadel-coupons.web.app");
+                        .allowedOrigins("https://exadel-coupons.web.app","*");
 
             }
         };
@@ -68,8 +68,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
                 .and()
-               .authorizeRequests()
+                .authorizeRequests()
                 .antMatchers("/authenticate").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
@@ -82,7 +83,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/swagger-ui/**", "/v3/api-docs/**");
+        web.ignoring().antMatchers("/webjars/**");
+        web.ignoring().antMatchers("/swagger-resources/**");
+        web.ignoring().antMatchers("/swagger-ui.html");
+        web.ignoring().antMatchers("/v3/api-docs/**");
+        web.ignoring().antMatchers("/swagger.json");
     }
 
     @Override

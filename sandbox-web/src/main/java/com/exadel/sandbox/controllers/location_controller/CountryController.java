@@ -19,28 +19,32 @@ public class CountryController {
         this.countryService = countryService;
     }
 
-    @GetMapping("/getAllCountry")
+    @GetMapping(produces = {"application/json"}, path = "/allCountry")
     public ResponseEntity<?> getAllCountry() {
         return new ResponseEntity<>(countryService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/country/{id}")
+    @GetMapping(produces = {"application/json"}, path = "/country/{id}")
     public ResponseEntity<?> getCountryById(@PathVariable Long id) {
         final CountryDto countryById = countryService.getCountryById(id);
 
         return new ResponseEntity<>(countryById, HttpStatus.OK);
     }
 
-    @PostMapping("/createCountry")
+    @PostMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = "/newCountry")
     public ResponseEntity<?> createCountry(@RequestBody final CountryDto countryDto) {
         final Country country = countryService.create(countryDto);
         return ResponseEntity.ok(country);
     }
 
-    @PutMapping(value = "/updateCountry/{countryId}")
+    @PutMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = "/updateCountry/{countryId}")
     public ResponseEntity<?> updateCountry(@PathVariable("countryId") long countryId,
                                            @RequestBody final CountryDto countryDto) {
-        final Country newCountry = countryService.update(countryId, countryDto);
+        final var newCountry = countryService.update(countryId, countryDto);
         return ResponseEntity.ok(newCountry);
     }
 
