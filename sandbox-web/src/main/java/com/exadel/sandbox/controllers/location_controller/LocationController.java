@@ -5,6 +5,7 @@ import com.exadel.sandbox.service.CountryService;
 import com.exadel.sandbox.service.LocationService;
 import com.exadel.sandbox.ui.request.LocationRequest;
 import com.exadel.sandbox.ui.response.LocationResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
