@@ -15,8 +15,10 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
+
     @Autowired
     UserService userService;
+
     private String SECRET_KEY = "secret";
 
     public String extractUsername(String token) {
@@ -28,7 +30,7 @@ public class JwtUtil {
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
+        final var claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
@@ -56,9 +58,12 @@ public class JwtUtil {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String extractUserId(UserDetails userDetails){
+    public String extractUserId(UserDetails userDetails) {
         return Long.toString(userService.findByName(userDetails.getUsername()).getId());
     }
 
+    public String extractUserId(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getId();
+    }
 
 }
