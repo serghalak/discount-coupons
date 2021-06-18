@@ -26,4 +26,9 @@ public interface CityRepository extends JpaRepository<City, Long> {
             "WHERE u.id = ?1")
     Set<City> findCitiesByFavoriteEvents(@Param("userId") Long id);
 
+    @Query("select loc.city from User u " +
+            "join u.location loc " +
+            "WHERE u.id = ?1")
+    Set<City> findCityByUserId(@Param("userId") Long id);
+
 }
