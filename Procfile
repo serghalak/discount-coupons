@@ -1,1 +1,1 @@
-web: java -jar target/exadel-sandbox-1.0.0.jar
+web: java -jar target/sandbox-web-0.0.1-SNAPSHOT.jar
