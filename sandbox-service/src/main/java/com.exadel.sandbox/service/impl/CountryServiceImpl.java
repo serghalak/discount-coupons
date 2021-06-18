@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.CountryDto;
+import com.exadel.sandbox.dto.request.country.CountryRequest;
+import com.exadel.sandbox.dto.response.country.CountryResponse;
 import com.exadel.sandbox.model.location.Country;
 import com.exadel.sandbox.repository.location_repository.CountryRepository;
 import com.exadel.sandbox.service.CountryService;
@@ -30,7 +31,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public CountryDto getCountryById(Long id) {
+    public CountryResponse getCountryById(Long id) {
         if (id == null || id < 0) {
             throw new IllegalArgumentException();
         }
@@ -38,30 +39,32 @@ public class CountryServiceImpl implements CountryService {
         final var country = countryRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("State with id " + id + " not found"));
 
-        return mapper.map(country, CountryDto.class);
+        return mapper.map(country, CountryResponse.class);
     }
 
     @Override
-    public Country create(CountryDto countryDto) {
-        if (countryDto == null) {
+    public CountryResponse create(CountryRequest countryRequest) {
+        if (countryRequest == null) {
             throw new IllegalArgumentException();
         }
 
-        return countryRepository.save(
-                mapper.map(countryDto, Country.class)
+        var country = countryRepository.save(
+                mapper.map(countryRequest, Country.class)
         );
+        return mapper.map(country, CountryResponse.class);
     }
 
     @Override
-    public Country update(Long id, CountryDto countryDto) {
-        if (countryDto == null || id == null) {
+    public CountryResponse update(Long id, CountryRequest countryRequest) {
+        if (countryRequest == null || id == null) {
             throw new IllegalArgumentException();
         }
 
-        final Country build = mapper.map(countryDto, Country.class);
-        build.setId(id);
+        final Country country = mapper.map(countryRequest, Country.class);
+        country.setId(id);
 
-        return countryRepository.save(build);
+        countryRepository.save(country);
+        return mapper.map(country, CountryResponse.class);
     }
 
     @Override

@@ -1,14 +1,14 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.mappers.CategoryMapper;
+import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
+import com.exadel.sandbox.dto.response.vendor.VendorResponse;
+import com.exadel.sandbox.mappers.category.CategoryShortMapper;
+import com.exadel.sandbox.mappers.event.EventShortMapper;
+import com.exadel.sandbox.mappers.VendorMapper;
 import com.exadel.sandbox.repository.CategoryRepository;
 import com.exadel.sandbox.repository.EventRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.VendorService;
-import com.exadel.sandbox.service.vendor.dto.VendorDto;
-import com.exadel.sandbox.service.vendor.dto.VendorFullDto;
-import com.exadel.sandbox.mappers.EventMapper;
-import com.exadel.sandbox.mappers.VendorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,29 +21,32 @@ public class VendorServiceImpl implements VendorService {
     private final VendorRepository repository;
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
-    private final EventMapper eventMapper;
+    private final CategoryShortMapper categoryMapper;
+    private final EventShortMapper eventMapper;
     private final VendorMapper vendorMapper;
 
     @Override
-    public List<VendorDto> findAllByUserLocation(String email) {
+    public List<VendorResponse> findAllByUserLocation(String email) {
         return repository.findAllByUserLocation(email)
                 .stream()
-                .map(vendorMapper::toDto)
+                .map(vendorMapper::vendorToVendorResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public VendorFullDto findById(Long id) {
-        var vendor = repository.findById(id).map(vendorMapper::toDto).orElseThrow();
+    public VendorDetailsResponse findById(Long id) {
+        var vendor = repository.findById(id)
+                .map(vendorMapper::vendorToVendorResponse)
+                .orElseThrow();
         var events = eventRepository.findAllByVendorId(id)
                 .stream()
-                .map(eventMapper::toDto)
+                .map(eventMapper::eventToEventShortResponse)
                 .collect(Collectors.toList());
         var categories = categoryRepository.findAllByVendorId(id)
                 .stream()
-                .map(categoryMapper::categoryToCategoryDto)
+                .map(categoryMapper::categoryToCategoryShortResponse)
                 .collect(Collectors.toList());
-        return new VendorFullDto(vendor,  events, categories);
+        return new VendorDetailsResponse(vendor, events, categories);
     }
+
 }

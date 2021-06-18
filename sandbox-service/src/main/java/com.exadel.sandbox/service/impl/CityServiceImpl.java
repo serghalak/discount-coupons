@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.CityDto;
+import com.exadel.sandbox.dto.response.CityResponse;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
@@ -37,18 +38,18 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public Set<CityDto> findCitiesByEventStatusActive() {
+    public Set<CityResponse> findCitiesByEventStatusActive() {
         return cityRepository.findCitiesByEventStatus(Status.NEW)
                 .stream()
-                .map(city -> mapper.map(city, CityDto.class))
+                .map(city -> mapper.map(city, CityResponse.class))
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public Set<CityDto> findCitiesByFavoriteEvent(Long userId) {
+    public Set<CityResponse> findCitiesByFavoriteEvent(Long userId) {
         return cityRepository.findCitiesByFavoriteEvents(userId)
                 .stream()
-                .map(city -> mapper.map(city, CityDto.class))
+                .map(city -> mapper.map(city, CityResponse.class))
                 .collect(Collectors.toSet());
     }
 }

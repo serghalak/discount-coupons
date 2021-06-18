@@ -1,12 +1,9 @@
 package com.exadel.sandbox.controllers;
 
-import com.exadel.sandbox.dto.ProductDto;
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
+import com.exadel.sandbox.dto.request.product.ProductRequest;
+import com.exadel.sandbox.dto.response.product.ProductResponse;
 import com.exadel.sandbox.service.ProductService;
-import com.exadel.sandbox.ui.mappers.UIProductMapper;
-import com.exadel.sandbox.ui.pagelist.ProductResponsePagedList;
-import com.exadel.sandbox.ui.request.ProductRequest;
-import com.exadel.sandbox.ui.response.ProductResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @Slf4j
@@ -31,7 +27,6 @@ public class ProductController {
     private static final String DEFAULT_FIELD_SORT = "name";
 
     private final ProductService productService;
-    private final UIProductMapper uiProductMapper;
 
     @DeleteMapping(path = {"product/{productId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -50,11 +45,9 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        var productDto = uiProductMapper.productRequestToProductDto(productRequest);
-        ProductDto updateProduct = productService.updateProduct(productId, productDto);
-        var productResponse = uiProductMapper.productDtoToProductResponse(updateProduct);
+        var updateProduct = productService.updateProduct(productId, productRequest);
 
-        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+        return new ResponseEntity<>(updateProduct, HttpStatus.OK);
     }
 
     @GetMapping(produces = {"application/json"}, path = "productname/{name}")
@@ -80,14 +73,13 @@ public class ProductController {
 
         log.debug(">>>>>>getProductById " + productId);
 
-        var productDto = productService.findProductById(productId);
-        var productResponse = uiProductMapper.productDtoToProductResponse(productDto);
+        var product = productService.findProductById(productId);
 
-        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @GetMapping(produces = {"application/json"}, path = "product")
-    public ResponseEntity<ProductResponsePagedList> listProducts(
+    public ResponseEntity<ProductPagedList> listProducts(
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
@@ -96,10 +88,10 @@ public class ProductController {
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
-        Page<ProductDto> productDtoPage = productService.listProducts(
+        var productResponsePage = productService.listProducts(
                 PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
-        var productResponses = getProductResponsePagedList(productDtoPage);
+        var productResponses = getProductResponsePagedList(productResponsePage);
 
         return new ResponseEntity<>(productResponses, HttpStatus.OK);
     }
@@ -119,11 +111,9 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        var productDto = uiProductMapper.productRequestToProductDto(productRequest);
-        var savedProductDto = productService.saveProduct(productDto);
-        var productResponse = uiProductMapper.productDtoToProductResponse(savedProductDto);
+        var savedProduct = productService.saveProduct(productRequest);
 
-        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+        return new ResponseEntity<>(savedProduct, HttpStatus.OK);
     }
 
     private int getPageNumber(Integer pageNumber) {
@@ -134,14 +124,12 @@ public class ProductController {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
 
-    private ProductResponsePagedList getProductResponsePagedList(Page<ProductDto> productDtoPage) {
-        return new ProductResponsePagedList(
-                productDtoPage.getContent().stream()
-                        .map(uiProductMapper::productDtoToProductResponse)
-                        .collect(Collectors.toList()),
-                PageRequest.of(productDtoPage.getPageable().getPageNumber(),
-                        productDtoPage.getPageable().getPageSize(),
-                        productDtoPage.getPageable().getSort()),
-                productDtoPage.getTotalElements());
+    private ProductPagedList getProductResponsePagedList(Page<ProductResponse> productResponsePage) {
+        return new ProductPagedList(
+                productResponsePage.getContent(),
+        PageRequest.of(productResponsePage.getPageable().getPageNumber(),
+                productResponsePage.getPageable().getPageSize(),
+                productResponsePage.getPageable().getSort()),
+                productResponsePage.getTotalElements());
     }
 }

@@ -1,7 +1,6 @@
 package com.exadel.sandbox.controllers.location_controller;
 
-import com.exadel.sandbox.dto.CountryDto;
-import com.exadel.sandbox.model.location.Country;
+import com.exadel.sandbox.dto.request.country.CountryRequest;
 import com.exadel.sandbox.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,7 @@ public class CountryController {
 
     @GetMapping(produces = {"application/json"}, path = "/country/{id}")
     public ResponseEntity<?> getCountryById(@PathVariable Long id) {
-        final CountryDto countryById = countryService.getCountryById(id);
+        final var countryById = countryService.getCountryById(id);
 
         return new ResponseEntity<>(countryById, HttpStatus.OK);
     }
@@ -34,8 +33,8 @@ public class CountryController {
     @PostMapping(produces = {"application/json"},
             consumes = {"application/json"},
             path = "/newCountry")
-    public ResponseEntity<?> createCountry(@RequestBody final CountryDto countryDto) {
-        final Country country = countryService.create(countryDto);
+    public ResponseEntity<?> createCountry(@RequestBody final CountryRequest  countryRequest) {
+        final var country = countryService.create(countryRequest);
 
         return ResponseEntity.ok(country);
     }
@@ -44,8 +43,8 @@ public class CountryController {
             consumes = {"application/json"},
             path = "/updateCountry/{countryId}")
     public ResponseEntity<?> updateCountry(@PathVariable("countryId") long countryId,
-                                           @RequestBody final CountryDto countryDto) {
-        final var newCountry = countryService.update(countryId, countryDto);
+                                           @RequestBody final CountryRequest countryRequest) {
+        final var newCountry = countryService.update(countryId, countryRequest);
 
         return ResponseEntity.ok(newCountry);
     }
