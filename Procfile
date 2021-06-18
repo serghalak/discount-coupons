@@ -1,1 +1,1 @@
-web: java -cp target/classes/;target/dependency/* SandboxApplication
+web: java -cp target/classes/;target/dependency/* com.exadel.sandbox.SandboxApplication
