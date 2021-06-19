@@ -1,6 +1,5 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.LocationDto;
 import com.exadel.sandbox.dto.request.location.LocationRequest;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.model.location.City;
@@ -55,7 +54,7 @@ public class LocationServiceImpl implements LocationService {
         }
         var location = mapper.map(
                 locationRepository.save(mapper.map(locationRequest, Location.class)),
-                LocationDto.class
+                LocationResponse.class
         );
 
         return mapper.map(location, LocationResponse.class);

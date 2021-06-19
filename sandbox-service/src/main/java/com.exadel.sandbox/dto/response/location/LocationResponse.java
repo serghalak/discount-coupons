@@ -1,6 +1,6 @@
 package com.exadel.sandbox.dto.response.location;
 
-import com.exadel.sandbox.dto.response.CityResponse;
+import com.exadel.sandbox.dto.response.city.CityResponse;
 import lombok.*;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.CityDto;
-import com.exadel.sandbox.dto.response.CityResponse;
+import com.exadel.sandbox.dto.response.city.CityResponse;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.repository.location_repository.CityRepository;

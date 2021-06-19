@@ -1,7 +1,7 @@
 package com.exadel.sandbox.controllers;
 
 import com.exadel.sandbox.dto.request.user.UserRequest;
-import com.exadel.sandbox.dto.response.AuthenticationResponse;
+import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.impl.UserSecurityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

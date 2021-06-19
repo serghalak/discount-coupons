@@ -1,7 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.UserLocationDto;
 import com.exadel.sandbox.dto.request.user.UserRequest;
+import com.exadel.sandbox.dto.response.location.UserLocationResponse;
 import com.exadel.sandbox.dto.response.user.UserResponse;
 import com.exadel.sandbox.mappers.user.UserMapper;
 import com.exadel.sandbox.model.location.Location;
@@ -42,9 +42,9 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    private UserLocationDto getLocation(User user) {
+    private UserLocationResponse getLocation(User user) {
         Location userLocation = user.getLocation();
-        return UserLocationDto.builder()
+        return UserLocationResponse.builder()
                 .country(userLocation.getCity().getCountry().getName())
                 .city(userLocation.getCity().getName())
                 .street(userLocation.getStreet())
