@@ -21,5 +21,5 @@ public class EventShortResponse {
 
     private int discount;
 
-    private List<LocationShortResponse> locations = new ArrayList<>();
+    private List<LocationShortResponse> locationsResponse = new ArrayList<>();
 }
