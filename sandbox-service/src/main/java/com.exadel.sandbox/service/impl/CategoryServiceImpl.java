@@ -1,16 +1,18 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.CategoryDto;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
-import com.exadel.sandbox.mappers.CategoryMapper;
+import com.exadel.sandbox.dto.request.category.CategoryRequest;
+import com.exadel.sandbox.dto.response.category.CategoryResponse;
+import com.exadel.sandbox.mappers.category.CategoryMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
-import com.exadel.sandbox.repository.CategoryRepository;
+import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,6 +24,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
+
+    private static final Integer DEFAULT_PAGE_NUMBER = 0;
+    private static final Integer DEFAULT_PAGE_SIZE = 3;
+    private static final String DEFAULT_FIELD_SORT = "name";
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
@@ -41,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
+    public CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest) {
 
         log.debug(">>>>>update category with id: " + categoryId);
 
@@ -49,15 +56,15 @@ public class CategoryServiceImpl implements CategoryService {
 
 
         categoryOptional.ifPresentOrElse(category -> {
-            category.setName(categoryDto.getName());
-            category.setDescription(categoryDto.getDescription());
+            category.setName(categoryRequest.getName());
+            category.setDescription(categoryRequest.getDescription());
             categoryRepository.save(category);
         }, () -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. CategoryId: " + categoryId);
         });
 
         Optional<Category> updateCategory = categoryRepository.findById(categoryId);
-        return updateCategory.map(categoryMapper::categoryToCategoryDto).orElse(null);
+        return updateCategory.map(categoryMapper::categoryToCategoryResponse).orElse(null);
     }
 
     @Override
@@ -72,7 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .getContent()
                 .stream()
                 .filter(category -> category.getName().matches("(.*)" + categoryName + "(.*)"))//add search use only part of category name
-                .map(categoryMapper::categoryToCategoryDto)
+                .map(categoryMapper::categoryToCategoryResponse)
                 .collect(Collectors.toList()),
                 PageRequest
                         .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
@@ -82,7 +89,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto findCategoryById(Long categoryId) {
+    public CategoryResponse findCategoryById(Long categoryId) {
 
         log.debug(">>>>>>CategoryService find by Id: " + categoryId);
 
@@ -90,7 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         if (category.isPresent()) {
             log.debug(">>>>>Category is found: " + categoryId);
-            return categoryMapper.categoryToCategoryDto(category.get());
+            return categoryMapper.categoryToCategoryResponse(category.get());
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Category");
         }
@@ -98,33 +105,39 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryPagedList listCategories(PageRequest pageRequest) {
+    public CategoryPagedList listCategories(int pageNumber, int pageSize) {
 
         log.debug(">>>>>>>>>>>>>ListCategory ....");
 
-        CategoryPagedList categoryPagedList;
-        Page<Category> categoryPage;
-        categoryPage = categoryRepository.findAll(pageRequest);
-        categoryPagedList = new CategoryPagedList(categoryPage
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
+
+        Page<Category> categoryPage=categoryRepository.findAll(
+                PageRequest.of(
+                        pageNumber
+                        , pageSize
+                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return  new CategoryPagedList(categoryPage
                 .getContent()
                 .stream()
-                .map(categoryMapper::categoryToCategoryDto)
+                .map(categoryMapper::categoryToCategoryResponse)
                 .collect(Collectors.toList()),
-                PageRequest
-                        .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
-                categoryPage.getTotalElements());
+                    PageRequest
+                        .of(categoryPage.getPageable().getPageNumber()
+                                , categoryPage.getPageable().getPageSize()
+                                ,categoryPage.getPageable().getSort()),
+                    categoryPage.getTotalElements());
 
-        return categoryPagedList;
     }
 
     @Override
-    public CategoryDto saveCategory(CategoryDto categoryDto) {
-
-        Category category = categoryMapper.categoryDtoToCategory(categoryDto);
+    public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
+        var category = categoryMapper.categoryRequestToCategory(categoryRequest);
 
         Category savedCategory = categoryRepository.save(category);
 
-        return categoryMapper.categoryToCategoryDto(savedCategory);
+        return categoryMapper.categoryToCategoryResponse(savedCategory);
     }
 
     @Override
@@ -132,5 +145,15 @@ public class CategoryServiceImpl implements CategoryService {
         Category categoryByName = categoryRepository.findByName(categoryName);
 
         return categoryByName != null;
+    }
+
+
+
+    private int getPageNumber(Integer pageNumber) {
+        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
+    }
+
+    private int getPageSize(Integer pageSize) {
+        return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
 }

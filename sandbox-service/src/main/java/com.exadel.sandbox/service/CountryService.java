@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.CountryDto;
+import com.exadel.sandbox.dto.request.country.CountryRequest;
+import com.exadel.sandbox.dto.response.country.CountryResponse;
 import com.exadel.sandbox.model.location.Country;
 
 import java.util.List;
@@ -9,11 +10,11 @@ public interface CountryService {
 
     List<Country> findAll();
 
-    CountryDto getCountryById(Long id);
+    CountryResponse getCountryById(Long id);
 
-    Country create(CountryDto country);
+    CountryResponse create(CountryRequest countryRequest);
 
-    Country update(Long id, CountryDto countryDto);
+    CountryResponse update(Long id, CountryRequest countryRequest);
 
     void delete(Long id);
 

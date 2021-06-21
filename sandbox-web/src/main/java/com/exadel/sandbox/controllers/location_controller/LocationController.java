@@ -1,10 +1,8 @@
 package com.exadel.sandbox.controllers.location_controller;
 
-import com.exadel.sandbox.dto.LocationDto;
+import com.exadel.sandbox.dto.request.location.LocationRequest;
 import com.exadel.sandbox.service.CountryService;
 import com.exadel.sandbox.service.LocationService;
-import com.exadel.sandbox.ui.request.LocationRequest;
-import com.exadel.sandbox.ui.response.LocationResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,17 +50,17 @@ public class LocationController {
             consumes = {"application/json"},
             path = "/newLocation")
     public ResponseEntity<?> createLocation(@RequestBody final LocationRequest locationRequest) {
-        final LocationDto newLocation = locationService.create(mapper.map(locationRequest, LocationDto.class));
-        return ResponseEntity.ok(mapper.map(newLocation, LocationResponse.class));
+        final var newLocation = locationService.create(locationRequest);
+        return ResponseEntity.ok(newLocation);
     }
 
     @PutMapping(produces = {"application/json"},
             consumes = {"application/json"},
             path = "/updateLocation/{locationId}")
     public ResponseEntity<?> updateLocation(@PathVariable("locationId") Long locationId,
-                                            @RequestBody final LocationDto locationDto) {
-        final LocationDto newLocation = locationService.update(locationId, locationDto);
-        return ResponseEntity.ok(mapper.map(newLocation, LocationResponse.class));
+                                            @RequestBody final LocationRequest locationRequest) {
+        final var newLocation = locationService.update(locationId, locationRequest);
+        return ResponseEntity.ok(newLocation);
     }
 
 }

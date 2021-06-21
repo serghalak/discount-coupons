@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.UserDto;
+import com.exadel.sandbox.dto.request.user.UserRequest;
+import com.exadel.sandbox.dto.response.user.UserResponse;
 import com.exadel.sandbox.model.user.User;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,8 @@ public interface UserService {
 
     List<User> findAll();
 
-    UserDto findByName(final String name);
+    UserResponse findByName(final String name);
 
-    UserDto updateUser(final UserDto userDto);
+    UserResponse updateUser(final UserRequest userRequest);
 
 }
