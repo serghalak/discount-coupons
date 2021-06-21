@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -26,9 +27,12 @@ public interface CityRepository extends JpaRepository<City, Long> {
             "WHERE u.id = ?1")
     Set<City> findCitiesByFavoriteEvents(@Param("userId") Long id);
 
-    @Query("select loc.city from User u " +
-            "join u.location loc " +
-            "WHERE u.id = ?1")
-    Set<City> findCityByUserId(@Param("userId") Long id);
+    @Query(value = "SELECT name\n" +
+            "FROM city\n" +
+            "         LEFT JOIN location l ON city.id = l.city_id\n" +
+            "         LEFT JOIN user u ON l.id = u.location_id\n" +
+            "WHERE u.id = :userId",
+            nativeQuery = true)
+    Optional<String> findCityNameByUserId (Long userId);
 
 }

@@ -1,6 +1,6 @@
 package com.exadel.sandbox.mappers.event;
 
-import com.exadel.sandbox.dto.request.EventRequest;
+import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import lombok.AllArgsConstructor;

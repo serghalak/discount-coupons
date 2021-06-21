@@ -11,10 +11,11 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
+
     private final EntityManager entityManager;
 
     @Override
-    public List<Vendor> findAllByUserLocation(String email) {
+    public List<Vendor> findAllByUserLocation(String city) {
         return entityManager.createNativeQuery(
                 "SELECT DISTINCT vendor.*\n" +
                         "FROM vendor\n" +
@@ -23,15 +24,13 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                         "         JOIN event e ON ep.event_id = e.id\n" +
                         "         LEFT JOIN event_location el ON e.id = el.event_id\n" +
                         "         LEFT JOIN location l ON el.location_id = l.id\n" +
+                        "         LEFT JOIN city c ON l.city_id = c.id\n" +
                         "WHERE e.is_online = TRUE\n" +
-                        "   OR l.city_id = (SELECT city_id\n" +
-                        "                   FROM location\n" +
-                        "                            JOIN user u ON location.id = u.location_id\n" +
-                        "                   WHERE u.email = ?\n" +
-                        "                   LIMIT 1)\n" +
+                        "   OR c.name = ?" +
                         "ORDER BY name",
                 Vendor.class)
-                .setParameter(1, email)
+                .setParameter(1, city)
                 .getResultList();
     }
+
 }

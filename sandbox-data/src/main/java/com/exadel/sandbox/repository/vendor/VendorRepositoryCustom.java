@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface VendorRepositoryCustom {
 
-    List<Vendor> findAllByUserLocation(String email);
+    List<Vendor> findAllByUserLocation(String city);
 
 }
