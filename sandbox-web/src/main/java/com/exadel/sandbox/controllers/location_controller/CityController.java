@@ -1,9 +1,7 @@
 package com.exadel.sandbox.controllers.location_controller;
 
-import com.exadel.sandbox.dto.CityDto;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.CityService;
-import com.exadel.sandbox.ui.response.CityResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,10 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/location")
@@ -40,29 +34,20 @@ public class CityController {
     @GetMapping(produces = {"application/json"}, path = "/allActiveCities")
     public ResponseEntity<?> findCitiesByEventStatusActive() {
         return ResponseEntity.ok()
-                .body(mapList(cityService.findCitiesByEventStatusActive(),
-                        CityResponse.class));
+                .body(cityService.findCitiesByEventStatusActive());
     }
 
     @GetMapping(produces = {"application/json"}, path = "/allFavoriteCities")
     public ResponseEntity<?> findCitiesByFavoriteEvent() {
         Long userId = 2L;
-        Set<CityDto> cityDtos = cityService.findCitiesByFavoriteEvent(userId);
+        var cities = cityService.findCitiesByFavoriteEvent(userId);
         return ResponseEntity.ok()
-                .body(mapList(cityDtos,
-                        CityResponse.class));
+                .body(cities);
     }
 
     @GetMapping(produces = {"application/json"}, path = "/allCitiesByCountry")
     public ResponseEntity<?> getAllCityByCountry(@RequestParam(name = "countryName") String countryName) {
         return new ResponseEntity<>(cityService.findCitiesByCountryNameOrderByName(countryName), HttpStatus.OK);
-    }
-
-    private <S, T> List<T> mapList(Set<S> source, Class<T> targetClass) {
-        return source
-                .stream()
-                .map(element -> mapper.map(element, targetClass))
-                .collect(Collectors.toList());
     }
 
 }

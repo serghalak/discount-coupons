@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.LocationDto;
+import com.exadel.sandbox.dto.request.location.LocationRequest;
+import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.location.Location;
 
@@ -14,8 +15,8 @@ public interface LocationService {
 
     List<Location> getAllLocationByCity(String cityName);
 
-    LocationDto create(LocationDto locationDto);
+    LocationResponse create(LocationRequest locationRequest);
 
-    LocationDto update(Long locationId, LocationDto locationDto);
+    LocationResponse update(Long locationId, LocationRequest locationRequest);
 
 }

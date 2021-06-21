@@ -1,11 +1,9 @@
 package com.exadel.sandbox.controllers;
 
-import com.exadel.sandbox.dto.CategoryDto;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
+import com.exadel.sandbox.dto.request.category.CategoryRequest;
+import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.service.CategoryService;
-import com.exadel.sandbox.ui.mappers.UICategoryMapper;
-import com.exadel.sandbox.ui.request.CategoryRequest;
-import com.exadel.sandbox.ui.response.CategoryResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +26,6 @@ public class CategoryController {
     private static final String DEFAULT_FIELD_SORT = "name";
 
     private final CategoryService categoryService;
-    private final UICategoryMapper uiCategoryMapper;
 
 
     @DeleteMapping(path = {"category/{categoryId}"})
@@ -48,11 +45,9 @@ public class CategoryController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        CategoryDto categoryDto = uiCategoryMapper.categoryRequestToCategoryDto(categoryRequest);
-        CategoryDto updateCategory = categoryService.updateCategory(categoryId, categoryDto);
-        CategoryResponse categoryResponse = uiCategoryMapper.categoryDtoToCategoryResponse(updateCategory);
+        var updateCategory = categoryService.updateCategory(categoryId, categoryRequest);
 
-        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
+        return new ResponseEntity<>(updateCategory, HttpStatus.OK);
     }
 
     @GetMapping(produces = {"application/json"}, path = "categoryname/{name}")
@@ -78,10 +73,9 @@ public class CategoryController {
 
         log.debug(">>>>>>getCategoryById " + categoryId);
 
-        CategoryDto categoryDto = categoryService.findCategoryById(categoryId);
-        CategoryResponse categoryResponse = uiCategoryMapper.categoryDtoToCategoryResponse(categoryDto);
+        var category = categoryService.findCategoryById(categoryId);
 
-        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
+        return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
 
@@ -116,13 +110,9 @@ public class CategoryController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        CategoryDto categoryDto = uiCategoryMapper.categoryRequestToCategoryDto(categoryRequest);
+        var savedCategory = categoryService.saveCategory(categoryRequest);
 
-        CategoryDto savedCategoryDto = categoryService.saveCategory(categoryDto);
-
-        CategoryResponse categoryResponse = uiCategoryMapper.categoryDtoToCategoryResponse(savedCategoryDto);
-
-        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
+        return new ResponseEntity<>(savedCategory, HttpStatus.OK);
     }
 
     private int getPageNumber(Integer pageNumber) {
