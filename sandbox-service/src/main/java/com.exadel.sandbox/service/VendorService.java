@@ -1,13 +1,13 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.service.vendor.dto.VendorDto;
-import com.exadel.sandbox.service.vendor.dto.VendorFullDto;
+import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
+import com.exadel.sandbox.dto.response.vendor.VendorResponse;
 
 import java.util.List;
 
 public interface VendorService {
 
-    List<VendorDto> findAllByUserLocation(String email);
+    List<VendorResponse> findAllByUserLocation(String email);
 
-    VendorFullDto findById(Long id);
+    VendorDetailsResponse findById(Long id);
 }

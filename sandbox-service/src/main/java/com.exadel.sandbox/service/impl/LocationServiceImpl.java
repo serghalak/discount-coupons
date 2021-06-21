@@ -1,6 +1,8 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.LocationDto;
+import com.exadel.sandbox.dto.request.location.LocationRequest;
+import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.repository.location_repository.LocationRepository;
@@ -47,26 +49,30 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public LocationDto create(LocationDto locationDto) {
-        if (locationDto == null) {
+    public LocationResponse create(LocationRequest locationRequest) {
+        if (locationRequest == null) {
             throw new IllegalArgumentException();
         }
-        return mapper.map(
-                locationRepository.save(mapper.map(locationDto, Location.class)),
+        var location = mapper.map(
+                locationRepository.save(mapper.map(locationRequest, Location.class)),
                 LocationDto.class
         );
+
+        return mapper.map(location, LocationResponse.class);
     }
 
     @Override
-    public LocationDto update(Long locationId, LocationDto locationDto) {
-        if (locationDto == null || locationId == null) {
+    public LocationResponse update(Long locationId, LocationRequest locationRequest) {
+        if (locationRequest == null || locationId == null) {
             throw new IllegalArgumentException();
         }
 
-        final var updatedLocation = mapper.map(locationDto, Location.class);
+        final var updatedLocation = mapper.map(locationRequest, Location.class);
 
         updatedLocation.setId(locationId);
 
-        return mapper.map(locationRepository.save(updatedLocation), LocationDto.class);
+        var location = mapper.map(locationRepository.save(updatedLocation), LocationResponse.class);
+
+        return mapper.map(location, LocationResponse.class);
     }
 }

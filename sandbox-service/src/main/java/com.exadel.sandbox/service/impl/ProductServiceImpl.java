@@ -1,8 +1,9 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.ProductDto;
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
-import com.exadel.sandbox.mappers.CategoryMapper;
+import com.exadel.sandbox.dto.request.product.ProductRequest;
+import com.exadel.sandbox.dto.response.product.ProductResponse;
+import com.exadel.sandbox.mappers.category.CategoryMapper;
 import com.exadel.sandbox.mappers.ProductMapper;
 import com.exadel.sandbox.mappers.VendorMapper;
 import com.exadel.sandbox.model.vendorinfo.Product;
@@ -39,20 +40,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(Long productId, ProductDto productDto) {
+    public ProductResponse updateProduct(Long productId, ProductRequest productRequest) {
 
         log.debug(">>>>>update product with id: " + productId);
 
         Optional<Product> productOptional = productRepository.findById(productId);
 
         productOptional.ifPresentOrElse(product -> {
-            product.setName(productDto.getName());
-            product.setDescription(productDto.getDescription());
-            product.setLink(productDto.getLink());
-            product.setCategory(categoryMapper.categoryDtoToCategory(
-                    productDto.getCategoryDto()));
-            product.setVendor(vendorMapper.vendorDtoToVendor(
-                    productDto.getVendorDto()));
+            product.setName(productRequest.getName());
+            product.setDescription(productRequest.getDescription());
+            product.setLink(productRequest.getLink());
+            product.setCategory(categoryMapper.categoryRequestToCategory(
+                    productRequest.getCategoryRequest()));
+            product.setVendor(vendorMapper.vendorRequestToVendor(
+                    productRequest.getVendorRequest()));
             productRepository.save(product);
         }, () -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. ProductId: "
@@ -61,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
 
         Optional<Product> updateProduct=productRepository.findById(productId);
         if(updateProduct.isPresent()){
-            return productMapper.productToProductDto(updateProduct.get());
+            return productMapper.productToProductResponse(updateProduct.get());
         }
         return null;
     }
@@ -78,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
                 .getContent()
                 .stream()
                 .filter(product ->  product.getName().matches("(.*)" + productName + "(.*)"))//add search use only part of category name
-                .map(productMapper::productToProductDto)
+                .map(productMapper::productToProductResponse)
                 .collect(Collectors.toList()),
                 PageRequest
                         .of(productPage.getPageable().getPageNumber(), productPage.getPageable().getPageSize()),
@@ -88,14 +89,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto findProductById(Long productId) {
+    public ProductResponse findProductById(Long productId) {
 
         log.debug(">>>>>>ProductService find product by Id: " + productId);
 
         Optional<Product> product = productRepository.findById(productId);
         if(product.isPresent()){
             log.debug(">>>>>Product is found: " + productId);
-            return productMapper.productToProductDto(product.get());
+            return productMapper.productToProductResponse(product.get());
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. UUID: " + productId);
         }
@@ -103,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> listProducts(PageRequest pageRequest) {
+    public Page<ProductResponse> listProducts(PageRequest pageRequest) {
 
         log.debug(">>>>>>>>>>>>>ListCategories...." );
 
@@ -112,22 +113,22 @@ public class ProductServiceImpl implements ProductService {
 
         productPage = productRepository.findAll(pageRequest);
 
-        Page<ProductDto> productDtoPage = productPage.map(productMapper::productToProductDto);
+        Page<ProductResponse> productDtoPage = productPage.map(productMapper::productToProductResponse);
 
         return productDtoPage;
 
     }
 
     @Override
-    public ProductDto saveProduct(ProductDto productDto) {
+    public ProductResponse saveProduct(ProductRequest productRequest) {
 
-        Product product = productMapper.productDtoToProduct(productDto);
+        Product product = productMapper.productRequestToProduct(productRequest);
 
         Product savedProduct = productRepository.save(product);
         if(savedProduct==null)
             return null;
 
-        return productMapper.productToProductDto(savedProduct);
+        return productMapper.productToProductResponse(savedProduct);
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.ProductDto;
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
+import com.exadel.sandbox.dto.request.product.ProductRequest;
+import com.exadel.sandbox.dto.response.product.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -9,15 +10,15 @@ public interface ProductService {
 
     void deleteProductById(Long productId);
 
-    ProductDto updateProduct(Long productId, ProductDto productDto);
+    ProductResponse updateProduct(Long productId, ProductRequest productRequest);
 
     ProductPagedList listProductsByPartOfName(String productsName, PageRequest pageRequest);
 
-    ProductDto findProductById(Long productId);
+    ProductResponse findProductById(Long productId);
 
-    Page<ProductDto> listProducts(PageRequest pageRequest);
+    Page<ProductResponse> listProducts(PageRequest pageRequest);
 
-    ProductDto saveProduct(ProductDto productDto);
+    ProductResponse saveProduct(ProductRequest productRequest);
 
     boolean isCategoryIdUses(Long categoryId);
 

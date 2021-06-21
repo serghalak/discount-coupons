@@ -1,22 +1,23 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.CategoryDto;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
+import com.exadel.sandbox.dto.request.category.CategoryRequest;
+import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import org.springframework.data.domain.PageRequest;
 
 public interface CategoryService {
 
     void deleteCategoryById(Long categoryId);
 
-    CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto);
+    CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest);
 
     CategoryPagedList listCategoriesByPartOfName(String categoryName, PageRequest pageRequest);
 
-    CategoryDto findCategoryById(Long categoryId);
+    CategoryResponse findCategoryById(Long categoryId);
 
     CategoryPagedList listCategories(PageRequest pageRequest);
 
-    CategoryDto saveCategory(CategoryDto categoryDto);
+    CategoryResponse saveCategory(CategoryRequest categoryRequest);
 
     boolean isCategoryNameExists(String categoryName);
 
