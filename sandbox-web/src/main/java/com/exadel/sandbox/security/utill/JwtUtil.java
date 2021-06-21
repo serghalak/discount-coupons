@@ -61,4 +61,8 @@ public class JwtUtil {
     public String extractUserId(UserDetails userDetails) {
         return Long.toString(userService.findByName(userDetails.getUsername()).getId());
     }
+
+    public String extractUserId(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getId();
+    }
 }

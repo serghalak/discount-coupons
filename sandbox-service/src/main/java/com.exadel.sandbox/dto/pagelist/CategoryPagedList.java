@@ -1,6 +1,6 @@
 package com.exadel.sandbox.dto.pagelist;
 
-import com.exadel.sandbox.dto.CategoryDto;
+import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,10 +10,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public class CategoryPagedList extends PageImpl<CategoryDto> {
+public class CategoryPagedList extends PageImpl<CategoryResponse> {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public CategoryPagedList(@JsonProperty("content") List<CategoryDto> content,
+    public CategoryPagedList(@JsonProperty("content") List<CategoryResponse> content,
                              @JsonProperty("number") int number,
                              @JsonProperty("size") int size,
                              @JsonProperty("totalElements") Long totalElements,
@@ -27,11 +27,11 @@ public class CategoryPagedList extends PageImpl<CategoryDto> {
         super(content, PageRequest.of(number, size), totalElements);
     }
 
-    public CategoryPagedList(List<CategoryDto> content, Pageable pageable, long total) {
+    public CategoryPagedList(List<CategoryResponse> content, Pageable pageable, long total) {
         super(content, pageable, total);
     }
 
-    public CategoryPagedList(List<CategoryDto> content) {
+    public CategoryPagedList(List<CategoryResponse> content) {
         super(content);
     }
 }
