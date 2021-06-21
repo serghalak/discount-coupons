@@ -1,7 +1,7 @@
 package com.exadel.sandbox.mappers.event;
 
 import com.exadel.sandbox.dto.response.event.EventShortResponse;
-import com.exadel.sandbox.dto.response.location.LocationShortResponse;
+import com.exadel.sandbox.mappers.location.LocationShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -14,15 +14,17 @@ import java.util.stream.Collectors;
 @Component
 public class EventShortMapper {
 
+    private LocationShortMapper locationMapper;
+
     private ModelMapper mapper;
 
     public EventShortResponse eventToEventShortResponse(Event event) {
         var locations = event.getLocations()
                 .stream()
-                .map(l -> mapper.map(l, LocationShortResponse.class))
+                .map(l -> locationMapper.locationToLocationShortResponse(l))
                 .collect(Collectors.toList());
         var eventShortResponse = Objects.isNull(event) ? null : mapper.map(event, EventShortResponse.class);
-        eventShortResponse.getLocations().addAll(locations);
+        eventShortResponse.setLocationsResponse(locations);
         return eventShortResponse;
     }
 }

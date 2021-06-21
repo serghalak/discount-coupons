@@ -5,7 +5,7 @@ import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.mappers.category.CategoryMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
-import com.exadel.sandbox.repository.CategoryRepository;
+import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.ProductService;
 import lombok.AllArgsConstructor;

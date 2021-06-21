@@ -3,7 +3,7 @@ package com.exadel.sandbox.service.impl;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.model.vendorinfo.Event;
-import com.exadel.sandbox.repository.EventRepository;
+import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
