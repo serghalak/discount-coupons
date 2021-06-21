@@ -68,24 +68,29 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryPagedList listCategoriesByPartOfName(String categoryName, PageRequest pageRequest) {
+    public CategoryPagedList listCategoriesByPartOfName(String categoryName, int pageNumber, int pageSize) {
 
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
 
-        CategoryPagedList categoryPagedList;
-        Page<Category> categoryPage;
-        categoryPage = categoryRepository.findAll(pageRequest);
-        categoryPagedList = new CategoryPagedList(categoryPage
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
+
+        Page<Category> categoryPage=categoryRepository.findAllByNameContainingIgnoreCase(categoryName,
+                PageRequest.of(
+                        pageNumber
+                        , pageSize
+                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return new CategoryPagedList(categoryPage
                 .getContent()
                 .stream()
-                .filter(category -> category.getName().matches("(.*)" + categoryName + "(.*)"))//add search use only part of category name
                 .map(categoryMapper::categoryToCategoryResponse)
                 .collect(Collectors.toList()),
-                PageRequest
-                        .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
-                categoryPage.getTotalElements());
-
-        return categoryPagedList;
+                    PageRequest
+                        .of(categoryPage.getPageable().getPageNumber()
+                                , categoryPage.getPageable().getPageSize()
+                                , categoryPage.getPageable().getSort()),
+                    categoryPage.getTotalElements());
     }
 
     @Override

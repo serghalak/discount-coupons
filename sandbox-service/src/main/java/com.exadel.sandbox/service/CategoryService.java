@@ -11,7 +11,7 @@ public interface CategoryService {
 
     CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest);
 
-    CategoryPagedList listCategoriesByPartOfName(String categoryName, PageRequest pageRequest);
+    CategoryPagedList listCategoriesByPartOfName(String categoryName, int pageNumber, int pageSize);
 
     CategoryResponse findCategoryById(Long categoryId);
 

@@ -53,17 +53,13 @@ public class CategoryController {
     @GetMapping(produces = {"application/json"}, path = "categoryname/{name}")
     public ResponseEntity<CategoryPagedList> getCategoriesByPartOfName(
             @PathVariable("name") String categoryName,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize) {
 
         log.debug(">>>>>>>>>>Category List by part of name: " + categoryName);
 
-        pageNumber = getPageNumber(pageNumber);
-        pageSize = getPageSize(pageSize);
-
-        CategoryPagedList categoryList = categoryService.listCategoriesByPartOfName(categoryName,
-                PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_FIELD_SORT).ascending()));
-
+        CategoryPagedList categoryList =
+                categoryService.listCategoriesByPartOfName(categoryName, pageNumber, pageSize);
         return new ResponseEntity<>(categoryList, HttpStatus.OK);
     }
 
