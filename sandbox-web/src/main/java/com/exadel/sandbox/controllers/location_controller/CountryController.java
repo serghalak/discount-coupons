@@ -35,8 +35,7 @@ public class CountryController {
             consumes = {"application/json"},
             path = "/newCountry")
     public ResponseEntity<?> createCountry(@RequestBody final CountryDto countryDto) {
-        final Country country = countryService.create(countryDto);
-
+        final var country = countryService.create(countryDto);
         return ResponseEntity.ok(country);
     }
 

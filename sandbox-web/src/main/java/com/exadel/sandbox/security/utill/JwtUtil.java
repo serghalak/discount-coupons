@@ -19,7 +19,7 @@ public class JwtUtil {
     @Autowired
     UserService userService;
 
-    private final String SECRET_KEY = "secret";
+    private String SECRET_KEY = "secret";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -61,4 +61,9 @@ public class JwtUtil {
     public String extractUserId(UserDetails userDetails) {
         return Long.toString(userService.findByName(userDetails.getUsername()).getId());
     }
+
+    public String extractUserId(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getId();
+    }
+
 }

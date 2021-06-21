@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,15 +39,31 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public Set<CityDto> findCitiesByEventStatusActive() {
-        return cityRepository.findCitiesByEventStatus(Status.NEW)
-                .stream()
-                .map(city -> mapper.map(city, CityDto.class))
-                .collect(Collectors.toSet());
+        return findCities(cityRepository::findCitiesByEventStatus, Status.NEW);
+
+//        return cityRepository.findCitiesByEventStatus(Status.NEW)
+//                .stream()
+//                .map(city -> mapper.map(city, CityDto.class))
+//                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<CityDto> findCitiesByFavoriteEvent(Long userId) {
-        return cityRepository.findCitiesByFavoriteEvents(userId)
+        return findCities(cityRepository::findCitiesByFavoriteEvents, userId);
+//
+//        return cityRepository.findCitiesByFavoriteEvents(userId)
+//                .stream()
+//                .map(city -> mapper.map(city, CityDto.class))
+//                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<CityDto> findCityByUserId(Long userId) {
+        return findCities(cityRepository::findCitiesByFavoriteEvents, userId);
+    }
+
+    private <T> Set<CityDto> findCities(Function<T, Set<City>> function, T t) {
+        return function.apply(t)
                 .stream()
                 .map(city -> mapper.map(city, CityDto.class))
                 .collect(Collectors.toSet());
