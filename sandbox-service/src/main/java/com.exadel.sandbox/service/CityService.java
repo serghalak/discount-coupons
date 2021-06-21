@@ -16,4 +16,5 @@ public interface CityService {
 
     Set<CityDto> findCitiesByFavoriteEvent(Long userId);
 
+    Set<CityDto> findCityByUserId(Long userId);
 }

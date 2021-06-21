@@ -3,15 +3,13 @@ package com.exadel.sandbox.controllers.location_controller;
 import com.exadel.sandbox.dto.CityDto;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.CityService;
+import com.exadel.sandbox.ui.response.AuthenticationResponse;
 import com.exadel.sandbox.ui.response.CityResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -45,13 +43,16 @@ public class CityController {
     }
 
     @GetMapping(produces = {"application/json"}, path = "/allFavoriteCities")
-    public ResponseEntity<?> findCitiesByFavoriteEvent() {
-        Long userId = 2L;
+    public ResponseEntity<?> findCitiesByFavoriteEvent(
+            @RequestHeader("Authorization") AuthenticationResponse authenticationResponse
+    ) {
+        Long userId = Long.parseLong(getIdFromHeadersJwt(authenticationResponse));
         Set<CityDto> cityDtos = cityService.findCitiesByFavoriteEvent(userId);
         return ResponseEntity.ok()
                 .body(mapList(cityDtos,
                         CityResponse.class));
     }
+
 
     @GetMapping(produces = {"application/json"}, path = "/allCitiesByCountry")
     public ResponseEntity<?> getAllCityByCountry(@RequestParam(name = "countryName") String countryName) {
@@ -63,6 +64,10 @@ public class CityController {
                 .stream()
                 .map(element -> mapper.map(element, targetClass))
                 .collect(Collectors.toList());
+    }
+
+    private String getIdFromHeadersJwt(AuthenticationResponse authenticationResponse) {
+        return jwtUtil.extractUserId(authenticationResponse.getJwt().substring(7));
     }
 
 }
