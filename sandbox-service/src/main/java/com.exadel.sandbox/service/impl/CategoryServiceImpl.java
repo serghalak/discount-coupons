@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -181,10 +182,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Set<CategoryShortResponse> findAllCategoriesByVendorId(Long vendorId) {
-        return categoryRepository.findByProductsVendorId(vendorId).stream()
+    public List<CategoryShortResponse> findAllCategoriesByVendorId(Long vendorId) {
+        return categoryRepository.findDistinctByProductsVendorIdOrderByNameAsc(vendorId).stream().distinct()
                 .map(categoryShortMapper::categoryToCategoryShortResponse)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<CategoryShortResponse> findAllByVendorId(Long vendorId) {
+        return categoryRepository.findAllByVendorId(vendorId).stream()
+                .map(categoryShortMapper::categoryToCategoryShortResponse)
+                .collect(Collectors.toList());
 
     }
 

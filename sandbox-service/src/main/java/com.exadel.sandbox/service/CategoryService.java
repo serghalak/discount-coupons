@@ -7,6 +7,7 @@ import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Set;
 
 public interface CategoryService {
@@ -27,6 +28,8 @@ public interface CategoryService {
 
     CategoryPagedList listCategories(int pageNumber, int pageSize);
 
-    Set<CategoryShortResponse> findAllCategoriesByVendorId(Long vendorId);
+    List<CategoryShortResponse> findAllCategoriesByVendorId(Long vendorId);
+
+    List<CategoryShortResponse>findAllByVendorId(Long vendorId);
 
 }
