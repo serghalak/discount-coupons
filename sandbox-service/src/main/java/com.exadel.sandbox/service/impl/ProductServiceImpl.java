@@ -61,10 +61,9 @@ public class ProductServiceImpl implements ProductService {
         });
 
         Optional<Product> updateProduct=productRepository.findById(productId);
-        if(updateProduct.isPresent()){
-            return productMapper.productToProductResponse(updateProduct.get());
-        }
-        return null;
+
+        return productMapper.productToProductResponse(updateProduct.get());
+
     }
 
     @Override
