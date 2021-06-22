@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/location")
+@RequestMapping("/api/location")
 public class CityController {
 
     private final CityService cityService;

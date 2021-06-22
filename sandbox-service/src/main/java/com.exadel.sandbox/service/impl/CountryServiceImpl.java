@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CountryServiceImpl implements CountryService {
@@ -43,6 +44,23 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    public List<CountryResponse> getCountryByName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        } else if (name.isEmpty()) {
+            return findAll().stream()
+                    .map(country -> mapper.map(country, CountryResponse.class))
+                    .collect(Collectors.toList());
+        }
+
+        return countryRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(country -> mapper.map(country, CountryResponse.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
     public CountryResponse create(CountryRequest countryRequest) {
         if (countryRequest == null) {
             throw new IllegalArgumentException();
@@ -60,7 +78,7 @@ public class CountryServiceImpl implements CountryService {
             throw new IllegalArgumentException();
         }
 
-        final Country country = mapper.map(countryRequest, Country.class);
+        final var country = mapper.map(countryRequest, Country.class);
         country.setId(id);
 
         countryRepository.save(country);
