@@ -33,7 +33,7 @@ public class CountryController {
     @PostMapping(produces = {"application/json"},
             consumes = {"application/json"},
             path = "/newCountry")
-    public ResponseEntity<?> createCountry(@RequestBody final CountryRequest  countryRequest) {
+    public ResponseEntity<?> createCountry(@RequestBody final CountryRequest countryRequest) {
         final var country = countryService.create(countryRequest);
 
         return ResponseEntity.ok(country);
@@ -51,6 +51,7 @@ public class CountryController {
 
     @GetMapping("/deleteCountry/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+
         countryService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
