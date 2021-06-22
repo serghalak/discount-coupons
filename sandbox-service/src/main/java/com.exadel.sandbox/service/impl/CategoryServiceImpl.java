@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -176,7 +177,13 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryByName != null;
     }
 
+    @Override
+    public Set<CategoryResponse> findAllCategoriesByVendorId(Long vendorId) {
+        return categoryRepository.findByProductsVendorId(vendorId).stream()
+                .map(categoryMapper::categoryToCategoryResponse)
+                .collect(Collectors.toSet());
 
+    }
 
     private int getPageNumber(Integer pageNumber) {
         return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;

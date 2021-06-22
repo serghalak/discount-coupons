@@ -3,7 +3,10 @@ package com.exadel.sandbox.service;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
+import com.exadel.sandbox.model.vendorinfo.Category;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.Set;
 
 public interface CategoryService {
 
@@ -22,5 +25,7 @@ public interface CategoryService {
     boolean isCategoryNameExists(String categoryName);
 
     CategoryPagedList listCategories(int pageNumber, int pageSize);
+
+    Set<CategoryResponse> findAllCategoriesByVendorId(Long vendorId);
 
 }
