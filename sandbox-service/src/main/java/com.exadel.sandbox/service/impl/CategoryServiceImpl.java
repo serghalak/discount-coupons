@@ -3,7 +3,9 @@ package com.exadel.sandbox.service.impl;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
+import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
 import com.exadel.sandbox.mappers.category.CategoryMapper;
+import com.exadel.sandbox.mappers.category.CategoryShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
@@ -12,11 +14,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,8 +30,14 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
+
+    private static final Integer DEFAULT_PAGE_NUMBER = 0;
+    private static final Integer DEFAULT_PAGE_SIZE = 3;
+    private static final String DEFAULT_FIELD_SORT = "name";
+
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final CategoryShortMapper categoryShortMapper;
     private final ProductService productService;
 
     @Override
@@ -36,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (productService.isCategoryIdUses(categoryId)) {
             categoryRepository.deleteById(categoryId);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED,
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
                     "You cannot delete category. Category is uses");
         }
     }
@@ -45,6 +57,11 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest) {
 
         log.debug(">>>>>update category with id: " + categoryId);
+
+        if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
+                    ,"Category name cannot be empty");
+        }
 
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
@@ -58,28 +75,35 @@ public class CategoryServiceImpl implements CategoryService {
         });
 
         Optional<Category> updateCategory = categoryRepository.findById(categoryId);
-        return updateCategory.map(categoryMapper::categoryToCategoryResponse).orElse(null);
+
+        return updateCategory.map(categoryMapper::categoryToCategoryResponse)
+                .orElse(null);
     }
 
     @Override
-    public CategoryPagedList listCategoriesByPartOfName(String categoryName, PageRequest pageRequest) {
+    public CategoryPagedList listCategoriesByPartOfName(String categoryName, int pageNumber, int pageSize) {
 
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
 
-        CategoryPagedList categoryPagedList;
-        Page<Category> categoryPage;
-        categoryPage = categoryRepository.findAll(pageRequest);
-        categoryPagedList = new CategoryPagedList(categoryPage
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
+
+        Page<Category> categoryPage=categoryRepository.findAllByNameContainingIgnoreCase(categoryName,
+                PageRequest.of(
+                        pageNumber
+                        , pageSize
+                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return new CategoryPagedList(categoryPage
                 .getContent()
                 .stream()
-                .filter(category -> category.getName().matches("(.*)" + categoryName + "(.*)"))//add search use only part of category name
                 .map(categoryMapper::categoryToCategoryResponse)
                 .collect(Collectors.toList()),
-                PageRequest
-                        .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
-                categoryPage.getTotalElements());
-
-        return categoryPagedList;
+                    PageRequest
+                        .of(categoryPage.getPageable().getPageNumber()
+                                , categoryPage.getPageable().getPageSize()
+                                , categoryPage.getPageable().getSort()),
+                    categoryPage.getTotalElements());
     }
 
     @Override
@@ -99,27 +123,49 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryPagedList listCategories(PageRequest pageRequest) {
+    public CategoryPagedList listCategories(int pageNumber, int pageSize) {
 
         log.debug(">>>>>>>>>>>>>ListCategory ....");
 
-        CategoryPagedList categoryPagedList;
-        Page<Category> categoryPage;
-        categoryPage = categoryRepository.findAll(pageRequest);
-        categoryPagedList = new CategoryPagedList(categoryPage
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
+
+        Page<Category> categoryPage=categoryRepository.findAll(
+                PageRequest.of(
+                        pageNumber
+                        , pageSize
+                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return  new CategoryPagedList(categoryPage
                 .getContent()
                 .stream()
                 .map(categoryMapper::categoryToCategoryResponse)
                 .collect(Collectors.toList()),
-                PageRequest
-                        .of(categoryPage.getPageable().getPageNumber(), categoryPage.getPageable().getPageSize()),
-                categoryPage.getTotalElements());
+                    PageRequest
+                        .of(categoryPage.getPageable().getPageNumber()
+                                , categoryPage.getPageable().getPageSize()
+                                ,categoryPage.getPageable().getSort()),
+                    categoryPage.getTotalElements());
 
-        return categoryPagedList;
     }
 
     @Override
     public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
+
+        String categoryName = categoryRequest.getName();
+
+        if (categoryName == null || categoryName.equals("")) {
+
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
+                    ,"The category cannot be empty");
+        }
+
+
+        if(isCategoryNameExists(categoryName)){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"The category: "
+                    + categoryName + " is already exists");
+        }
+
         var category = categoryMapper.categoryRequestToCategory(categoryRequest);
 
         Category savedCategory = categoryRepository.save(category);
@@ -129,9 +175,33 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean isCategoryNameExists(String categoryName) {
+
         Category categoryByName = categoryRepository.findByName(categoryName);
 
         return categoryByName != null;
     }
 
+    @Override
+    public List<CategoryShortResponse> findAllCategoriesByVendorId(Long vendorId) {
+        return categoryRepository.findDistinctByProductsVendorIdOrderByNameAsc(vendorId).stream().distinct()
+                .map(categoryShortMapper::categoryToCategoryShortResponse)
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<CategoryShortResponse> findAllByVendorId(Long vendorId) {
+        return categoryRepository.findAllByVendorId(vendorId).stream()
+                .map(categoryShortMapper::categoryToCategoryShortResponse)
+                .collect(Collectors.toList());
+
+    }
+
+    private int getPageNumber(Integer pageNumber) {
+        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
+    }
+
+    private int getPageSize(Integer pageSize) {
+        return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
+    }
 }
