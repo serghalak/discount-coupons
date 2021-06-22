@@ -13,10 +13,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(final String email);
 
     User findByUsername(final String username);
-
-//    @Modifying
-//    @Query(value = "insert into user_order(event_id, user_id) values (:eventId, :userId)")
-//    void insertUserOrder(@Param("eventId") long eventId, @Param("userId") long userId);
+    @Modifying
+    @Query(value = "insert into user_order(event_id, user_id) values (:eventId, :userId);", nativeQuery = true)
+    void insertUserOrder(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
 
 }
