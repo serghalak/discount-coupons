@@ -3,7 +3,9 @@ package com.exadel.sandbox.service.impl;
 import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
+import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
 import com.exadel.sandbox.mappers.category.CategoryMapper;
+import com.exadel.sandbox.mappers.category.CategoryShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
@@ -34,6 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final CategoryShortMapper categoryShortMapper;
     private final ProductService productService;
 
     @Override
@@ -178,9 +181,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Set<CategoryResponse> findAllCategoriesByVendorId(Long vendorId) {
+    public Set<CategoryShortResponse> findAllCategoriesByVendorId(Long vendorId) {
         return categoryRepository.findByProductsVendorId(vendorId).stream()
-                .map(categoryMapper::categoryToCategoryResponse)
+                .map(categoryShortMapper::categoryToCategoryShortResponse)
                 .collect(Collectors.toSet());
 
     }
