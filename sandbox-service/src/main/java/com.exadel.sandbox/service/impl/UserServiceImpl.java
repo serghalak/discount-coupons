@@ -11,6 +11,7 @@ import com.exadel.sandbox.repository.location_repository.CountryRepository;
 import com.exadel.sandbox.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
