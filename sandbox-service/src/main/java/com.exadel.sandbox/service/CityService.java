@@ -20,4 +20,5 @@ public interface CityService {
     CityResponse findCityByUserId(Long userId);
 
     CityResponse create(CityRequest cityRequest);
+
 }
