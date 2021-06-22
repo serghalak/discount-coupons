@@ -87,18 +87,8 @@ public class CategoryController {
 
     @PostMapping(produces = {"application/json"},
             consumes = {"application/json"},
-            path = "category/create")
+            path = {"category","category/"})
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
-
-        String categoryName = categoryRequest.getName();
-
-        if (categoryName == null || categoryName.equals("")) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if (categoryService.isCategoryNameExists(categoryName)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         var savedCategory = categoryService.saveCategory(categoryRequest);
 

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -138,6 +139,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
+
+        String categoryName = categoryRequest.getName();
+
+        if (categoryName == null || categoryName.equals("")) {
+
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
+                    ,"The category cannot be empty");
+        }
+
+
+        if(isCategoryNameExists(categoryName)){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"The category: "
+                    + categoryName + " is already exists");
+        }
+
         var category = categoryMapper.categoryRequestToCategory(categoryRequest);
 
         Category savedCategory = categoryRepository.save(category);
@@ -147,6 +163,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean isCategoryNameExists(String categoryName) {
+
         Category categoryByName = categoryRepository.findByName(categoryName);
 
         return categoryByName != null;
