@@ -1,30 +1,28 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.request.user.UserRequest;
-import com.exadel.sandbox.dto.response.location.UserLocationResponse;
+import com.exadel.sandbox.dto.response.event.EventShortResponse;
 import com.exadel.sandbox.dto.response.user.UserResponse;
+import com.exadel.sandbox.mappers.event.EventShortMapper;
 import com.exadel.sandbox.mappers.user.UserMapper;
-import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.repository.UserRepository;
+import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.location_repository.CountryRepository;
 import com.exadel.sandbox.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    UserRepository userRepository;
 
-    @Autowired
-    CountryRepository countryRepository;
-
+    private final UserRepository userRepository;
+    private final CountryRepository countryRepository;
     private final UserMapper userMapper;
+    private final EventRepository eventRepository;
+    private final EventShortMapper eventShortMapper;
 
     @Override
     public List<User> findAll() {
@@ -38,19 +36,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(UserRequest userRequest) {
+    public EventShortResponse saveEventToOrder(long eventId, long userId ) {
+//        userRepository.insertUserOrder(eventId,userId);
+        return eventShortMapper.eventToEventShortResponse(eventRepository.findEventById(eventId));
+    }
+
+    @Override
+    public EventShortResponse saveEventToSaved(long userId, long eventId) {
         return null;
     }
 
-    private UserLocationResponse getLocation(User user) {
-        Location userLocation = user.getLocation();
-        return UserLocationResponse.builder()
-                .country(userLocation.getCity().getCountry().getName())
-                .city(userLocation.getCity().getName())
-                .street(userLocation.getStreet())
-                .number(userLocation.getNumber())
-                .latitude(userLocation.getLatitude())
-                .longitude(userLocation.getLongitude())
-                .build();
-    }
 }
