@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.request.CityRequest;
 import com.exadel.sandbox.dto.response.city.CityResponse;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.vendorinfo.Status;
@@ -27,6 +28,16 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
+    public CityResponse create(CityRequest cityRequest) {
+        if (cityRequest == null) {
+            throw new IllegalArgumentException();
+        }
+        return mapper.map(cityRepository.save(
+                mapper.map(cityRequest, City.class)),
+                CityResponse.class);
+    }
+
+    @Override
     public List<City> findAll() {
         return cityRepository.findAll(Sort.by("name"));
     }
@@ -38,7 +49,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public Set<CityResponse> findCitiesByEventStatusActive() {
-        return cityRepository.findCitiesByEventStatus(Status.NEW)
+        return cityRepository.findCitiesByEventStatus(Status.ACTIVE)
                 .stream()
                 .map(city -> mapper.map(city, CityResponse.class))
                 .collect(Collectors.toSet());
@@ -50,5 +61,10 @@ public class CityServiceImpl implements CityService {
                 .stream()
                 .map(city -> mapper.map(city, CityResponse.class))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public CityResponse findCityByUserId(Long userId) {
+        return mapper.map(cityRepository.findCityByUserId(userId), CityResponse.class);
     }
 }

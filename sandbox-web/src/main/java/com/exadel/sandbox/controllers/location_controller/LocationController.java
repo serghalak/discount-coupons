@@ -7,8 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,22 +15,16 @@ public class LocationController {
 
     private final LocationService locationService;
     private final CountryService countryService;
-    private final ModelMapper mapper;
 
     @Autowired
     public LocationController(LocationService locationService, CountryService countryService, ModelMapper modelMapper) {
         this.locationService = locationService;
         this.countryService = countryService;
-        this.mapper = modelMapper;
     }
 
     @GetMapping(produces = {"application/json"}, path = "/allLocations")
     public ResponseEntity<?> getAllLocation() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getPrincipal());
-        System.out.println(authentication.getDetails());
-        System.out.println(authentication.getName());
-        System.out.println(authentication.getCredentials());
+
         return new ResponseEntity<>(locationService.findAll(), HttpStatus.OK);
     }
 
@@ -51,6 +43,7 @@ public class LocationController {
             path = "/newLocation")
     public ResponseEntity<?> createLocation(@RequestBody final LocationRequest locationRequest) {
         final var newLocation = locationService.create(locationRequest);
+
         return ResponseEntity.ok(newLocation);
     }
 
@@ -60,6 +53,7 @@ public class LocationController {
     public ResponseEntity<?> updateLocation(@PathVariable("locationId") Long locationId,
                                             @RequestBody final LocationRequest locationRequest) {
         final var newLocation = locationService.update(locationId, locationRequest);
+
         return ResponseEntity.ok(newLocation);
     }
 
