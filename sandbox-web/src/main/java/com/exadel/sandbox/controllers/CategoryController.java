@@ -21,12 +21,7 @@ import javax.validation.Valid;
 @RestController
 public class CategoryController {
 
-    private static final Integer DEFAULT_PAGE_NUMBER = 0;
-    private static final Integer DEFAULT_PAGE_SIZE = 3;
-    private static final String DEFAULT_FIELD_SORT = "name";
-
     private final CategoryService categoryService;
-
 
     @DeleteMapping(path = {"category/{categoryId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -41,13 +36,9 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("categoryId") Long categoryId,
                                                            @Valid @RequestBody CategoryRequest categoryRequest) {
 
-        if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        var updateCategory = categoryService.updateCategory(categoryId, categoryRequest);
-
-        return new ResponseEntity<>(updateCategory, HttpStatus.OK);
+        return new ResponseEntity<>(
+                categoryService.updateCategory(categoryId, categoryRequest)
+                , HttpStatus.OK);
     }
 
     @GetMapping(produces = {"application/json"}, path = "categoryname/{name}")
@@ -69,9 +60,7 @@ public class CategoryController {
 
         log.debug(">>>>>>getCategoryById " + categoryId);
 
-        var category = categoryService.findCategoryById(categoryId);
-
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.findCategoryById(categoryId), HttpStatus.OK);
     }
 
 
@@ -90,17 +79,8 @@ public class CategoryController {
             path = {"category","category/"})
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
 
-        var savedCategory = categoryService.saveCategory(categoryRequest);
-
-        return new ResponseEntity<>(savedCategory, HttpStatus.OK);
+       return new ResponseEntity<>(categoryService.saveCategory(categoryRequest), HttpStatus.OK);
     }
 
-    private int getPageNumber(Integer pageNumber) {
-        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
-    }
-
-    private int getPageSize(Integer pageSize) {
-        return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
-    }
 
 }

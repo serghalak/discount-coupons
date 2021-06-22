@@ -43,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (productService.isCategoryIdUses(categoryId)) {
             categoryRepository.deleteById(categoryId);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED,
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
                     "You cannot delete category. Category is uses");
         }
     }
@@ -52,6 +52,11 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest) {
 
         log.debug(">>>>>update category with id: " + categoryId);
+
+        if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
+                    ,"Category name cannot be empty");
+        }
 
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
@@ -65,7 +70,9 @@ public class CategoryServiceImpl implements CategoryService {
         });
 
         Optional<Category> updateCategory = categoryRepository.findById(categoryId);
-        return updateCategory.map(categoryMapper::categoryToCategoryResponse).orElse(null);
+
+        return updateCategory.map(categoryMapper::categoryToCategoryResponse)
+                .orElse(null);
     }
 
     @Override
