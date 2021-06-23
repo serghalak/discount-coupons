@@ -1,29 +1,28 @@
 package com.exadel.sandbox.controllers.location_controller;
 
 import com.exadel.sandbox.dto.request.country.CountryRequest;
+import com.exadel.sandbox.model.location.Country;
 import com.exadel.sandbox.service.CountryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/location")
 public class CountryController {
 
     private final CountryService countryService;
 
-    @Autowired
-    public CountryController(CountryService countryService) {
-        this.countryService = countryService;
+    @GetMapping("/allCountry")
+    public List<Country> getAllCountry() {
+        return countryService.findAll();
     }
 
-    @GetMapping(produces = {"application/json"}, path = "/allCountry")
-    public ResponseEntity<?> getAllCountry() {
-        return new ResponseEntity<>(countryService.findAll(), HttpStatus.OK);
-    }
-
-    @GetMapping(produces = {"application/json"}, path = "/country/{id}")
+    @GetMapping("/country/{id}")
     public ResponseEntity<?> getCountryById(@PathVariable Long id) {
 
         final var countryById = countryService.getCountryById(id);
@@ -31,7 +30,7 @@ public class CountryController {
         return new ResponseEntity<>(countryById, HttpStatus.OK);
     }
 
-    @GetMapping(produces = {"application/json"}, path = "/country")
+    @GetMapping("/country")
     public ResponseEntity<?> getCountryByName(@RequestParam(name = "name", defaultValue = "") String name) {
 
         final var countryById = countryService.getCountryByName(name);
@@ -60,7 +59,7 @@ public class CountryController {
         return new ResponseEntity<>(newCountry, HttpStatus.OK);
     }
 
-    @GetMapping("/deleteCountry/{id}")
+    @DeleteMapping("/deleteCountry/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 
         countryService.delete(id);

@@ -1,5 +1,6 @@
 package com.exadel.sandbox.security.utill;
 
+import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -62,7 +63,11 @@ public class JwtUtil {
         return Long.toString(userService.findByName(userDetails.getUsername()).getId());
     }
 
-    public String extractUserId(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getId();
+    public Long extractUserIdFromAuthResponse(AuthenticationResponse authResponse) {
+        return Long.parseLong(Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(authResponse.getJwt().substring(7))
+                .getBody()
+                .getId());
     }
 }
