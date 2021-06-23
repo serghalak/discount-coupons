@@ -1,30 +1,32 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.dto.response.event.EventShortResponse;
 import com.exadel.sandbox.dto.response.user.UserResponse;
 import com.exadel.sandbox.mappers.event.EventShortMapper;
 import com.exadel.sandbox.mappers.user.UserMapper;
 import com.exadel.sandbox.model.user.User;
+import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.repository.event.EventRepository;
-import com.exadel.sandbox.repository.location_repository.CountryRepository;
 import com.exadel.sandbox.service.UserService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final CountryRepository countryRepository;
     private final UserMapper userMapper;
     private final EventRepository eventRepository;
     private final EventShortMapper eventShortMapper;
+    private final ModelMapper mapper;
 
     @Override
     public List<User> findAll() {
@@ -39,24 +41,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public EventShortResponse saveEventToOrder(Long eventId, Long userId) {
-        var event = eventRepository.findById(Math.toIntExact(eventId))
-                .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " does not found"));
-        if (eventId <= 0) {
-            throw new IllegalArgumentException("Id is not correct");
-        }
+        Event event = verifyEventId(eventId);
         userRepository.insertIntoUserOrder(eventId, userId);
         return eventShortMapper.eventToEventShortResponse(event);
     }
 
     @Override
     public EventShortResponse saveEventToSaved(Long userId, Long eventId) {
-        var event = eventRepository.findById(Math.toIntExact(eventId))
-                .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " does not found"));
+        Event event = verifyEventId(eventId);
+        userRepository.insertIntoUserSaved(eventId, userId);
+        return eventShortMapper.eventToEventShortResponse(event);
+    }
+
+    @Override
+    public void removeEventFromOrder(Long userId, Long eventId) {
+        Event event = verifyEventId(eventId);
+        userRepository.deleteFromUserOrder(eventId, userId);
+    }
+
+    @Override
+    public void removeEventFromSaved(Long userId, Long eventId) {
+        Event event = verifyEventId(eventId);
+        userRepository.deleteFromUserSaved(eventId, userId);
+    }
+
+    @Override
+    public List<EventResponse> getAllFromOrder(Long userId) {
+        return userRepository.getAllEventsFromUserOrder(userId).stream()
+                .map(event -> mapper.map(event, EventResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EventResponse> getAllFromSaved(Long userId) {
+        return userRepository.getAllEventsFromUserSaved(userId).stream()
+                .map(event -> mapper.map(event, EventResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    private Event verifyEventId(Long eventId) {
         if (eventId <= 0) {
             throw new IllegalArgumentException("Id is not correct");
         }
-        userRepository.insertIntoUserSaved(eventId, userId);
-        return eventShortMapper.eventToEventShortResponse(event);
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " does not found"));
+
     }
 
 }

@@ -10,13 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Integer>, EventRepositoryCustom {
+public interface EventRepository extends JpaRepository<Event, Long>, EventRepositoryCustom {
 
     @Query("select e from Event e " +
             "join e.locations loc " +
             "where loc.city = ?1")
     List<Event> findEventByLocations(City city);
-    @Transactional
+
     Event findEventById(Long id);
 
 }
