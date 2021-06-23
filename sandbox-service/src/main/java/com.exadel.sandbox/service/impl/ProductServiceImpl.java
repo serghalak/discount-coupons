@@ -1,11 +1,13 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.pagelist.ProductPagedList;
 import com.exadel.sandbox.dto.request.product.ProductRequest;
 import com.exadel.sandbox.dto.response.product.ProductResponse;
 import com.exadel.sandbox.mappers.category.CategoryMapper;
 import com.exadel.sandbox.mappers.product.ProductMapper;
 import com.exadel.sandbox.mappers.vendor.VendorMapper;
+import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Product;
 import com.exadel.sandbox.repository.ProductRepository;
 import com.exadel.sandbox.service.ProductService;
@@ -13,7 +15,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,6 +29,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
+
+    private static final Integer DEFAULT_PAGE_NUMBER = 0;
+    private static final Integer DEFAULT_PAGE_SIZE = 10;
+    private static final String DEFAULT_FIELD_SORT = "name";
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
@@ -44,48 +52,50 @@ public class ProductServiceImpl implements ProductService {
 
         log.debug(">>>>>update product with id: " + productId);
 
+        if (productRequest.getName() == null || productRequest.getName().equals("")) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
+                    ,"Product name cannot be empty");
+        }
+
         Optional<Product> productOptional = productRepository.findById(productId);
 
-        productOptional.ifPresentOrElse(product -> {
-            product.setName(productRequest.getName());
-            product.setDescription(productRequest.getDescription());
-            product.setLink(productRequest.getLink());
-            product.setCategory(categoryMapper.categoryRequestToCategory(
-                    productRequest.getCategoryRequest()));
-            product.setVendor(vendorMapper.vendorRequestToVendor(
-                    productRequest.getVendorRequest()));
-            productRepository.save(product);
-        }, () -> {
+        if(productOptional.isPresent()){
+            return productMapper.productToProductResponse(
+                    productRepository.save(
+                            productMapper.productRequestToProduct(productRequest)));
+        }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. ProductId: "
                     + productId);
-        });
-
-        Optional<Product> updateProduct=productRepository.findById(productId);
-        if(updateProduct.isPresent()){
-            return productMapper.productToProductResponse(updateProduct.get());
         }
-        return null;
     }
 
     @Override
-    public ProductPagedList listProductsByPartOfName(String productName, PageRequest pageRequest) {
+    public ProductPagedList listProductsByPartOfName(String productName, int pageNumber, int pageSize) {
 
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + productName);
 
-        ProductPagedList productPagedList;
-        Page<Product> productPage;
-        productPage = productRepository.findAll(pageRequest);
-        productPagedList=new ProductPagedList(productPage
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
+
+
+        Page<Product> productPage = productRepository.findAllByNameContainingIgnoreCase(productName
+                ,PageRequest.of(
+                    pageNumber
+                    , pageSize
+                    , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return new ProductPagedList(productPage
                 .getContent()
                 .stream()
-                .filter(product ->  product.getName().matches("(.*)" + productName + "(.*)"))//add search use only part of category name
                 .map(productMapper::productToProductResponse)
                 .collect(Collectors.toList()),
-                PageRequest
-                        .of(productPage.getPageable().getPageNumber(), productPage.getPageable().getPageSize()),
+                    PageRequest
+                        .of(productPage.getPageable().getPageNumber()
+                                , productPage.getPageable().getPageSize(),
+                                productPage.getPageable().getSort()),
                 productPage.getTotalElements()  );
 
-        return productPagedList;
+
     }
 
     @Override
@@ -104,31 +114,54 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductResponse> listProducts(PageRequest pageRequest) {
+    public ProductPagedList listProducts(int pageNumber, int pageSize) {
 
-        log.debug(">>>>>>>>>>>>>ListCategories...." );
+        log.debug(">>>>>>>>>>>>>ListProducts...." );
 
-        ProductPagedList productPagedList;
-        Page<Product> productPage;
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
 
-        productPage = productRepository.findAll(pageRequest);
+        Page<Product> productPage=productRepository.findAll(
+                PageRequest.of(
+                        pageNumber
+                        , pageSize
+                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
-        Page<ProductResponse> productDtoPage = productPage.map(productMapper::productToProductResponse);
-
-        return productDtoPage;
+        return  new ProductPagedList(productPage
+                .getContent()
+                .stream()
+                .map(productMapper::productToProductResponse)
+                .collect(Collectors.toList()),
+                    PageRequest
+                        .of(productPage.getPageable().getPageNumber()
+                                , productPage.getPageable().getPageSize()
+                                ,productPage.getPageable().getSort()),
+                    productPage.getTotalElements());
 
     }
 
     @Override
     public ProductResponse saveProduct(ProductRequest productRequest) {
 
+        String productName = productRequest.getName();
+
+        if (productName == null || productName.equals("")) {
+
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
+                    ,"The product cannot be empty");
+        }
+
+        if (isProductNameExists(productName)) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"The category: "
+                    + productName + " is already exists");
+        }
+
+
         Product product = productMapper.productRequestToProduct(productRequest);
 
         Product savedProduct = productRepository.save(product);
-        if(savedProduct==null)
-            return null;
 
-        return productMapper.productToProductResponse(savedProduct);
+        return (savedProduct==null) ?  null : productMapper.productToProductResponse(savedProduct);
     }
 
     @Override
@@ -141,9 +174,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean isProductNameExists(String productName) {
         Product productByName = productRepository.findByName(productName);
-        if(productByName==null){
-            return false;
-        }
-        return true;
+
+        return (productByName==null) ?  false :  true;
+    }
+
+
+    private int getPageNumber(Integer pageNumber) {
+        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
+    }
+
+    private int getPageSize(Integer pageSize) {
+        return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
 }
