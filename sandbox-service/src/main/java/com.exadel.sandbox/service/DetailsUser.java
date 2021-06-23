@@ -17,6 +17,8 @@ import java.util.Set;
 @Component
 public class DetailsUser implements UserDetails {
 
+    private long id;
+
     private String username;
 
     private String password;
