@@ -1,9 +1,9 @@
 package com.exadel.sandbox.controllers;
 
+import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,50 +33,58 @@ public class UserController {
     }
 
     @PostMapping(path = "/addEvent/toOrder/{eventId}")
-    ResponseEntity<?> addEventToUserOrder(@PathVariable Long eventId, @RequestHeader HttpHeaders httpHeaders) {
+    ResponseEntity<?> addEventToUserOrder(
+            @PathVariable Long eventId,
+            @RequestHeader("Authorization") AuthenticationResponse authenticationResponse) {
 
         return ResponseEntity.ok()
-                .body(userService.saveEventToOrder(eventId, retrieveUserId(httpHeaders)));
+                .body(userService.saveEventToOrder(eventId,
+                        jwtUtil.extractUserIdFromAuthResponse(authenticationResponse)));
     }
 
     @PostMapping(path = "/addEvent/toSaved/{eventId}")
-    ResponseEntity<?> addEventToSaved(@RequestHeader HttpHeaders httpHeaders,
-                                      @PathVariable Long eventId) {
+    ResponseEntity<?> addEventToSaved(
+            @RequestHeader("Authorization") AuthenticationResponse authenticationResponse,
+            @PathVariable Long eventId) {
 
         return ResponseEntity.ok()
                 .body(userService.saveEventToSaved(eventId,
-                        retrieveUserId(httpHeaders)));
+                        jwtUtil.extractUserIdFromAuthResponse(authenticationResponse)));
     }
 
     @DeleteMapping(path = "/removeEvent/fromSaved/{eventId}")
-    ResponseEntity<?> removeEventFromSaved(@RequestHeader HttpHeaders httpHeaders,
-                                           @PathVariable Long eventId) {
+    ResponseEntity<?> removeEventFromSaved(
+            @RequestHeader("Authorization") AuthenticationResponse authenticationResponse,
+            @PathVariable Long eventId) {
         userService.removeEventFromSaved(eventId,
-                retrieveUserId(httpHeaders));
+                jwtUtil.extractUserIdFromAuthResponse(authenticationResponse));
         return ResponseEntity.ok().body("Event successfully removed from User saved ");
     }
 
     @DeleteMapping(path = "/removeEvent/fromOrder/{eventId}")
-    ResponseEntity<?> removeEventFromOrder(@RequestHeader HttpHeaders httpHeaders,
-                                           @PathVariable Long eventId) {
+    ResponseEntity<?> removeEventFromOrder(
+            @RequestHeader("Authorization") AuthenticationResponse authenticationResponse,
+            @PathVariable Long eventId) {
 
         userService.removeEventFromOrder(eventId,
-                retrieveUserId(httpHeaders));
-        return ResponseEntity.ok().body("Event successfully removed from User order ");
+                jwtUtil.extractUserIdFromAuthResponse(authenticationResponse));
+        return ResponseEntity.ok()
+                .body("Event successfully removed from User order ");
     }
 
     @GetMapping(path = "/allEvents/fromUserOrder")
-    ResponseEntity<?> getAllEventsFromUserOrder(@RequestHeader HttpHeaders httpHeaders) {
-        return ResponseEntity.ok().body(userService.getAllFromOrder(retrieveUserId(httpHeaders)));
+    ResponseEntity<?> getAllEventsFromUserOrder(
+            @RequestHeader("Authorization") AuthenticationResponse authenticationResponse) {
+        return ResponseEntity.ok()
+                .body(userService.getAllFromOrder(
+                        jwtUtil.extractUserIdFromAuthResponse(authenticationResponse)));
     }
 
     @GetMapping(path = "/allEvents/fromUserSaved")
-    ResponseEntity<?> getAllEventsFromUserSaved(@RequestHeader HttpHeaders httpHeaders) {
-        return ResponseEntity.ok().body(userService.getAllFromSaved(retrieveUserId(httpHeaders)));
-    }
-
-    private Long retrieveUserId(HttpHeaders httpHeaders) {
-        String token = httpHeaders.get("Authorization").toString();
-        return Long.parseLong(jwtUtil.extractUserId(token.substring(7, token.length() - 1)));
+    ResponseEntity<?> getAllEventsFromUserSaved
+            (@RequestHeader("Authorization") AuthenticationResponse authenticationResponse) {
+        return ResponseEntity.ok()
+                .body(userService.getAllFromSaved(
+                        jwtUtil.extractUserIdFromAuthResponse(authenticationResponse)));
     }
 }
