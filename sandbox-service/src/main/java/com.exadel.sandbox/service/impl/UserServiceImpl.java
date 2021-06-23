@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public EventShortResponse saveEventToOrder(Long eventId, Long userId) {
+    public EventShortResponse saveEventToOrder(Long userId, Long eventId) {
         Event event = verifyEventId(eventId);
         userRepository.insertIntoUserOrder(eventId, userId);
         return eventShortMapper.eventToEventShortResponse(event);
