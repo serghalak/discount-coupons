@@ -47,7 +47,7 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public List<EventDetailsResponse> getEventById(Long eventId) {
+    public EventDetailsResponse getEventById(Long eventId) {
         var formatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
 
         Optional<Event> events = Optional.ofNullable(eventRepository.findEventById(eventId));
@@ -65,6 +65,6 @@ public class EventServiceImp implements EventService {
                         .discount(event.getDiscount())
                         .locations(mapper.listLocationToListShortLocation(event.getLocations()))
                         .detailedDescription(event.getProducts().stream().iterator().next().getDescription())
-                        .build()).collect(Collectors.toList());
+                        .build()).findFirst().get();
     }
 }
