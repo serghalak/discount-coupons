@@ -41,7 +41,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProductById(Long productId) {
-
         log.debug(">>>>>>>>delete product id " + productId);
         //to do if this product uses in event we cannot delete the product!!!
         productRepository.deleteById(productId);
@@ -49,7 +48,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse updateProduct(Long productId, ProductRequest productRequest) {
-
         log.debug(">>>>>update product with id: " + productId);
 
         if (productRequest.getName() == null || productRequest.getName().equals("")) {
@@ -71,36 +69,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductPagedList listProductsByPartOfName(String productName, int pageNumber, int pageSize) {
-
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + productName);
 
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
-
         Page<Product> productPage = productRepository.findAllByNameContainingIgnoreCase(productName
                 , PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+                        pageNumber,
+                        pageSize,
+                        Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
         return new ProductPagedList(productPage
                 .getContent()
                 .stream()
                 .map(productMapper::productToProductResponse)
                 .collect(Collectors.toList()),
-                PageRequest
-                        .of(productPage.getPageable().getPageNumber()
-                                , productPage.getPageable().getPageSize(),
-                                productPage.getPageable().getSort()),
+                PageRequest.of(
+                        productPage.getPageable().getPageNumber(),
+                        productPage.getPageable().getPageSize(),
+                        productPage.getPageable().getSort()),
                 productPage.getTotalElements());
-
-
     }
 
     @Override
     public ProductResponse findProductById(Long productId) {
-
         log.debug(">>>>>>ProductService find product by Id: " + productId);
 
         Optional<Product> product = productRepository.findById(productId);
@@ -110,12 +103,10 @@ public class ProductServiceImpl implements ProductService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. UUID: " + productId);
         }
-
     }
 
     @Override
     public ProductPagedList listProducts(int pageNumber, int pageSize) {
-
         log.debug(">>>>>>>>>>>>>ListProducts....");
 
         pageNumber = getPageNumber(pageNumber);
@@ -123,32 +114,29 @@ public class ProductServiceImpl implements ProductService {
 
         Page<Product> productPage = productRepository.findAll(
                 PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+                        pageNumber,
+                        pageSize,
+                        Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
         return new ProductPagedList(productPage
                 .getContent()
                 .stream()
                 .map(productMapper::productToProductResponse)
                 .collect(Collectors.toList()),
-                PageRequest
-                        .of(productPage.getPageable().getPageNumber()
-                                , productPage.getPageable().getPageSize()
-                                , productPage.getPageable().getSort()),
+                PageRequest.of(
+                        productPage.getPageable().getPageNumber(),
+                        productPage.getPageable().getPageSize(),
+                        productPage.getPageable().getSort()),
                 productPage.getTotalElements());
-
     }
 
     @Override
     public ProductResponse saveProduct(ProductRequest productRequest) {
-
         String productName = productRequest.getName();
 
         if (productName == null || productName.equals("")) {
-
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    , "The product cannot be empty");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+                    "The product cannot be empty");
         }
 
         if (isProductNameExists(productName)) {
@@ -156,28 +144,21 @@ public class ProductServiceImpl implements ProductService {
                     + productName + " is already exists");
         }
 
+        Product savedProduct = productRepository.save(
+                productMapper.productRequestToProduct(productRequest));
 
-        Product product = productMapper.productRequestToProduct(productRequest);
-
-        Product savedProduct = productRepository.save(product);
-
-        return (savedProduct == null) ? null : productMapper.productToProductResponse(savedProduct);
+        return productMapper.productToProductResponse(savedProduct);
     }
 
     @Override
     public boolean isCategoryIdUses(Long categoryId) {
-
-        List<Product> allByCategoryId = productRepository.findAllByCategoryId(categoryId);
-        return !allByCategoryId.isEmpty();
+        return !productRepository.findAllByCategoryId(categoryId).isEmpty();
     }
 
     @Override
     public boolean isProductNameExists(String productName) {
-        Product productByName = productRepository.findByName(productName);
-
-        return (productByName == null) ? false : true;
+        return productRepository.findByName(productName) != null;
     }
-
 
     private int getPageNumber(Integer pageNumber) {
         return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;

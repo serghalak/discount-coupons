@@ -20,8 +20,6 @@ public interface CategoryService {
 
     CategoryResponse findCategoryById(Long categoryId);
 
-    //CategoryPagedList listCategories(PageRequest pageRequest);
-
     CategoryResponse saveCategory(CategoryRequest categoryRequest);
 
     boolean isCategoryNameExists(String categoryName);

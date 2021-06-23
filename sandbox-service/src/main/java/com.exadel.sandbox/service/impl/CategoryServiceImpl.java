@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
     private static final Integer DEFAULT_PAGE_SIZE = 10;
     private static final String DEFAULT_FIELD_SORT = "name";
@@ -42,7 +41,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategoryById(Long categoryId) {
-
         log.debug(">>>>>>>>delete category id " + categoryId);
 
         if (productService.isCategoryIdUses(categoryId)) {
@@ -55,62 +53,57 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest) {
-
         log.debug(">>>>>update category with id: " + categoryId);
 
         if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    ,"Category name cannot be empty");
+                    , "Category name cannot be empty");
         }
 
-        if(categoryId != categoryRequest.getId()){
+        if (categoryId != categoryRequest.getId()) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    ,"Category name cannot be empty");
+                    , "Category name cannot be empty");
         }
 
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
-        if(categoryOptional.isPresent()){
+        if (categoryOptional.isPresent()) {
             return categoryMapper.categoryToCategoryResponse(
                     categoryRepository.save(
                             categoryMapper.categoryRequestToCategory(categoryRequest)));
-        }else{
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. ProductId: "
                     + categoryId);
         }
-
-
     }
 
     @Override
     public CategoryPagedList listCategoriesByPartOfName(String categoryName, int pageNumber, int pageSize) {
-
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
 
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
-        Page<Category> categoryPage=categoryRepository.findAllByNameContainingIgnoreCase(categoryName,
+        Page<Category> categoryPage = categoryRepository.findAllByNameContainingIgnoreCase(categoryName,
                 PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+                        pageNumber,
+                        pageSize,
+                        Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
         return new CategoryPagedList(categoryPage
                 .getContent()
                 .stream()
                 .map(categoryMapper::categoryToCategoryResponse)
                 .collect(Collectors.toList()),
-                    PageRequest
-                        .of(categoryPage.getPageable().getPageNumber()
-                                , categoryPage.getPageable().getPageSize()
-                                , categoryPage.getPageable().getSort()),
-                    categoryPage.getTotalElements());
+                PageRequest.of(
+                        categoryPage.getPageable().getPageNumber(),
+                        categoryPage.getPageable().getPageSize(),
+                        categoryPage.getPageable().getSort()),
+                categoryPage.getTotalElements());
     }
 
     @Override
     public CategoryResponse findCategoryById(Long categoryId) {
-
         log.debug(">>>>>>CategoryService find by Id: " + categoryId);
 
         Optional<Category> category = categoryRepository.findById(categoryId);
@@ -121,66 +114,56 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Category");
         }
-
     }
 
     @Override
     public CategoryPagedList listCategories(int pageNumber, int pageSize) {
-
         log.debug(">>>>>>>>>>>>>ListCategory ....");
 
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
-        Page<Category> categoryPage=categoryRepository.findAll(
+        Page<Category> categoryPage = categoryRepository.findAll(
                 PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+                        pageNumber,
+                        pageSize,
+                        Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
-        return  new CategoryPagedList(categoryPage
+        return new CategoryPagedList(categoryPage
                 .getContent()
                 .stream()
                 .map(categoryMapper::categoryToCategoryResponse)
                 .collect(Collectors.toList()),
-                    PageRequest
-                        .of(categoryPage.getPageable().getPageNumber()
-                                , categoryPage.getPageable().getPageSize()
-                                ,categoryPage.getPageable().getSort()),
-                    categoryPage.getTotalElements());
+                PageRequest.of(
+                        categoryPage.getPageable().getPageNumber(),
+                        categoryPage.getPageable().getPageSize(),
+                        categoryPage.getPageable().getSort()),
+                categoryPage.getTotalElements());
 
     }
 
     @Override
     public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
-
         String categoryName = categoryRequest.getName();
 
         if (categoryName == null || categoryName.equals("")) {
-
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    ,"The category cannot be empty");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+                    "The category cannot be empty");
         }
 
-
-        if(isCategoryNameExists(categoryName)){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"The category: "
+        if (isCategoryNameExists(categoryName)) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The category: "
                     + categoryName + " is already exists");
         }
 
         var category = categoryMapper.categoryRequestToCategory(categoryRequest);
-
         Category savedCategory = categoryRepository.save(category);
-
         return categoryMapper.categoryToCategoryResponse(savedCategory);
     }
 
     @Override
     public boolean isCategoryNameExists(String categoryName) {
-
-        Category categoryByName = categoryRepository.findByName(categoryName);
-
-        return categoryByName != null;
+        return categoryRepository.findByName(categoryName) != null;
     }
 
     @Override
@@ -188,7 +171,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findDistinctByProductsVendorIdOrderByNameAsc(vendorId).stream().distinct()
                 .map(categoryShortMapper::categoryToCategoryShortResponse)
                 .collect(Collectors.toList());
-
     }
 
     @Override
@@ -196,7 +178,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAllByVendorId(vendorId).stream()
                 .map(categoryShortMapper::categoryToCategoryShortResponse)
                 .collect(Collectors.toList());
-
     }
 
     private int getPageNumber(Integer pageNumber) {
