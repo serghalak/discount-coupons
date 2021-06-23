@@ -17,10 +17,8 @@ public interface CityService {
 
     Set<CityResponse> findCitiesByFavoriteEvent(Long userId);
 
-
     CityResponse findCityByUserId(Long userId);
 
     CityResponse create(CityRequest cityRequest);
-
 
 }
