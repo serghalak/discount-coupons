@@ -16,19 +16,19 @@ public interface CityRepository extends JpaRepository<City, Long> {
 
     List<City> findCitiesByCountryNameOrderByName(String country);
 
-    @Query("SELECT l.city from Event e " +
-            "join e.locations l " +
+    @Query("SELECT DISTINCT l.city FROM Event e " +
+            "JOIN e.locations l " +
             "WHERE e.status = ?1")
     Set<City> findCitiesByEventStatus(Status status);
 
-    @Query("select loc.city from User u " +
-            "join u.savedEvents sav_ev " +
-            "join sav_ev.locations loc " +
+    @Query("SELECT DISTINCT loc.city FROM User u " +
+            "JOIN u.savedEvents sav_ev " +
+            "JOIN sav_ev.locations loc " +
             "WHERE u.id = ?1")
     Set<City> findCitiesByFavoriteEvents(@Param("userId") Long id);
 
-    @Query("select loc.city from User u " +
-            "join u.location loc " +
+    @Query("SELECT loc.city FROM User u " +
+            "JOIN u.location loc " +
             "WHERE u.id = ?1")
     City findCityByUserId(@Param("userId") Long userId);
 

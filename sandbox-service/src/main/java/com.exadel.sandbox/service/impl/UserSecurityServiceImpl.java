@@ -21,6 +21,7 @@ public class UserSecurityServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(email);
         return DetailsUser.builder()
+                .id(user.getId())
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .email(user.getEmail())
