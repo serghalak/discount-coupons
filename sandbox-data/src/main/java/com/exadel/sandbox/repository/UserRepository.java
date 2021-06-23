@@ -33,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void deleteFromUserOrder(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
     @Modifying
-    @Query(value = "delete from user_order where event_id=:eventId and user_id=:userId ", nativeQuery = true)
+    @Query(value = "delete from saved_event where event_id=:eventId and user_id=:userId ", nativeQuery = true)
     @Transactional
     void deleteFromUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
@@ -45,7 +45,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     @Query("SELECT e FROM Event e " +
-            " join  e.userOrders uo  " +
+            " join  e.userSavedEvents uo  " +
             "WHERE uo.id =?1")
     @Transactional
     List<Event> getAllEventsFromUserSaved(Long id);

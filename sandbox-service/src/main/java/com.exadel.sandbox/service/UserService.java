@@ -4,7 +4,6 @@ import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.dto.response.event.EventShortResponse;
 import com.exadel.sandbox.dto.response.user.UserResponse;
 import com.exadel.sandbox.model.user.User;
-import com.exadel.sandbox.model.vendorinfo.Event;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public interface UserService {
 
     UserResponse findByName(final String name);
 
-    EventShortResponse saveEventToOrder(final Long eventId, final Long userId);
+    EventShortResponse saveEventToOrder(final Long userId, final Long eventId);
 
     EventShortResponse saveEventToSaved(final Long userId, final Long eventId);
 
