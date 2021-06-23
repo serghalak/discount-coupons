@@ -79,6 +79,7 @@ public class ProductController {
             path = "product/")
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest) {
 
+        log.debug(">>>>>>>>>>>>create product... ");
         return new ResponseEntity<>(productService.saveProduct(productRequest), HttpStatus.OK);
     }
 

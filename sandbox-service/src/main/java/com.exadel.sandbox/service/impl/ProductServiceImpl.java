@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
-    private static final Integer DEFAULT_PAGE_SIZE = 3;
+    private static final Integer DEFAULT_PAGE_SIZE = 10;
     private static final String DEFAULT_FIELD_SORT = "name";
 
     private final ProductRepository productRepository;

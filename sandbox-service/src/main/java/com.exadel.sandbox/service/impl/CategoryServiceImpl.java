@@ -32,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
-    private static final Integer DEFAULT_PAGE_SIZE = 3;
+    private static final Integer DEFAULT_PAGE_SIZE = 10;
     private static final String DEFAULT_FIELD_SORT = "name";
 
     private final CategoryRepository categoryRepository;
@@ -63,21 +63,23 @@ public class CategoryServiceImpl implements CategoryService {
                     ,"Category name cannot be empty");
         }
 
+        if(categoryId != categoryRequest.getId()){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
+                    ,"Category name cannot be empty");
+        }
+
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
+        if(categoryOptional.isPresent()){
+            return categoryMapper.categoryToCategoryResponse(
+                    categoryRepository.save(
+                            categoryMapper.categoryRequestToCategory(categoryRequest)));
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. ProductId: "
+                    + categoryId);
+        }
 
-        categoryOptional.ifPresentOrElse(category -> {
-            category.setName(categoryRequest.getName());
-            category.setDescription(categoryRequest.getDescription());
-            categoryRepository.save(category);
-        }, () -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. CategoryId: " + categoryId);
-        });
 
-        Optional<Category> updateCategory = categoryRepository.findById(categoryId);
-
-        return updateCategory.map(categoryMapper::categoryToCategoryResponse)
-                .orElse(null);
     }
 
     @Override
