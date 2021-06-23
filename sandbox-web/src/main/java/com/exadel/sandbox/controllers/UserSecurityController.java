@@ -23,6 +23,7 @@ public class UserSecurityController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    
     @Autowired
     JwtUtil jwtTokenUtil;
 
