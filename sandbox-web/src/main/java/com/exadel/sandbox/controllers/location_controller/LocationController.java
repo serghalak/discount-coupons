@@ -24,7 +24,6 @@ public class LocationController {
 
     @GetMapping(produces = {"application/json"}, path = "/allLocations")
     public ResponseEntity<?> getAllLocation() {
-
         return new ResponseEntity<>(locationService.findAll(), HttpStatus.OK);
     }
 
@@ -42,9 +41,10 @@ public class LocationController {
             consumes = {"application/json"},
             path = "/newLocation")
     public ResponseEntity<?> createLocation(@RequestBody final LocationRequest locationRequest) {
+
         final var newLocation = locationService.create(locationRequest);
 
-        return ResponseEntity.ok(newLocation);
+        return new ResponseEntity<>(newLocation, HttpStatus.OK);
     }
 
     @PutMapping(produces = {"application/json"},
@@ -54,7 +54,7 @@ public class LocationController {
                                             @RequestBody final LocationRequest locationRequest) {
         final var newLocation = locationService.update(locationId, locationRequest);
 
-        return ResponseEntity.ok(newLocation);
+        return new ResponseEntity<>(newLocation, HttpStatus.OK);
     }
 
 }

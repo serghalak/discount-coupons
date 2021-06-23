@@ -34,21 +34,21 @@ public class CityController {
 
         final var cityResponse = cityService.create(cityRequest);
 
-        return ResponseEntity.ok(cityResponse);
+        return new ResponseEntity<>(cityResponse, HttpStatus.OK);
     }
 
     @GetMapping(produces = {"application/json"}, path = "/allActiveCities")
     public ResponseEntity<?> findCitiesByEventStatusActive() {
-        return ResponseEntity.ok()
-                .body(cityService.findCitiesByEventStatusActive());
+        return new ResponseEntity<>(cityService.findCitiesByEventStatusActive(), HttpStatus.OK);
     }
 
     @GetMapping(produces = {"application/json"}, path = "/allFavoriteCities")
     public ResponseEntity<?> findCitiesByFavoriteEvent(@RequestHeader("Authorization") AuthenticationResponse authenticationResponse) {
+
         Long userId = Long.parseLong(jwtUtil.extractUserId(authenticationResponse.getJwt().substring(7)));
         var cities = cityService.findCitiesByFavoriteEvent(userId);
-        return ResponseEntity.ok()
-                .body(cities);
+
+        return new ResponseEntity<>(cities, HttpStatus.OK);
     }
 
     @GetMapping(produces = {"application/json"}, path = "/allCitiesByCountry")

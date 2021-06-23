@@ -25,6 +25,7 @@ public class CountryController {
 
     @GetMapping(produces = {"application/json"}, path = "/country/{id}")
     public ResponseEntity<?> getCountryById(@PathVariable Long id) {
+
         final var countryById = countryService.getCountryById(id);
 
         return new ResponseEntity<>(countryById, HttpStatus.OK);
@@ -32,6 +33,7 @@ public class CountryController {
 
     @GetMapping(produces = {"application/json"}, path = "/country")
     public ResponseEntity<?> getCountryByName(@RequestParam(name = "name", defaultValue = "") String name) {
+
         final var countryById = countryService.getCountryByName(name);
 
         return new ResponseEntity<>(countryById, HttpStatus.OK);
@@ -41,9 +43,10 @@ public class CountryController {
             consumes = {"application/json"},
             path = "/newCountry")
     public ResponseEntity<?> createCountry(@RequestBody final CountryRequest countryRequest) {
+
         final var country = countryService.create(countryRequest);
 
-        return ResponseEntity.ok(country);
+        return new ResponseEntity<>(country, HttpStatus.OK);
     }
 
     @PutMapping(produces = {"application/json"},
@@ -51,9 +54,10 @@ public class CountryController {
             path = "/updateCountry/{countryId}")
     public ResponseEntity<?> updateCountry(@PathVariable("countryId") long countryId,
                                            @RequestBody final CountryRequest countryRequest) {
+
         final var newCountry = countryService.update(countryId, countryRequest);
 
-        return ResponseEntity.ok(newCountry);
+        return new ResponseEntity<>(newCountry, HttpStatus.OK);
     }
 
     @GetMapping("/deleteCountry/{id}")
