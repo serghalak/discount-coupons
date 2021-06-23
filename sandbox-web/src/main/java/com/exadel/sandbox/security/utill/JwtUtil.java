@@ -63,6 +63,7 @@ public class JwtUtil {
         return Long.toString(userService.findByName(userDetails.getUsername()).getId());
     }
 
+
     public Long extractUserIdFromAuthResponse(AuthenticationResponse authResponse) {
         return Long.parseLong(Jwts.parser()
                 .setSigningKey(SECRET_KEY)
