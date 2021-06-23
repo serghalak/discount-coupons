@@ -3,10 +3,13 @@ package com.exadel.sandbox.dto.request.product;
 import com.exadel.sandbox.dto.request.vendor.VendorRequest;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.vendorinfo.Event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -20,8 +23,10 @@ public class ProductRequest extends BaseEntity {
 
     private String link;
 
-    private CategoryRequest categoryRequest;
+    private CategoryRequest category;
 
-    private VendorRequest vendorRequest;
+    private VendorRequest vendor;
+
+    private Set<Event> events;
 
 }

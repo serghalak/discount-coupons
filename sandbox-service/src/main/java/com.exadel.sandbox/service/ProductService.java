@@ -12,11 +12,11 @@ public interface ProductService {
 
     ProductResponse updateProduct(Long productId, ProductRequest productRequest);
 
-    ProductPagedList listProductsByPartOfName(String productsName, PageRequest pageRequest);
+    ProductPagedList listProductsByPartOfName(String productsName, int pageNumber, int pageSize);
 
     ProductResponse findProductById(Long productId);
 
-    Page<ProductResponse> listProducts(PageRequest pageRequest);
+    ProductPagedList listProducts(int pageNumber, int pageSize);
 
     ProductResponse saveProduct(ProductRequest productRequest);
 

@@ -52,6 +52,7 @@ public class LocationServiceImpl implements LocationService {
         if (locationRequest == null) {
             throw new IllegalArgumentException();
         }
+
         var location = mapper.map(
                 locationRepository.save(mapper.map(locationRequest, Location.class)),
                 LocationResponse.class

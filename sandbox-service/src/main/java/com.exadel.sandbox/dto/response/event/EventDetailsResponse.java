@@ -1,6 +1,6 @@
 package com.exadel.sandbox.dto.response.event;
 
-import com.exadel.sandbox.model.location.Location;
+import com.exadel.sandbox.dto.response.location.LocationShortResponse;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -21,22 +21,19 @@ public class EventDetailsResponse {
 
     private String shortDescription;
 
+    private String detailedDescription;
+
     private String vendor;
 
     private BigDecimal price;
 
     private int discount;
 
-    private String country;
-
-    private String city;
-
-    private Set<Location> location;
+    private Set<LocationShortResponse> locations;
 
     private String dateBegin;
 
     private String dateEnd;
 
-    private String detailedDescription;
 
 }

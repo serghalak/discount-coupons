@@ -18,4 +18,6 @@ public interface CountryService {
 
     void delete(Long id);
 
+    List<CountryResponse> getCountryByName(String name);
+
 }

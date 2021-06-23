@@ -16,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RequiredArgsConstructor
 public class VendorController {
+
     private final VendorDetailsService service;
 
     private final JwtUtil jwtUtil;
@@ -25,7 +26,7 @@ public class VendorController {
             @RequestHeader("Authorization") AuthenticationResponse authenticationResponse
     ) {
 
-        Long userId = Long.parseLong(getIdFromHeadersJwt(authenticationResponse));
+        Long userId = jwtUtil.extractUserIdFromAuthResponse(authenticationResponse);
         return ResponseEntity.ok(service.findAllByUserLocation(userId));
 
     }
@@ -35,7 +36,4 @@ public class VendorController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    private String getIdFromHeadersJwt(AuthenticationResponse authenticationResponse) {
-        return jwtUtil.extractUserId(authenticationResponse.getJwt().substring(7));
-    }
 }
