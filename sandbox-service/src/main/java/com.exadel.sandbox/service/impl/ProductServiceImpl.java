@@ -54,16 +54,16 @@ public class ProductServiceImpl implements ProductService {
 
         if (productRequest.getName() == null || productRequest.getName().equals("")) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    ,"Product name cannot be empty");
+                    , "Product name cannot be empty");
         }
 
         Optional<Product> productOptional = productRepository.findById(productId);
 
-        if(productOptional.isPresent()){
+        if (productOptional.isPresent()) {
             return productMapper.productToProductResponse(
                     productRepository.save(
                             productMapper.productRequestToProduct(productRequest)));
-        }else{
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. ProductId: "
                     + productId);
         }
@@ -79,21 +79,21 @@ public class ProductServiceImpl implements ProductService {
 
 
         Page<Product> productPage = productRepository.findAllByNameContainingIgnoreCase(productName
-                ,PageRequest.of(
-                    pageNumber
-                    , pageSize
-                    , Sort.by(DEFAULT_FIELD_SORT).ascending()));
+                , PageRequest.of(
+                        pageNumber
+                        , pageSize
+                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
         return new ProductPagedList(productPage
                 .getContent()
                 .stream()
                 .map(productMapper::productToProductResponse)
                 .collect(Collectors.toList()),
-                    PageRequest
+                PageRequest
                         .of(productPage.getPageable().getPageNumber()
                                 , productPage.getPageable().getPageSize(),
                                 productPage.getPageable().getSort()),
-                productPage.getTotalElements()  );
+                productPage.getTotalElements());
 
 
     }
@@ -104,10 +104,10 @@ public class ProductServiceImpl implements ProductService {
         log.debug(">>>>>>ProductService find product by Id: " + productId);
 
         Optional<Product> product = productRepository.findById(productId);
-        if(product.isPresent()){
+        if (product.isPresent()) {
             log.debug(">>>>>Product is found: " + productId);
             return productMapper.productToProductResponse(product.get());
-        }else{
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. UUID: " + productId);
         }
 
@@ -116,27 +116,27 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductPagedList listProducts(int pageNumber, int pageSize) {
 
-        log.debug(">>>>>>>>>>>>>ListProducts...." );
+        log.debug(">>>>>>>>>>>>>ListProducts....");
 
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
-        Page<Product> productPage=productRepository.findAll(
+        Page<Product> productPage = productRepository.findAll(
                 PageRequest.of(
                         pageNumber
                         , pageSize
                         , Sort.by(DEFAULT_FIELD_SORT).ascending()));
 
-        return  new ProductPagedList(productPage
+        return new ProductPagedList(productPage
                 .getContent()
                 .stream()
                 .map(productMapper::productToProductResponse)
                 .collect(Collectors.toList()),
-                    PageRequest
+                PageRequest
                         .of(productPage.getPageable().getPageNumber()
                                 , productPage.getPageable().getPageSize()
-                                ,productPage.getPageable().getSort()),
-                    productPage.getTotalElements());
+                                , productPage.getPageable().getSort()),
+                productPage.getTotalElements());
 
     }
 
@@ -148,11 +148,11 @@ public class ProductServiceImpl implements ProductService {
         if (productName == null || productName.equals("")) {
 
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    ,"The product cannot be empty");
+                    , "The product cannot be empty");
         }
 
         if (isProductNameExists(productName)) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"The category: "
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The category: "
                     + productName + " is already exists");
         }
 
@@ -161,7 +161,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        return (savedProduct==null) ?  null : productMapper.productToProductResponse(savedProduct);
+        return (savedProduct == null) ? null : productMapper.productToProductResponse(savedProduct);
     }
 
     @Override
@@ -175,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
     public boolean isProductNameExists(String productName) {
         Product productByName = productRepository.findByName(productName);
 
-        return (productByName==null) ?  false :  true;
+        return (productByName == null) ? false : true;
     }
 
 
