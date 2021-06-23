@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service;
 
+import com.exadel.sandbox.dto.request.CityRequest;
 import com.exadel.sandbox.dto.response.city.CityResponse;
 import com.exadel.sandbox.model.location.City;
 
@@ -16,4 +17,10 @@ public interface CityService {
 
     Set<CityResponse> findCitiesByFavoriteEvent(Long userId);
 
-  }
+
+    CityResponse findCityByUserId(Long userId);
+
+    CityResponse create(CityRequest cityRequest);
+
+
+}

@@ -2,9 +2,10 @@ package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
+import com.exadel.sandbox.mappers.location.LocationMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
-import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.UserRepository;
+import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class EventServiceImp implements EventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final LocationMapper mapper;
 
     @Override
     public List<EventResponse> getAllEventsByUserLocation(Principal principal) {
@@ -38,15 +40,14 @@ public class EventServiceImp implements EventService {
                         .discount(event.getDiscount())
                         .shortDescription(event.getDescription())
                         .vendor(event.getProducts().stream().iterator().next().getVendor().getName())
-                        .country(event.getLocations().stream().iterator().next().getCity().getCountry().getName())
-                        .city(event.getLocations().stream().iterator().next().getCity().getName())
+                        .locations(mapper.listLocationToListShortLocation(event.getLocations()))
                         .dateBegin(formatter.format(event.getDateBegin()))
                         .dateEnd(formatter.format(event.getDateEnd()))
                         .build()).collect(Collectors.toList());
     }
 
     @Override
-    public List<EventDetailsResponse> getAllEventsById(Long eventId) {
+    public List<EventDetailsResponse> getEventById(Long eventId) {
         var formatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
 
         Optional<Event> events = Optional.ofNullable(eventRepository.findEventById(eventId));
@@ -62,8 +63,7 @@ public class EventServiceImp implements EventService {
                         .dateBegin(formatter.format(event.getDateBegin()))
                         .dateEnd(formatter.format(event.getDateEnd()))
                         .discount(event.getDiscount())
-                        .country(event.getLocations().stream().iterator().next().getCity().getCountry().getName())
-                        .city(event.getLocations().stream().iterator().next().getCity().getName())
+                        .locations(mapper.listLocationToListShortLocation(event.getLocations()))
                         .detailedDescription(event.getProducts().stream().iterator().next().getDescription())
                         .build()).collect(Collectors.toList());
     }

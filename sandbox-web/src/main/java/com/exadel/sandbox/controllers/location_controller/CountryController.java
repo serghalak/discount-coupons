@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/location")
+@RequestMapping("/api/location")
 public class CountryController {
 
     private final CountryService countryService;
@@ -30,10 +30,17 @@ public class CountryController {
         return new ResponseEntity<>(countryById, HttpStatus.OK);
     }
 
+    @GetMapping(produces = {"application/json"}, path = "/country")
+    public ResponseEntity<?> getCountryByName(@RequestParam(name = "name", defaultValue = "") String name) {
+        final var countryById = countryService.getCountryByName(name);
+
+        return new ResponseEntity<>(countryById, HttpStatus.OK);
+    }
+
     @PostMapping(produces = {"application/json"},
             consumes = {"application/json"},
             path = "/newCountry")
-    public ResponseEntity<?> createCountry(@RequestBody final CountryRequest  countryRequest) {
+    public ResponseEntity<?> createCountry(@RequestBody final CountryRequest countryRequest) {
         final var country = countryService.create(countryRequest);
 
         return ResponseEntity.ok(country);
@@ -51,6 +58,7 @@ public class CountryController {
 
     @GetMapping("/deleteCountry/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+
         countryService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.OK);

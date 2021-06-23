@@ -13,20 +13,20 @@ import java.security.Principal;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/event")
+@RequestMapping("/api/event")
 public class EventController {
 
     private final EventService eventService;
 
-    @GetMapping("/getAll")
+    @GetMapping("/")
     public ResponseEntity<?> getAllEventsByUserLocation(Principal principal) {
         var events = eventService.getAllEventsByUserLocation(principal);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @GetMapping("/get/{eventId}")
-    public ResponseEntity<?> getAllEventsById(@PathVariable long eventId) {
-        var events = eventService.getAllEventsById(eventId);
+    @GetMapping("/{eventId}")
+    public ResponseEntity<?> getEventById(@PathVariable long eventId) {
+        var events = eventService.getEventById(eventId);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 }

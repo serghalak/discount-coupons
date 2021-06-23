@@ -10,6 +10,6 @@ public interface EventService {
 
     List<EventResponse> getAllEventsByUserLocation(Principal principal);
 
-    List<EventDetailsResponse> getAllEventsById(Long eventId);
+    List<EventDetailsResponse> getEventById(Long eventId);
 
 }
