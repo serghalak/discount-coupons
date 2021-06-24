@@ -22,7 +22,9 @@ public class EventResponse {
 
     private String shortDescription;
 
-    private String vendor;
+    private String vendorName;
+
+    private Long vendorId;
 
     private Set<LocationShortResponse> locations;
 
