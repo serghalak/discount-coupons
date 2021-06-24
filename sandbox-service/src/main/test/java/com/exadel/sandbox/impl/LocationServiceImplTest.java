@@ -1,25 +1,26 @@
-package com.exadel.sandbox.service.impl;
+package com.exadel.sandbox.impl;
 
+import com.exadel.sandbox.service.impl.LocationServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CountryServiceImplTest {
+class LocationServiceImplTest {
 
     @Autowired
-    CountryServiceImpl countryService;
+    private LocationServiceImpl locationService;
 
     @Test
     void findAll() {
     }
 
     @Test
-    void getCountryById() {
+    void findByCity() {
     }
 
     @Test
-    void getCountryByName() {
+    void getAllLocationByCity() {
     }
 
     @Test
@@ -28,9 +29,5 @@ class CountryServiceImplTest {
 
     @Test
     void update() {
-    }
-
-    @Test
-    void delete() {
     }
 }
