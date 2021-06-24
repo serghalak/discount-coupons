@@ -23,7 +23,9 @@ public class EventDetailsResponse {
 
     private String detailedDescription;
 
-    private String vendor;
+    private String vendorName;
+
+    private Long vendorId;
 
     private BigDecimal price;
 
