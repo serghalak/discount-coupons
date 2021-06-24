@@ -1,6 +1,7 @@
-package com.exadel.sandbox.service.impl;
+package com.exadel.sandbox.impl;
 
 import com.exadel.sandbox.repository.event.EventRepository;
+import com.exadel.sandbox.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
