@@ -27,6 +27,7 @@ public class CategoryController {
     @DeleteMapping(path = {"category/{categoryId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable("categoryId") Long categoryId) {
+
         log.debug(">>>>>>>>>>controller delete category by Id");
 
         categoryService.deleteCategoryById(categoryId);
@@ -57,6 +58,7 @@ public class CategoryController {
 
     @GetMapping(produces = {"application/json"}, path = "category/{categoryId}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("categoryId") Long categoryId) {
+
         log.debug(">>>>>>getCategoryById " + categoryId);
 
         return new ResponseEntity<>(categoryService.findCategoryById(categoryId), HttpStatus.OK);
