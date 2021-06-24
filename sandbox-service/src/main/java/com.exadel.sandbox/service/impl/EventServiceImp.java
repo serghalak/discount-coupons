@@ -10,6 +10,7 @@ import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -65,6 +66,6 @@ public class EventServiceImp implements EventService {
                         .discount(event.getDiscount())
                         .locations(mapper.listLocationToListShortLocation(event.getLocations()))
                         .detailedDescription(event.getProducts().stream().iterator().next().getDescription())
-                        .build()).findFirst().get();
+                        .build()).findFirst().orElseThrow(()->new EntityNotFoundException(""));
     }
 }
