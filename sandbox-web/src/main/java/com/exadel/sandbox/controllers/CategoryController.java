@@ -1,19 +1,16 @@
 package com.exadel.sandbox.controllers;
 
-import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.service.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Set;
 
 @CrossOrigin
 @Slf4j
@@ -43,17 +40,12 @@ public class CategoryController {
     }
 
     @GetMapping(produces = {"application/json"}, path = "categoryname/{name}")
-    public ResponseEntity<CategoryPagedList> getCategoriesByPartOfName(
-            @PathVariable("name") String categoryName,
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize) {
+    public Set<CategoryResponse> getCategoriesByPartOfName(
+            @PathVariable(value = "name",required = false) String categoryName){
 
         log.debug(">>>>>>>>>>Category List by part of name: " + categoryName);
 
-        CategoryPagedList categoryList =
-                categoryService.listCategoriesByPartOfName(categoryName, pageNumber, pageSize);
-
-        return new ResponseEntity<>(categoryList, HttpStatus.OK);
+        return categoryService.listCategoriesByPartOfName(categoryName);
     }
 
     @GetMapping(produces = {"application/json"}, path = "category/{categoryId}")
@@ -65,13 +57,11 @@ public class CategoryController {
     }
 
     @GetMapping(produces = {"application/json"}, path = "category")
-    public ResponseEntity<CategoryPagedList> listCategories(
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize) {
+    public Set<CategoryResponse> listCategories() {
 
         log.debug(">>>>List all categories");
 
-        return new ResponseEntity<>(categoryService.listCategories(pageNumber, pageSize), HttpStatus.OK);
+        return categoryService.listCategories();
     }
 
     @PostMapping(produces = {"application/json"},
