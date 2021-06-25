@@ -15,7 +15,7 @@ public interface UserService {
 
     UserResponse findByName(final String name);
 
-    EventShortResponse saveEventToOrder(final Long userId, final Long eventId);
+    EventShortResponse saveEventToOrder(final Long userId, final Long eventId, final String email);
 
     EventShortResponse saveEventToSaved(final Long userId, final Long eventId);
 

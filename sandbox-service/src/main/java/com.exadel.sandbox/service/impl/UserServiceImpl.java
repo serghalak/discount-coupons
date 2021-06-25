@@ -3,6 +3,7 @@ package com.exadel.sandbox.service.impl;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.dto.response.event.EventShortResponse;
 import com.exadel.sandbox.dto.response.user.UserResponse;
+import com.exadel.sandbox.mail.MailUtil;
 import com.exadel.sandbox.mappers.event.EventShortMapper;
 import com.exadel.sandbox.mappers.user.UserMapper;
 import com.exadel.sandbox.model.user.User;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final EventRepository eventRepository;
     private final EventShortMapper eventShortMapper;
     private final ModelMapper mapper;
+    private final MailUtil mailUtil;
 
     @Override
     public List<User> findAll() {
@@ -35,33 +37,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse findByName(String name) {
-        User user = userRepository.findByEmail(name);
+        var user = userRepository.findByEmail(name);
         return userMapper.userToUserResponse(user);
     }
 
     @Override
-    public EventShortResponse saveEventToOrder(Long userId, Long eventId) {
-        Event event = verifyEventId(eventId);
+    public EventShortResponse saveEventToOrder(Long userId, Long eventId, String email) {
+        var event = verifyEventId(eventId);
+        mailUtil.sendSimpleMessage(email);
         userRepository.insertIntoUserOrder(eventId, userId);
-        return eventShortMapper.eventToEventShortResponse(event);
+        return eventShortMapper.eventToEventShortResponse(verifyEventId(eventId));
     }
 
     @Override
     public EventShortResponse saveEventToSaved(Long userId, Long eventId) {
-        Event event = verifyEventId(eventId);
+        var event = verifyEventId(eventId);
         userRepository.insertIntoUserSaved(eventId, userId);
         return eventShortMapper.eventToEventShortResponse(event);
     }
 
     @Override
     public void removeEventFromOrder(Long userId, Long eventId) {
-        Event event = verifyEventId(eventId);
         userRepository.deleteFromUserOrder(eventId, userId);
     }
 
     @Override
     public void removeEventFromSaved(Long userId, Long eventId) {
-        Event event = verifyEventId(eventId);
         userRepository.deleteFromUserSaved(eventId, userId);
     }
 
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService {
         if (eventId <= 0) {
             throw new IllegalArgumentException("Id is not correct");
         }
+
         return eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " does not found"));
 
