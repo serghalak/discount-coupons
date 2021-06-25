@@ -31,7 +31,8 @@ public class UserController {
         return ResponseEntity.ok()
                 .body(userService.saveEventToOrder(
                         jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                        eventId));
+                        eventId,
+                        jwtUtil.extractEmailFromAuthResponse(authResponse)));
     }
 
     @PostMapping(path = "/addEvent/toSaved/{eventId}")
