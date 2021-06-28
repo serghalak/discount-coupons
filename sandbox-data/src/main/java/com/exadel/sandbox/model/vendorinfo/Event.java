@@ -18,8 +18,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"products", "locations", "userSavedEvents", "userOrders", "userFeedbacks"})
-@EqualsAndHashCode(callSuper = false, exclude = {"products", "locations", "userSavedEvents", "userOrders", "userFeedbacks"})
+@ToString(exclude = { "category","locations", "userSavedEvents", "userOrders", "userFeedbacks"})
+@EqualsAndHashCode(callSuper = false, exclude = {"category", "locations", "userSavedEvents", "userOrders", "userFeedbacks"})
 public class Event extends BaseEntity {
 
     @Column(name = "name")
@@ -61,13 +61,6 @@ public class Event extends BaseEntity {
     private boolean isOnline;
 
     @ManyToMany
-    @JoinTable(name = "event_product"
-            , joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    @JsonIgnore
-    private Set<Product> products = new HashSet<>();
-
-    @ManyToMany
     @JoinTable(name = "event_location"
             , joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "location_id"))
@@ -94,5 +87,15 @@ public class Event extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> userFeedbacks = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @JsonIgnore
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    @JsonIgnore
+    private Vendor vendor;
 
 }

@@ -40,8 +40,10 @@ public class EventServiceImp implements EventService {
                         .name(event.getName())
                         .discount(event.getDiscount())
                         .shortDescription(event.getDescription())
-                        .vendorName(event.getProducts().stream().iterator().next().getVendor().getName())
-                        .vendorId(event.getProducts().stream().iterator().next().getVendor().getId())
+                        //.vendorName(event.getProducts().stream().iterator().next().getVendor().getName())
+                        //.vendorId(event.getProducts().stream().iterator().next().getVendor().getId())
+                        .vendorName(event.getVendor().getName())
+                        .vendorId(event.getVendor().getId())
                         .locations(mapper.listLocationToListShortLocation(event.getLocations()))
                         .dateBegin(formatter.format(event.getDateBegin()))
                         .dateEnd(formatter.format(event.getDateEnd()))
@@ -60,14 +62,18 @@ public class EventServiceImp implements EventService {
                         .id(event.getId())
                         .name(event.getName())
                         .shortDescription(event.getDescription())
-                        .vendorName(event.getProducts().stream().iterator().next().getVendor().getName())
-                        .vendorId(event.getProducts().stream().iterator().next().getVendor().getId())
+                        //.vendorName(event.getProducts().stream().iterator().next().getVendor().getName())
+                        //.vendorId(event.getProducts().stream().iterator().next().getVendor().getId())
+                        .vendorName(event.getVendor().getName())
+                        .vendorId(event.getVendor().getId())
+
                         .price(event.getPrice())
                         .dateBegin(formatter.format(event.getDateBegin()))
                         .dateEnd(formatter.format(event.getDateEnd()))
                         .discount(event.getDiscount())
                         .locations(mapper.listLocationToListShortLocation(event.getLocations()))
-                        .detailedDescription(event.getProducts().stream().iterator().next().getDescription())
+                        //.detailedDescription(event.getProducts().stream().iterator().next().getDescription())
+
                         .build()).findFirst().orElseThrow(()->new EntityNotFoundException(""));
     }
 }

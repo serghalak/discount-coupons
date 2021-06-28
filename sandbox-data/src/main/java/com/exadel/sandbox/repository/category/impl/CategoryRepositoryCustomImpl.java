@@ -19,7 +19,7 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
         return entityManager.createNativeQuery(
                 "SELECT DISTINCT category.*\n" +
                         "FROM category\n" +
-                        "         JOIN product ON category.id = product.category_id\n" +
+                        "         JOIN event ON category.id = event.category_id\n" +
                         "WHERE vendor_id = ?\n" +
                         "ORDER BY name",
                 Category.class)
