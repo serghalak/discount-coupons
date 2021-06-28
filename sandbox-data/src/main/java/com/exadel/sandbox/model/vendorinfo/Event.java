@@ -18,8 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = { "category","locations", "userSavedEvents", "userOrders", "userFeedbacks"})
-@EqualsAndHashCode(callSuper = false, exclude = {"category", "locations", "userSavedEvents", "userOrders", "userFeedbacks"})
+@ToString(exclude = {"category", "locations", "userSavedEvents", "userOrders", "userFeedbacks", "tags"})
+@EqualsAndHashCode(callSuper = false, exclude = {"category", "locations", "userSavedEvents", "userOrders",
+        "userFeedbacks", "tags"})
 public class Event extends BaseEntity {
 
     @Column(name = "name")
@@ -97,5 +98,11 @@ public class Event extends BaseEntity {
     @JoinColumn(name = "vendor_id")
     @JsonIgnore
     private Vendor vendor;
+
+    @ManyToMany
+    @JoinTable(name = "event_tag",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
 
 }
