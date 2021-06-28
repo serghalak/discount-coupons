@@ -16,9 +16,9 @@ public class EventResponse {
 
     private Long id;
 
-    private String name;
+//    private String name;
 
-    private int discount;
+//    private int discount;
 
     private String shortDescription;
 
@@ -28,7 +28,7 @@ public class EventResponse {
 
     private Set<LocationShortResponse> locations;
 
-    private String dateBegin;
+//    private String dateBegin;
 
     private String dateEnd;
 
