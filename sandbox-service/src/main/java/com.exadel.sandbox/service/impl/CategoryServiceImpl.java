@@ -1,6 +1,5 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.pagelist.CategoryPagedList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
@@ -9,14 +8,13 @@ import com.exadel.sandbox.mappers.category.CategoryShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
-import com.exadel.sandbox.service.ProductService;
+import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,7 +28,6 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
     private static final Integer DEFAULT_PAGE_SIZE = 10;
     private static final String DEFAULT_FIELD_SORT = "name";
@@ -38,79 +35,59 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final CategoryShortMapper categoryShortMapper;
-    private final ProductService productService;
+    private final EventService eventService;
 
     @Override
     public void deleteCategoryById(Long categoryId) {
-
         log.debug(">>>>>>>>delete category id " + categoryId);
 
-        if (productService.isCategoryIdUses(categoryId)) {
-            categoryRepository.deleteById(categoryId);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    "You cannot delete category. Category is uses");
-        }
+//        if (eventService.isCategoryIdUses(categoryId)) {
+//            categoryRepository.deleteById(categoryId);
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+//                    "You cannot delete category. Category is uses");
+//        }
     }
 
     @Override
     public CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest) {
-
         log.debug(">>>>>update category with id: " + categoryId);
 
         if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    ,"Category name cannot be empty");
+                    , "Category name cannot be empty");
         }
 
-        if(categoryId != categoryRequest.getId()){
+        if (categoryId != categoryRequest.getId()) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    ,"Category name cannot be empty");
+                    , "Category name cannot be empty");
         }
 
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
-        if(categoryOptional.isPresent()){
+        if (categoryOptional.isPresent()) {
             return categoryMapper.categoryToCategoryResponse(
                     categoryRepository.save(
                             categoryMapper.categoryRequestToCategory(categoryRequest)));
-        }else{
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. ProductId: "
                     + categoryId);
         }
-
-
     }
 
     @Override
-    public CategoryPagedList listCategoriesByPartOfName(String categoryName, int pageNumber, int pageSize) {
-
+    public Set<CategoryResponse> listCategoriesByPartOfName(String categoryName) {
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
 
-        pageNumber = getPageNumber(pageNumber);
-        pageSize = getPageSize(pageSize);
+        categoryName=categoryName.isEmpty() ? "" : categoryName;
 
-        Page<Category> categoryPage=categoryRepository.findAllByNameContainingIgnoreCase(categoryName,
-                PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
-
-        return new CategoryPagedList(categoryPage
-                .getContent()
-                .stream()
+        return categoryRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(categoryName).stream()
                 .map(categoryMapper::categoryToCategoryResponse)
-                .collect(Collectors.toList()),
-                    PageRequest
-                        .of(categoryPage.getPageable().getPageNumber()
-                                , categoryPage.getPageable().getPageSize()
-                                , categoryPage.getPageable().getSort()),
-                    categoryPage.getTotalElements());
+                .collect(Collectors.toSet());
     }
 
     @Override
     public CategoryResponse findCategoryById(Long categoryId) {
-
         log.debug(">>>>>>CategoryService find by Id: " + categoryId);
 
         Optional<Category> category = categoryRepository.findById(categoryId);
@@ -121,74 +98,47 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Category");
         }
-
     }
 
     @Override
-    public CategoryPagedList listCategories(int pageNumber, int pageSize) {
-
+    public Set<CategoryResponse> listCategories() {
         log.debug(">>>>>>>>>>>>>ListCategory ....");
 
-        pageNumber = getPageNumber(pageNumber);
-        pageSize = getPageSize(pageSize);
-
-        Page<Category> categoryPage=categoryRepository.findAll(
-                PageRequest.of(
-                        pageNumber
-                        , pageSize
-                        , Sort.by(DEFAULT_FIELD_SORT).ascending()));
-
-        return  new CategoryPagedList(categoryPage
-                .getContent()
-                .stream()
+        return categoryRepository.findAllByOrderByNameAsc().stream()
                 .map(categoryMapper::categoryToCategoryResponse)
-                .collect(Collectors.toList()),
-                    PageRequest
-                        .of(categoryPage.getPageable().getPageNumber()
-                                , categoryPage.getPageable().getPageSize()
-                                ,categoryPage.getPageable().getSort()),
-                    categoryPage.getTotalElements());
+                .collect(Collectors.toSet());
 
     }
 
     @Override
     public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
-
         String categoryName = categoryRequest.getName();
 
         if (categoryName == null || categoryName.equals("")) {
-
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    ,"The category cannot be empty");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+                    "The category cannot be empty");
         }
 
-
-        if(isCategoryNameExists(categoryName)){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"The category: "
+        if (isCategoryNameExists(categoryName)) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The category: "
                     + categoryName + " is already exists");
         }
 
         var category = categoryMapper.categoryRequestToCategory(categoryRequest);
-
         Category savedCategory = categoryRepository.save(category);
-
         return categoryMapper.categoryToCategoryResponse(savedCategory);
     }
 
     @Override
     public boolean isCategoryNameExists(String categoryName) {
-
-        Category categoryByName = categoryRepository.findByName(categoryName);
-
-        return categoryByName != null;
+        return categoryRepository.findByName(categoryName) != null;
     }
 
     @Override
     public List<CategoryShortResponse> findAllCategoriesByVendorId(Long vendorId) {
-        return categoryRepository.findDistinctByProductsVendorIdOrderByNameAsc(vendorId).stream().distinct()
+        return categoryRepository.findDistinctByEventsVendorIdOrderByNameAsc(vendorId).stream().distinct()
                 .map(categoryShortMapper::categoryToCategoryShortResponse)
                 .collect(Collectors.toList());
-
     }
 
     @Override
@@ -196,14 +146,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAllByVendorId(vendorId).stream()
                 .map(categoryShortMapper::categoryToCategoryShortResponse)
                 .collect(Collectors.toList());
-
     }
 
-    private int getPageNumber(Integer pageNumber) {
-        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
-    }
 
-    private int getPageSize(Integer pageSize) {
-        return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
-    }
 }

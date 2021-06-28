@@ -54,7 +54,7 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
@@ -63,12 +63,15 @@ public class JwtUtil {
         return Long.toString(userService.findByName(userDetails.getUsername()).getId());
     }
 
-
     public Long extractUserIdFromAuthResponse(AuthenticationResponse authResponse) {
         return Long.parseLong(Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(authResponse.getJwt().substring(7))
                 .getBody()
                 .getId());
+    }
+
+    public String extractEmailFromAuthResponse(AuthenticationResponse authResponse) {
+        return extractUsername(authResponse.getJwt().substring(7));
     }
 }
