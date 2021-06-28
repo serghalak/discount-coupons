@@ -4,7 +4,7 @@ import com.exadel.sandbox.dto.request.user.UserRequest;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.impl.UserSecurityServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,27 +13,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.AccessDeniedException;
 
+@AllArgsConstructor
 @RestController
 public class UserSecurityController {
 
-    @Autowired
-    private UserSecurityServiceImpl userService;
+    private final UserSecurityServiceImpl userService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authManager;
 
-    @Autowired
-    JwtUtil jwtTokenUtil;
+    private final JwtUtil jwtTokenUtil;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody UserRequest userRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody UserRequest userRequest) throws AccessDeniedException {
         try {
-            authenticationManager.authenticate(
+            authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userRequest.getUsername(), userRequest.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect email or password");
+            throw new AccessDeniedException("Incorrect email or password");
         }
         final var userDetails = userService.loadUserByUsername(userRequest.getUsername());
 
