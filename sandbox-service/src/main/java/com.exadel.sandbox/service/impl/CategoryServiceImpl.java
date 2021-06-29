@@ -155,4 +155,11 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(categoryMapper::categoryToCategoryFilterResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<CategoryFilterResponse> findAllCategoryByVendorFilter(List<Long> ids) {
+        return categoryRepository.findAllByVendorFilterIds(ids).stream()
+                .map(categoryMapper::categoryToCategoryFilterResponse)
+                .collect(Collectors.toList());
+    }
 }

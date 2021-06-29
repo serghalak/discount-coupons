@@ -31,4 +31,6 @@ public interface CategoryService {
 
     List<CategoryFilterResponse>findAllCategoryByLocationFilter(Long id, boolean isCountry);
 
+    List<CategoryFilterResponse>findAllCategoryByVendorFilter(List<Long> ids);
+
 }

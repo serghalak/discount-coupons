@@ -53,13 +53,18 @@ public class FilterServiceImpl implements FilterService {
         //Set<Long> categories = filterRequest.getCategories();
         long locationId=filterRequest.getLocationId();
         boolean isCountry=filterRequest.getIsCountry();
-        List<CategoryFilterResponse> allCategiriesByLocationFilter = getAllCategiriesByLocationFilter(locationId, isCountry);
-
-        return new FilterResponse(null,allCategiriesByLocationFilter,null,null);
+        //List<CategoryFilterResponse> allCategiriesByLocationFilter = getAllCategiriesByLocationFilter(locationId, isCountry);
+        List<CategoryFilterResponse> allCategiriesByVendorFilter =
+                getAllCategiriesByVendorFilter(filterRequest.getVendors());
+        return new FilterResponse(null,allCategiriesByVendorFilter,null,null);
     }
 
     private List<CategoryFilterResponse>getAllCategiriesByLocationFilter(long locationId, boolean isCountry){
 
         return categoryService.findAllCategoryByLocationFilter(locationId,isCountry);
+    }
+
+    private List<CategoryFilterResponse>getAllCategiriesByVendorFilter(List<Long>ids){
+        return categoryService.findAllCategoryByVendorFilter(ids);
     }
 }

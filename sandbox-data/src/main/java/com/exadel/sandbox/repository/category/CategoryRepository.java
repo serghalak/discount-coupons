@@ -20,4 +20,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
     Set<Category>findAllByOrderByNameAsc();
 
     List<Category>findDistinctByEventsVendorIdOrderByNameAsc(Long vendorId);
+
+    List<Category>findAllByVendorFilterIds(List<Long>ids);
 }

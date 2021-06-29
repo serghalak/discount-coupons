@@ -63,11 +63,16 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
     private String getWhereCondition(List<Long>ids){
 
-        String result="e.event_id IN (";
+        if(ids.isEmpty() || ids.size() ==0 ){
+            return "";
+        }
+
+        String result="WHERE e.vendor_id IN (";
         int numberOfElements=0;
 
         for(Long id : ids){
             result += (numberOfElements != 0) ?  ", " + id : id;
+            numberOfElements++;
         }
 
         result += ")";

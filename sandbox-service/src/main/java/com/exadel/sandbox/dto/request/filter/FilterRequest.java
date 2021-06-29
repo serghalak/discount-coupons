@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,8 +20,8 @@ public class FilterRequest {
 
     Long locationId;
     Boolean isCountry;
-    Set<Long> categories;
-    Set<Long>vendors;
-    Set<Long>tags;
+    List<Long> categories;
+    List<Long>vendors;
+    List<Long> tags;
     String main;
 }
