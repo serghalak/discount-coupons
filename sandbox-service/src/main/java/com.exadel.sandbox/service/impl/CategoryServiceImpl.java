@@ -3,6 +3,7 @@ package com.exadel.sandbox.service.impl;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
+import com.exadel.sandbox.dto.response.filter.CategoryFilterResponse;
 import com.exadel.sandbox.mappers.category.CategoryMapper;
 import com.exadel.sandbox.mappers.category.CategoryShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
@@ -148,5 +149,10 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
-
+    @Override
+    public List<CategoryFilterResponse> findAllCategoryByLocationFilter(Long id, boolean isCountry) {
+        return categoryRepository.findAllByLocationFilterId(id,isCountry).stream()
+                .map(categoryMapper::categoryToCategoryFilterResponse)
+                .collect(Collectors.toList());
+    }
 }

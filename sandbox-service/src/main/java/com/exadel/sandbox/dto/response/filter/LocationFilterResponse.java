@@ -1,17 +1,15 @@
-package com.exadel.sandbox.dto.response.category;
+package com.exadel.sandbox.dto.response.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryShortResponse {
+public class LocationFilterResponse {
 
-    private Long id;
-
+    private long id;
     private String name;
-
+    private boolean isCountry;
 }

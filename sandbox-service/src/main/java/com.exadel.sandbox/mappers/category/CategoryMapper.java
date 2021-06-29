@@ -2,6 +2,7 @@ package com.exadel.sandbox.mappers.category;
 
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
+import com.exadel.sandbox.dto.response.filter.CategoryFilterResponse;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,10 @@ public class CategoryMapper {
 
     public Category categoryRequestToCategory(CategoryRequest categoryRequest) {
         return Objects.isNull(categoryRequest) ? null : mapper.map(categoryRequest, Category.class);
+    }
+
+    public CategoryFilterResponse categoryToCategoryFilterResponse(Category category){
+        return Objects.isNull(category) ? null : mapper.map(category, CategoryFilterResponse.class);
     }
 
 }

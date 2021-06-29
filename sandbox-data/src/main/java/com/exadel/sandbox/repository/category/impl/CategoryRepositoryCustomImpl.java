@@ -26,4 +26,52 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
                 .setParameter(1, vendorId)
                 .getResultList();
     }
+
+
+    @Override
+    public List<Category> findAllByLocationFilterId(Long id, boolean isCountry) {
+
+        String sqlWhere="";
+        sqlWhere =(isCountry) ?  "WHERE cn.id=?" : "WHERE ct.id=?";
+
+        return entityManager.createNativeQuery(
+                "SELECT DISTINCT c.* FROM category c "+
+                    "INNER JOIN event e on c.id=e.category_id " +
+                    "INNER JOIN event_location el on e.id= el.event_id " +
+                    "INNER JOIN location l on el.location_id=l.id " +
+                    "INNER JOIN city ct on l.city_id=c.id " +
+                    "INNER JOIN country cn on ct.country_id=cn.id " +
+                 sqlWhere + " ORDER BY c.name ASC ",
+                Category.class)
+                .setParameter(1, id )
+                .getResultList();
+
+    }
+
+    @Override
+    public List<Category> findAllByVendorFilterIds(List<Long> ids) {
+
+        String sqlWhere=getWhereCondition(ids);
+
+        return entityManager.createNativeQuery(
+                "SELECT DISTINCT c.* FROM category c "+
+                        "INNER JOIN event e on c.id=e.category_id " +
+                        sqlWhere + " ORDER BY c.name ASC ",
+                Category.class)
+                .getResultList();
+    }
+
+    private String getWhereCondition(List<Long>ids){
+
+        String result="e.event_id IN (";
+        int numberOfElements=0;
+
+        for(Long id : ids){
+            result += (numberOfElements != 0) ?  ", " + id : id;
+        }
+
+        result += ")";
+
+        return result;
+    }
 }
