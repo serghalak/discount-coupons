@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<EventResponse> getAllFromSaved(Long userId) {
-        if (userRepository.getAllEventsFromUserOrder(userId).isEmpty()) {
+        if (userRepository.getAllEventsFromUserSaved(userId).isEmpty()) {
             throw new EntityNotFoundException("Your saved list is empty");
         }
         return userRepository.getAllEventsFromUserSaved(userId).stream()
