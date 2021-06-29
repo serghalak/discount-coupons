@@ -51,7 +51,7 @@ public class EventController {
 
     @GetMapping("/{eventId}")
     public ResponseEntity<?> getEventById(@PathVariable long eventId) {
-        var events = eventService.getEventById(eventId);
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        var event = eventService.getEventById(eventId);
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 }

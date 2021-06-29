@@ -1,6 +1,7 @@
 package com.exadel.sandbox.dto.response.event;
 
 import com.exadel.sandbox.dto.response.location.LocationResponse;
+import com.exadel.sandbox.dto.response.tag.TagResponse;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +17,6 @@ public class EventDetailsResponse {
 
     private Long id;
 
-//    private String name;
-
     private String shortDescription;
 
     private String detailedDescription;
@@ -30,15 +29,12 @@ public class EventDetailsResponse {
 
     private Long categoryId;
 
-//    private BigDecimal price;
-
-//    private int discount;
+    private Set<TagResponse> tags;
 
     private Set<LocationResponse> locations;
 
     private String dateBegin;
 
     private String dateEnd;
-
 
 }
