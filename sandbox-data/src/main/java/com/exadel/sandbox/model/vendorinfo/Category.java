@@ -17,8 +17,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "events")
-@EqualsAndHashCode(callSuper = false, exclude = "events")
+@ToString(exclude = {"events", "tags"})
+@EqualsAndHashCode(callSuper = false, exclude = {"events", "tags"})
 public class Category extends BaseEntity {
 
     @Column(name = "name")
@@ -30,5 +30,8 @@ public class Category extends BaseEntity {
     @OneToMany(mappedBy = "category")
     @JsonIgnore
     private Set<Event> events = new HashSet<>();
+
+    @OneToMany(mappedBy = "category")
+    private Set<Tag> tags = new HashSet<>();
 
 }

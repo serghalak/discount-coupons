@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.util.List;
 
 
@@ -49,4 +50,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE uo.id =?1")
     @Transactional
     List<Event> getAllEventsFromUserSaved(Long id);
+
+    @Query(value = "SELECT true FROM user_order uo " +
+            "WHERE event_id=:eventId and user_id =:userId LIMIT 1", nativeQuery = true)
+    @Transactional
+    BigInteger getOneEventsFromUserOrder(@Param("eventId") Long eventId, @Param("userId") Long userId);
+
+    @Query(value = "SELECT true FROM saved_event uo " +
+            "WHERE event_id=:eventId and user_id =:userId LIMIT 1", nativeQuery = true)
+    @Transactional
+    BigInteger getOneEventsFromUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
+
+
+
 }
