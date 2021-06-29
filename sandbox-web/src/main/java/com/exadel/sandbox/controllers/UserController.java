@@ -66,6 +66,7 @@ public class UserController {
         String response = userService.removeEventFromOrder(
                 eventId,
                 jwtUtil.extractUserIdFromAuthResponse(authResponse));
+
         return ResponseEntity.ok()
                 .body(response);
     }

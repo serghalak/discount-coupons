@@ -49,6 +49,8 @@ public class EventServiceImp implements EventService {
     @Override
     public EventDetailsResponse getEventById(Long eventId) {
 
+        var formatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
+
         return Optional.ofNullable(eventRepository.findEventById(eventId))
                 .map(eventMapper::eventToEventDetailResponse)
                 .orElseThrow(() -> new EntityNotFoundException("entetity with id " + eventId + " not found"));
@@ -60,5 +62,6 @@ public class EventServiceImp implements EventService {
 
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
+
     }
 }
