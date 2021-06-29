@@ -1,10 +1,10 @@
 package com.exadel.sandbox.dto.response.event;
 
-import com.exadel.sandbox.dto.response.location.LocationShortResponse;
+import com.exadel.sandbox.dto.response.location.LocationResponse;
+import com.exadel.sandbox.dto.response.tag.TagResponse;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -17,8 +17,6 @@ public class EventDetailsResponse {
 
     private Long id;
 
-    private String name;
-
     private String shortDescription;
 
     private String detailedDescription;
@@ -27,15 +25,16 @@ public class EventDetailsResponse {
 
     private Long vendorId;
 
-    private BigDecimal price;
+    private String categoryName;
 
-    private int discount;
+    private Long categoryId;
 
-    private Set<LocationShortResponse> locations;
+    private Set<TagResponse> tags;
+
+    private Set<LocationResponse> locations;
 
     private String dateBegin;
 
     private String dateEnd;
-
 
 }
