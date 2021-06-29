@@ -38,7 +38,7 @@ public class EventController {
             @RequestParam(name = "city_id", required = false) Long cityId,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize,
-            @RequestParam(name = "category_id", required = true) Long... categoryId
+            @RequestParam(name = "category_id", required = false) Long... categoryId
     ) {
         final Long[] categoryId1 = categoryId;
 

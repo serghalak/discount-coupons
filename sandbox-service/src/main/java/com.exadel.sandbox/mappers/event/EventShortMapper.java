@@ -22,7 +22,7 @@ public class EventShortMapper {
 //                .stream()
 //                .map(l -> locationMapper.locationToLocationShortResponse(l))
 //                .collect(Collectors.toList());
-        var locations = locationMapper.listLocationToListShortLocation(event.getLocations());
+        var locations = locationMapper.setLocationToListShortLocation(event.getLocations());
         var eventShortResponse = Objects.isNull(event) ? null : mapper.map(event, EventShortResponse.class);
         eventShortResponse.setLocationsResponse(locations);
         return eventShortResponse;

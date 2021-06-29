@@ -57,7 +57,10 @@ public class EventServiceImp implements EventService {
 //                        eventsPage.getPageable().getPageSize(),
 //                        eventsPage.getPageable().getSort()),
 //                eventsPage.getTotalElements());
-        return new PageList<EventResponse>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+//        final List<Event> content = eventsPage.getContent();
+//        content.forEach(System.out::println);
+//        eventMapper.eventListToEventResponseList(eventsPage.getContent()).forEach(System.out::println);
+        return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
 //        return eventsPage.stream()
 //                .sorted(Comparator.comparing(Event::getDateEnd))
 //                .map(event -> EventResponse.builder()
@@ -84,16 +87,17 @@ public class EventServiceImp implements EventService {
                 .sorted(Comparator.comparing(Event::getDateEnd))
                 .map(event -> EventDetailsResponse.builder()
                         .id(event.getId())
-                        .name(event.getName())
+//                        .name(event.getName())
                         .shortDescription(event.getDescription())
-                        .vendorName(event.getProducts().stream().iterator().next().getVendor().getName())
-                        .vendorId(event.getProducts().stream().iterator().next().getVendor().getId())
-                        .price(event.getPrice())
+                        .vendorName(event.getVendor().getName())
+                        .vendorId(event.getVendor().getId())
+                        .categoryName(event.getCategory().getName())
+                        .categoryId(event.getCategory().getId())
+//                        .price(event.getPrice())
                         .dateBegin(formatter.format(event.getDateBegin()))
                         .dateEnd(formatter.format(event.getDateEnd()))
-                        .discount(event.getDiscount())
-                        .locations(mapper.listLocationToListShortLocation(event.getLocations()))
-                        .detailedDescription(event.getProducts().stream().iterator().next().getDescription())
+                        .locations(mapper.setLocationToListLocation(event.getLocations()))
+                        .detailedDescription(event.getDescription())
                         .build()).findFirst().orElseThrow(() -> new EntityNotFoundException(""));
     }
 

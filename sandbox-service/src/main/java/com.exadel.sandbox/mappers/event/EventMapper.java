@@ -34,16 +34,18 @@ public class EventMapper {
     public List<EventResponse> eventListToEventResponseList(List<Event> events) {
         return events.stream()
                 .sorted(Comparator.comparing(Event::getDateEnd))
+                .peek(System.out::println)
                 .map(event -> EventResponse.builder()
                         .id(event.getId())
 //                        .name(event.getName())
 //                        .discount(event.getDiscount())
                         .shortDescription(event.getDescription())
-                        .vendorName(event.getProducts().stream().iterator().next().getVendor().getName())
-                        .vendorId(event.getProducts().stream().iterator().next().getVendor().getId())
-                        .locations(locMapper.listLocationToListShortLocation(event.getLocations()))
+                        .vendorName(event.getVendor().getName())
+                        .vendorId(event.getVendor().getId())
+                        .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
 //                        .dateBegin(formatter.format(event.getDateBegin()))
                         .dateEnd(formatter.format(event.getDateEnd()))
-                        .build()).collect(Collectors.toList());
+                        .build())
+                .collect(Collectors.toList());
     }
 }
