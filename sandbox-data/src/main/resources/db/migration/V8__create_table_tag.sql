@@ -7,5 +7,5 @@ CREATE TABLE tag
 );
 
 INSERT INTO tag (id, name, category_id)
-VALUES (1, 'shoes', 2),
-       (2, 'running', 2);
+VALUES (1, 'shoes', 5),
+       (2, 'running', 5);
