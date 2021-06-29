@@ -15,13 +15,13 @@ public interface UserService {
 
     UserResponse findByName(final String name);
 
-    EventShortResponse saveEventToOrder(final Long userId, final Long eventId);
+    EventShortResponse saveEventToOrder(final Long userId, final Long eventId, final String email);
 
     EventShortResponse saveEventToSaved(final Long userId, final Long eventId);
 
-    void removeEventFromOrder(final Long userId, final Long eventId);
+    String removeEventFromOrder(final Long userId, final Long eventId);
 
-    void removeEventFromSaved(final Long userId, final Long eventId);
+    String removeEventFromSaved(final Long userId, final Long eventId);
 
     List<EventResponse> getAllFromOrder(final Long userId);
 

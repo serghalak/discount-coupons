@@ -16,17 +16,19 @@ public class EventResponse {
 
     private Long id;
 
-    private String name;
+//    private String name;
 
-    private int discount;
+//    private int discount;
 
     private String shortDescription;
 
-    private String vendor;
+    private String vendorName;
+
+    private Long vendorId;
 
     private Set<LocationShortResponse> locations;
 
-    private String dateBegin;
+//    private String dateBegin;
 
     private String dateEnd;
 

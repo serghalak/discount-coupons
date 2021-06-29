@@ -6,14 +6,7 @@ import com.exadel.sandbox.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -38,7 +31,8 @@ public class UserController {
         return ResponseEntity.ok()
                 .body(userService.saveEventToOrder(
                         jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                        eventId));
+                        eventId,
+                        jwtUtil.extractEmailFromAuthResponse(authResponse)));
     }
 
     @PostMapping(path = "/addEvent/toSaved/{eventId}")
@@ -57,11 +51,11 @@ public class UserController {
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @PathVariable Long eventId) {
 
-        userService.removeEventFromSaved(
+        String response = userService.removeEventFromSaved(
                 jwtUtil.extractUserIdFromAuthResponse(authResponse),
                 eventId);
 
-        return ResponseEntity.ok().body("Event successfully removed from User saved ");
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping(path = "/removeEvent/fromOrder/{eventId}")
@@ -69,11 +63,12 @@ public class UserController {
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @PathVariable Long eventId) {
 
-        userService.removeEventFromOrder(
-                jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                eventId);
+        String response = userService.removeEventFromOrder(
+                eventId,
+                jwtUtil.extractUserIdFromAuthResponse(authResponse));
+
         return ResponseEntity.ok()
-                .body("Event successfully removed from User order ");
+                .body(response);
     }
 
     @GetMapping(path = "/allEvents/fromUserOrder")
