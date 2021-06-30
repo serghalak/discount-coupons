@@ -1,12 +1,12 @@
 alter table event_product
-    drop foreign key FK_event_product_event_id,
-    drop foreign key FK_event_product_product_id;
+    drop foreign key FK4ad8tyf4bpqr6h821jh42uqxl,
+    drop foreign key FKntuxn8awf9tn7rxvximxbhb2x;
 
 drop table event_product;
 
 alter table product
-    drop foreign key FK_product_category_id,
-    drop foreign key FK_product_vendor_id;
+    drop foreign key FK1mtsbur82frn64de7balymq9s,
+    drop foreign key FK9tnjxr4w1dcvbo2qejikpxpfy;
 
 drop table product;
 
@@ -19,14 +19,6 @@ alter table event
     add vendor_id bigint,
     add constraint FK_event_vendor_id foreign key (vendor_id)
         references vendor (id);
-
-alter table saved_event
-    drop foreign key FK_saved_event_event_id,
-    drop index UK_event_id;
-
-alter table saved_event
-    add constraint FK_saved_event_event_id foreign key (event_id)
-        references event (id);
 
 alter table user_order
     add date_event date;
