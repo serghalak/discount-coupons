@@ -45,7 +45,7 @@ public class EventServiceImp implements EventService {
     public PageList<EventResponse> getAllEventsByDescription(Long cityId, String search,
                                                              Integer pageNumber, Integer pageSize) {
 
-        Page<Event> eventsPage = eventRepository.findEventByCityId(("%" + search + "%"),
+        Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
                 cityId, PageRequest.of(pageNumber, pageSize));
         return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
     }
