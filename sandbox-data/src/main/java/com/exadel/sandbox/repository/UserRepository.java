@@ -49,6 +49,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     BigInteger getOneEventsFromUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
-
+    @Modifying
+    @Query(value = "delete from saved_event where event_id=:eventId and user_id=:userId ", nativeQuery = true)
+    @Transactional
+    void deleteFromUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
 }

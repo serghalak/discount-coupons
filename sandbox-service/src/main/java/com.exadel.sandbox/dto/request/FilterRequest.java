@@ -1,5 +1,6 @@
 package com.exadel.sandbox.dto.request;
 
+import com.exadel.sandbox.model.vendorinfo.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,6 @@ public class FilterRequest {
 
     private Set<Long> vendorsIdSet = new HashSet<>();
 
-    private String timeFilter = "";
-
-//    private SortType sortingType;
+    private Status status = Status.ACTIVE;
 
 }

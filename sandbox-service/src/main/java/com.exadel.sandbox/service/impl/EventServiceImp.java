@@ -6,17 +6,17 @@ import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
 import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -52,7 +52,8 @@ public class EventServiceImp implements EventService {
     }
 
     private PageList<EventResponse> getEventResponses(Long cityId, Integer pageNumber, Integer pageSize) {
-        Page<Event> eventsPage = eventRepository.findEventByCityId(cityId, PageRequest.of(pageNumber, pageSize));
+        Page<Event> eventsPage = eventRepository.findEventByCityId(cityId,
+                PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "dateEnd")));
 
         return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
 
@@ -61,8 +62,6 @@ public class EventServiceImp implements EventService {
     @Override
     public EventDetailsResponse getEventById(Long eventId) {
 
-        var formatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
-
         return Optional.ofNullable(eventRepository.findEventById(eventId))
                 .map(eventMapper::eventToEventDetailResponse)
                 .orElseThrow(() -> new EntityNotFoundException("entetity with id " + eventId + " not found"));
@@ -70,13 +69,13 @@ public class EventServiceImp implements EventService {
 
     @Override
     public PageList<EventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest, Integer pageNumber, Integer pageSize) {
+        Sort sort = getSorting(filterRequest.getStatus());
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
         if (filterRequest.getLocationId() == 0 &&
                 filterRequest.getCategoriesIdSet().isEmpty() &&
                 filterRequest.getTagsIsSet().isEmpty() &&
-                filterRequest.getVendorsIdSet().isEmpty() &&
-                filterRequest.getTimeFilter().isBlank()) {
+                filterRequest.getVendorsIdSet().isEmpty()) {
             var city = cityRepository.findCityByUserId(userId);
 
             return getEventResponses(city.getId(), pageNumber, pageSize);
@@ -87,57 +86,87 @@ public class EventServiceImp implements EventService {
             filterRequest.setCity(true);
         }
         if (!filterRequest.getTagsIsSet().isEmpty() &&
-                filterRequest.getVendorsIdSet().isEmpty() &&
-                filterRequest.getTimeFilter().isEmpty()) {
+                filterRequest.getVendorsIdSet().isEmpty()) {
 
             Page<Event> eventsPage = filterRequest.isCity() ?
                     eventRepository.findByTagsByCity(filterRequest.getLocationId(),
                             filterRequest.getTagsIsSet(),
-                            PageRequest.of(pageNumber, pageSize)) :
+                            filterRequest.getStatus(),
+                            PageRequest.of(pageNumber, pageSize, sort)) :
                     eventRepository.findByTagsByCountry(filterRequest.getLocationId(),
                             filterRequest.getTagsIsSet(),
+                            filterRequest.getStatus(),
+                            PageRequest.of(pageNumber, pageSize, sort));
+
+            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+        }
+
+        if (!filterRequest.getTagsIsSet().isEmpty() &&
+                !filterRequest.getVendorsIdSet().isEmpty()) {
+
+            Page<Event> eventsPage = filterRequest.isCity() ?
+                    eventRepository.findByTagsByVendorsByCity(filterRequest.getLocationId(),
+                            filterRequest.getVendorsIdSet(),
+                            filterRequest.getTagsIsSet(),
+                            PageRequest.of(pageNumber, pageSize, sort)) :
+                    eventRepository.findByTagsByVendorsByCountry(filterRequest.getLocationId(),
+                            filterRequest.getVendorsIdSet(),
+                            filterRequest.getTagsIsSet(),
+                            PageRequest.of(pageNumber, pageSize, sort));
+
+            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+        }
+
+        if (!filterRequest.getCategoriesIdSet().isEmpty() &&
+                filterRequest.getTagsIsSet().isEmpty() &&
+                filterRequest.getVendorsIdSet().isEmpty()) {
+
+            Page<Event> eventsPage = filterRequest.isCity() ?
+                    eventRepository.findByCategoryByCity(filterRequest.getLocationId(),
+                            filterRequest.getCategoriesIdSet(),
+                            PageRequest.of(pageNumber, pageSize, sort)) :
+                    eventRepository.findByCategoryByCountry(filterRequest.getLocationId(),
+                            filterRequest.getCategoriesIdSet(),
+                            PageRequest.of(pageNumber, pageSize, sort));
+
+            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+        }
+
+        if (!filterRequest.getCategoriesIdSet().isEmpty() &&
+                filterRequest.getTagsIsSet().isEmpty() &&
+                !filterRequest.getVendorsIdSet().isEmpty()) {
+
+            Page<Event> eventsPage = filterRequest.isCity() ?
+                    eventRepository.findByCategoryByVendorsByCity(filterRequest.getLocationId(),
+                            filterRequest.getVendorsIdSet(),
+                            filterRequest.getCategoriesIdSet(),
+                            PageRequest.of(pageNumber, pageSize)) :
+                    eventRepository.findByCategoryByByVendorsCountry(filterRequest.getLocationId(),
+                            filterRequest.getVendorsIdSet(),
+                            filterRequest.getCategoriesIdSet(),
                             PageRequest.of(pageNumber, pageSize));
 
             return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
         }
 
-//        if (filterRequest.getTagsIsSet() != null &&
-//                filterRequest.getVendorsIdSet() != null &&
-//                filterRequest.getTimeFilter() == null) {
-//
-//            Page<Event> eventsPage = filterRequest.isCity() ?
-//                    eventRepository.findByTagsByVendorsByCity(filterRequest.getLocationId(),
-//                            filterRequest.getVendorsIdSet(),
-//                            filterRequest.getTagsIsSet(),
-//                            PageRequest.of(pageNumber, pageSize)) :
-//                    eventRepository.findByTagsByVendorsByCountry(filterRequest.getLocationId(),
-//                            filterRequest.getVendorsIdSet(),
-//                            filterRequest.getTagsIsSet(),
-//                            PageRequest.of(pageNumber, pageSize));
-//
-//            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
-//        }
-//
-//        if (filterRequest.getCategoriesIdSet() != null &&
-//                filterRequest.getTagsIsSet() == null &&
-//                filterRequest.getVendorsIdSet() != null &&
-//                filterRequest.getTimeFilter() == null) {
-//
-//            Page<Event> eventsPage = filterRequest.isCity() ?
-//                    eventRepository.findByTagsByVendorsByCity(filterRequest.getLocationId(),
-//                            filterRequest.getVendorsIdSet(),
-//                            filterRequest.getTagsIsSet(),
-//                            PageRequest.of(pageNumber, pageSize)) :
-//                    eventRepository.findByTagsByVendorsByCountry(filterRequest.getLocationId(),
-//                            filterRequest.getVendorsIdSet(),
-//                            filterRequest.getTagsIsSet(),
-//                            PageRequest.of(pageNumber, pageSize));
-//
-//            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
-//        }
-
-
         return null;
+    }
+
+    private Sort getSorting(Status status) {
+
+        switch (status) {
+            case NEW:
+                return Sort.by(Sort.Direction.DESC, "dateOfCreation");
+            case COMING_SOON:
+                return Sort.by(Sort.Direction.ASC, "dateBegin");
+            case ACTIVE:
+                return Sort.by(Sort.Direction.DESC, "dateEnd");
+            case EXPIRED:
+                return Sort.by(Sort.Direction.DESC, "name");
+            default:
+                return Sort.by(Sort.Direction.DESC, "name");
+        }
+
     }
 
     private int getPageNumber(Integer pageNumber) {

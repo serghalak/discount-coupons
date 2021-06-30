@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
+import com.exadel.sandbox.dto.request.FilterRequest;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 
@@ -15,4 +16,6 @@ public interface EventService {
     PageList<EventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize);
 
     PageList<EventResponse> getAllEventsByDescription(Long cityId, String search, Integer pageNumber, Integer pageSize);
+
+    PageList<EventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest, Integer pageNumber, Integer pageSize);
 }
