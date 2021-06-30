@@ -26,6 +26,8 @@ public class EventResponse {
     private Long vendorId;
 
     private Set<LocationShortResponse> locations;
+    
+    private LocalDateTime dateBegin;
 
     private LocalDateTime dateBegin;
 
