@@ -25,6 +25,4 @@ public interface UserService {
 
     List<EventResponse> getAllFromOrder(final Long userId);
 
-    List<EventResponse> getAllFromSaved(final Long userId);
-
 }

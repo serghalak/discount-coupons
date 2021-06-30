@@ -13,4 +13,6 @@ public interface EventService {
 
     //    List<EventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize);
     PageList<EventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize);
+
+    PageList<EventResponse> getAllEventsByDescription(Long cityId, String search, Integer pageNumber, Integer pageSize);
 }
