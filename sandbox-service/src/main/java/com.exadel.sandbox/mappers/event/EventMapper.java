@@ -53,6 +53,7 @@ public class EventMapper {
                 .map(event -> EventResponse.builder()
                         .id(event.getId())
                         .shortDescription(event.getDescription())
+                        .fullDescription(event.getFullDescription())
                         .vendorName(event.getVendor().getName())
                         .vendorId(event.getVendor().getId())
                         .locations(locMapper.setLocationToListShortLocation(event.getLocations()))

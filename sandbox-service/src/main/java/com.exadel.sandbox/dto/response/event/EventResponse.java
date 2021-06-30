@@ -19,6 +19,8 @@ public class EventResponse {
 
     private String shortDescription;
 
+    private String fullDescription;
+
     private String vendorName;
 
     private Long vendorId;
