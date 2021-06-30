@@ -5,6 +5,7 @@ import com.exadel.sandbox.dto.response.tag.TagResponse;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -33,8 +34,8 @@ public class EventDetailsResponse {
 
     private Set<LocationResponse> locations;
 
-    private String dateBegin;
+    private LocalDateTime dateBegin;
 
-    private String dateEnd;
+    private LocalDateTime dateEnd;
 
 }
