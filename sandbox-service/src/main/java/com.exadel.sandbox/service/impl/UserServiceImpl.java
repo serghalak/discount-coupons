@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+
     private Event verifyEventId(Long eventId) {
         if (eventId <= 0) {
             throw new IllegalArgumentException("Id is not correct");

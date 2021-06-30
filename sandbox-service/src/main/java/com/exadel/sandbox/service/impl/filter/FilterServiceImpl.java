@@ -2,10 +2,7 @@ package com.exadel.sandbox.service.impl.filter;
 
 import com.exadel.sandbox.dto.request.filter.FilterRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
-import com.exadel.sandbox.dto.response.filter.CategoryFilterResponse;
-import com.exadel.sandbox.dto.response.filter.FilterResponse;
-import com.exadel.sandbox.dto.response.filter.LocationFilterResponse;
-import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
+import com.exadel.sandbox.dto.response.filter.*;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.service.CategoryService;
@@ -34,45 +31,65 @@ public class FilterServiceImpl implements FilterService {
     @Override
     public FilterResponse getFilterResponse(FilterRequest filterRequest) {
 
-        //
-//        List<LocationFilterResponse> locations = Stream.of(
-//                    new LocationFilterResponse(1, "Belarus",true),
-//                    new LocationFilterResponse(1, "Brest", false),
-//                    new LocationFilterResponse(2, "Gomel",false))
-//                .collect(Collectors.toList());
-//        List<Category>categories=Stream.of(
-//                    new CategoryFilterResponse(1,"Beauty",false),
-//                    new CategoryFilterResponse(2,"Food",true))
-//                .collect(Collectors.toList());
-//        List<Vendor>vendors=Stream.of(
-//                new VendorFilterResponse(3,"Foody",true),
-//                new VendorFilterResponse(7,"adidas",false))
-//                .collect(Collectors.toList());
+        switch (filterRequest.getMain()){
+            case "location":
+                return getFilterResponseMainLocation(filterRequest);
+            case "categories":
+                return getFilterResponseMainCategories(filterRequest);
+            case "tags":
+                return getFilterResponseMainTags(filterRequest);
+            case "vendors":
+                return getFilterResponseMainVendors(filterRequest);
+            default:
+                return getFilterResponseAll(filterRequest);
+        }
 
-//        List<Long>categories=Stream.of(1L,2L,3L,5L).collect(Collectors.toList());
-//        List<Long>vendors=Stream.of(4L,6L).collect(Collectors.toList());
-//        List<Long>tags=Stream.of(8L,10L).collect(Collectors.toList());
 
-        String main = filterRequest.getMain();
-
-        long locationId=filterRequest.getLocationId();
-        boolean isCountry=filterRequest.getIsCountry();
-
-        List<CategoryFilterResponse> allCategiriesByVendorFilter =
-                getAllCategiriesByVendorFilter(filterRequest.getVendors());
-        List<VendorFilterResponse> allVendorsByCategoryFilter =
-                getAllVendorsByCategoryFilter(filterRequest.getCategories());
-//        List<LocationFilterResponse>allLocationFiltersByCategoryFilter=
-//                getAllLocationFiltersByCategoryFilter(filterRequest.getCategories());
-        List<LocationFilterResponse>allLocationFiltersByVendorFilter=
-                getAllLocationFiltersByVendorFilter(filterRequest.getVendors());
-
-        return new FilterResponse(allLocationFiltersByVendorFilter,
-                allCategiriesByVendorFilter,
-                allVendorsByCategoryFilter,
-                null);
     }
 
+    private FilterResponse getFilterResponseAll(FilterRequest filterRequest){
+        List<LocationFilterResponse> allLocationfilter=locationService.findAllLocationFilter();
+        List<CategoryFilterResponse> allCategoriesFilter=categoryService.findAllCategoryFilter();
+        List<TagFilterResponse>allTagsFilter=null;
+        List<VendorFilterResponse>allVendorsFilter=vendorService.findAllVendorFilter();
+
+        return new FilterResponse(allLocationfilter,allCategoriesFilter,null,allVendorsFilter);
+    }
+
+    private FilterResponse getFilterResponseMainTags(FilterRequest filterRequest){
+        return new FilterResponse(null,null,null,null);
+    }
+
+
+    private FilterResponse getFilterResponseMainVendors(FilterRequest filterRequest){
+        List<LocationFilterResponse>allLocationFiltersByVendorFilter=
+                getAllLocationFiltersByVendorFilter(filterRequest.getVendors());
+        List<CategoryFilterResponse> allCategiriesByVendorFilter =
+                getAllCategiriesByVendorFilter(filterRequest.getVendors());
+
+        return new FilterResponse(allLocationFiltersByVendorFilter,allCategiriesByVendorFilter,null,null);
+    }
+
+    private FilterResponse getFilterResponseMainLocation(FilterRequest filterRequest){
+
+        List<CategoryFilterResponse> allCategiriesByLocationFilter =
+                getAllCategiriesByLocationFilter(filterRequest.getLocationId(), filterRequest.getIsCountry());
+
+        List<VendorFilterResponse> allVendorsByLocationFilter =
+                getAllVendorsByLocationFilter(filterRequest.getLocationId(), filterRequest.getIsCountry());
+
+        return new FilterResponse(null,allCategiriesByLocationFilter,null,allVendorsByLocationFilter);
+    }
+
+    private FilterResponse getFilterResponseMainCategories(FilterRequest filterRequest){
+
+        List<LocationFilterResponse>allLocationFiltersByCategoryFilter=
+                getAllLocationFiltersByCategoryFilter(filterRequest.getCategories());
+
+        List<VendorFilterResponse> allVendorsByCategoryFilter =
+                getAllVendorsByCategoryFilter(filterRequest.getCategories());
+        return new FilterResponse(allLocationFiltersByCategoryFilter,null,null,allVendorsByCategoryFilter);
+    }
 
     private List<LocationFilterResponse> getAllLocationFiltersByCategoryFilter(List<Long>ids){
         return locationService.findAllLocationFilterByCategoryFilter(ids);

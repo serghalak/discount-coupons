@@ -99,6 +99,11 @@ public class LocationServiceImpl implements LocationService {
         return groupByCountry(locationRepository.findAllByVendorFilterIds(ids));
     }
 
+    @Override
+    public List<LocationFilterResponse> findAllLocationFilter() {
+        return groupByCountry(locationRepository.getAllLocationFilter());
+    }
+
     private List<LocationFilterResponse>groupByCountry(List<LocationFilter> locations){
         List<LocationFilterResponse>filterResponseList=new ArrayList<>();
 
@@ -127,7 +132,7 @@ public class LocationServiceImpl implements LocationService {
                     break;
                 isCountry=false;
             }
-            i--;
+
 
         }
         return filterResponseList;

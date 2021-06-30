@@ -14,7 +14,8 @@ public class FilterResponse {
 
     private List<LocationFilterResponse> locations;
     private List<CategoryFilterResponse> categories;
-    private List<VendorFilterResponse> vendors;
     private List<TagFilterResponse> tags;
+    private List<VendorFilterResponse> vendors;
+
 
 }

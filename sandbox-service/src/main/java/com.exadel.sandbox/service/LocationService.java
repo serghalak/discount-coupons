@@ -23,4 +23,6 @@ public interface LocationService {
     List<LocationFilterResponse> findAllLocationFilterByCategoryFilter(List<Long> ids);
 
     List<LocationFilterResponse> findAllLocationFilterByVendorFilter(List<Long> ids);
+
+    List<LocationFilterResponse>findAllLocationFilter();
 }

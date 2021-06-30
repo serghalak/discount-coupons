@@ -72,4 +72,10 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<VendorFilterResponse>findAllVendorFilter(){
+        return repository.findAll().stream()
+                .map(vendorMapper::vendorToVendorFilterResponse)
+                .collect(Collectors.toList());
+    }
 }

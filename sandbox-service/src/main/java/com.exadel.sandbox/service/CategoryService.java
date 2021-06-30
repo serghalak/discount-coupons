@@ -33,4 +33,6 @@ public interface CategoryService {
 
     List<CategoryFilterResponse>findAllCategoryByVendorFilter(List<Long> ids);
 
+    List<CategoryFilterResponse>findAllCategoryFilter();
+
 }

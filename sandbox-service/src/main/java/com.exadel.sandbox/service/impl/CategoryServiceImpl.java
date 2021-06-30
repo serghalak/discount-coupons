@@ -162,4 +162,11 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(categoryMapper::categoryToCategoryFilterResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<CategoryFilterResponse>findAllCategoryFilter(){
+        return categoryRepository.findAll().stream()
+                .map(categoryMapper::categoryToCategoryFilterResponse)
+                .collect(Collectors.toList());
+    }
 }

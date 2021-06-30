@@ -61,6 +61,8 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
                 .getResultList();
     }
 
+
+
     private String getWhereCondition(List<Long>ids){
 
         if(ids.isEmpty() || ids.size() ==0 ){

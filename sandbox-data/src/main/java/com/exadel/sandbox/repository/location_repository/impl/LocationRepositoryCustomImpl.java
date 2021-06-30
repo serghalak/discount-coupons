@@ -62,8 +62,27 @@ public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
 
     }
 
+    @Override
+    public List<LocationFilter>getAllLocationFilter(){
+
+        List<Object[]>listObjects = entityManager.createNativeQuery(
+                "SELECT DISTINCT cn.id as countryId, " +
+                        "cn.name as countryName, " +
+                        "ct.id as cityId, " +
+                        "ct.name as cityName " +
+                        //"FROM city ct " +
+                        "FROM location l " +
+                        "INNER JOIN city ct on l.city_id=ct.id " +
+                        "INNER JOIN country cn on ct.country_id=cn.id "  +
+                        " ORDER BY cn.name ASC, ct.name ASC ")
+                .getResultList();
+
+        return listObjects.stream()
+                .map(this::transformObjectToLocationFilter)
+                .collect(Collectors.toList());
+    }
+
     private LocationFilter transformObjectToLocationFilter(Object[] obj){
-        LocationFilter locationFilter= new LocationFilter(convertToLong(obj[0]),String.valueOf(obj[1]),convertToLong(obj[2]),String.valueOf(obj[3]));
         return new LocationFilter(convertToLong(obj[0]),String.valueOf(obj[1]),convertToLong(obj[2]),String.valueOf(obj[3]));
     }
 
