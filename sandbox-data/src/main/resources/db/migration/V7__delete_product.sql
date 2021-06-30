@@ -1,12 +1,12 @@
 alter table event_product
-    drop foreign key FK4ad8tyf4bpqr6h821jh42uqxl,
-    drop foreign key FKntuxn8awf9tn7rxvximxbhb2x;
+    drop foreign key FK_event_product_event_id,
+    drop foreign key FK_event_product_product_id;
 
 drop table event_product;
 
 alter table product
-    drop foreign key FK1mtsbur82frn64de7balymq9s,
-    drop foreign key FK9tnjxr4w1dcvbo2qejikpxpfy;
+    drop foreign key FK_product_category_id,
+    drop foreign key FK_product_vendor_id;
 
 drop table product;
 
