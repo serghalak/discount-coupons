@@ -9,6 +9,8 @@ import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.service.CategoryService;
+import com.exadel.sandbox.service.LocationService;
+import com.exadel.sandbox.service.VendorDetailsService;
 import com.exadel.sandbox.service.filter.FilterService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,8 @@ import java.util.stream.Stream;
 public class FilterServiceImpl implements FilterService {
 
     private CategoryService categoryService;
+    private VendorDetailsService vendorService;
+    private LocationService locationService;
 
     @Override
     public FilterResponse getFilterResponse(FilterRequest filterRequest) {
@@ -50,21 +54,47 @@ public class FilterServiceImpl implements FilterService {
 //        List<Long>tags=Stream.of(8L,10L).collect(Collectors.toList());
 
         String main = filterRequest.getMain();
-        //Set<Long> categories = filterRequest.getCategories();
+
         long locationId=filterRequest.getLocationId();
         boolean isCountry=filterRequest.getIsCountry();
-        //List<CategoryFilterResponse> allCategiriesByLocationFilter = getAllCategiriesByLocationFilter(locationId, isCountry);
+
         List<CategoryFilterResponse> allCategiriesByVendorFilter =
                 getAllCategiriesByVendorFilter(filterRequest.getVendors());
-        return new FilterResponse(null,allCategiriesByVendorFilter,null,null);
+        List<VendorFilterResponse> allVendorsByCategoryFilter =
+                getAllVendorsByCategoryFilter(filterRequest.getCategories());
+//        List<LocationFilterResponse>allLocationFiltersByCategoryFilter=
+//                getAllLocationFiltersByCategoryFilter(filterRequest.getCategories());
+        List<LocationFilterResponse>allLocationFiltersByVendorFilter=
+                getAllLocationFiltersByVendorFilter(filterRequest.getVendors());
+
+        return new FilterResponse(allLocationFiltersByVendorFilter,
+                allCategiriesByVendorFilter,
+                allVendorsByCategoryFilter,
+                null);
+    }
+
+
+    private List<LocationFilterResponse> getAllLocationFiltersByCategoryFilter(List<Long>ids){
+        return locationService.findAllLocationFilterByCategoryFilter(ids);
+    }
+
+    private List<LocationFilterResponse> getAllLocationFiltersByVendorFilter(List<Long>ids){
+        return locationService.findAllLocationFilterByVendorFilter(ids);
     }
 
     private List<CategoryFilterResponse>getAllCategiriesByLocationFilter(long locationId, boolean isCountry){
-
         return categoryService.findAllCategoryByLocationFilter(locationId,isCountry);
     }
 
     private List<CategoryFilterResponse>getAllCategiriesByVendorFilter(List<Long>ids){
         return categoryService.findAllCategoryByVendorFilter(ids);
+    }
+
+    private List<VendorFilterResponse>getAllVendorsByLocationFilter(long locationId, boolean isCountry){
+        return vendorService.findAllVendorByLocationFilter(locationId,isCountry);
+    }
+
+    private List<VendorFilterResponse>getAllVendorsByCategoryFilter(List<Long>ids){
+        return vendorService.findAllVendorByCategoryFilter(ids);
     }
 }

@@ -12,4 +12,5 @@ public class LocationFilterResponse {
     private long id;
     private String name;
     private boolean isCountry;
+    private boolean isChecked;
 }
