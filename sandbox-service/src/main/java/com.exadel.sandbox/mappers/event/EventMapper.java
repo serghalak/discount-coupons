@@ -10,10 +10,8 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -24,7 +22,6 @@ public class EventMapper {
     private final ModelMapper mapper;
     private final LocationMapper locMapper;
     private final TagMapper tagMapper;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
 
     public Event eventRequestToEvent(EventRequest eventRequest) {
         return Objects.isNull(eventRequest) ? null : mapper.map(eventRequest, Event.class);
@@ -42,8 +39,8 @@ public class EventMapper {
                 .vendorId(event.getVendor().getId())
                 .categoryName(event.getCategory().getName())
                 .categoryId(event.getCategory().getId())
-                .dateBegin(formatter.format(event.getDateBegin()))
-                .dateEnd(formatter.format(event.getDateEnd()))
+                .dateBegin(event.getDateBegin())
+                .dateEnd(event.getDateEnd())
                 .tags(tagMapper.setTagToSetTagResponse(event.getTags()))
                 .locations(locMapper.setLocationToListLocation(event.getLocations()))
                 .detailedDescription(event.getDescription())
@@ -59,7 +56,7 @@ public class EventMapper {
                         .vendorName(event.getVendor().getName())
                         .vendorId(event.getVendor().getId())
                         .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
-                        .dateEnd(formatter.format(event.getDateEnd()))
+                        .dateEnd(event.getDateEnd())
                         .build())
                 .collect(Collectors.toList());
     }

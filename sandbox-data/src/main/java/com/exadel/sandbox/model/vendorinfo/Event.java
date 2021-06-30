@@ -8,7 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,10 +30,10 @@ public class Event extends BaseEntity {
     private String description;
 
     @Column(name = "date_begin")
-    private LocalDate dateBegin;
+    private LocalDateTime dateBegin;
 
     @Column(name = "date_end")
-    private LocalDate dateEnd;
+    private LocalDateTime dateEnd;
 
     @Column(name = "total_count")
     private int totalCount;
@@ -62,29 +62,29 @@ public class Event extends BaseEntity {
     private boolean isOnline;
 
     @ManyToMany
-    @JoinTable(name = "event_location"
-            , joinColumns = @JoinColumn(name = "event_id"),
+    @JoinTable(name = "event_location",
+            joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "location_id"))
     @JsonIgnore
     private Set<Location> locations = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "saved_event"
-            , joinColumns = @JoinColumn(name = "event_id"),
+    @JoinTable(name = "saved_event",
+            joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> userSavedEvents = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "user_order"
-            , joinColumns = @JoinColumn(name = "event_id"),
+    @JoinTable(name = "user_order",
+            joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> userOrders = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "feedback"
-            , joinColumns = @JoinColumn(name = "event_id"),
+    @JoinTable(name = "feedback",
+            joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> userFeedbacks = new HashSet<>();

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -16,10 +17,6 @@ public class EventResponse {
 
     private Long id;
 
-//    private String name;
-
-//    private int discount;
-
     private String shortDescription;
 
     private String vendorName;
@@ -28,8 +25,6 @@ public class EventResponse {
 
     private Set<LocationShortResponse> locations;
 
-//    private String dateBegin;
-
-    private String dateEnd;
+    private LocalDateTime dateEnd;
 
 }

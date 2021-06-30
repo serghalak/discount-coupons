@@ -18,13 +18,10 @@ public class EventShortMapper {
     private ModelMapper mapper;
 
     public EventShortResponse eventToEventShortResponse(Event event) {
-//        var locations = event.getLocations()
-//                .stream()
-//                .map(l -> locationMapper.locationToLocationShortResponse(l))
-//                .collect(Collectors.toList());
         var locations = locationMapper.setLocationToListShortLocation(event.getLocations());
         var eventShortResponse = Objects.isNull(event) ? null : mapper.map(event, EventShortResponse.class);
         eventShortResponse.setLocationsResponse(locations);
+
         return eventShortResponse;
     }
 
