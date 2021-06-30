@@ -27,6 +27,8 @@ public class EventResponse {
 
     private Set<LocationShortResponse> locations;
 
+    private LocalDateTime dateBegin;
+
     private LocalDateTime dateEnd;
 
 }
