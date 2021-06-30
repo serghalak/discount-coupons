@@ -80,11 +80,13 @@ public class EventServiceImp implements EventService {
 
             return getEventResponses(city.getId(), pageNumber, pageSize);
         }
+
         if (filterRequest.getLocationId() == 0) {
             var city = cityRepository.findCityByUserId(userId);
             filterRequest.setLocationId(city.getId());
             filterRequest.setCity(true);
         }
+
         if (!filterRequest.getTagsIsSet().isEmpty() &&
                 filterRequest.getVendorsIdSet().isEmpty()) {
 
@@ -144,6 +146,21 @@ public class EventServiceImp implements EventService {
                     eventRepository.findByCategoryByByVendorsCountry(filterRequest.getLocationId(),
                             filterRequest.getVendorsIdSet(),
                             filterRequest.getCategoriesIdSet(),
+                            PageRequest.of(pageNumber, pageSize));
+
+            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+        }
+
+        if (filterRequest.getCategoriesIdSet().isEmpty() &&
+                filterRequest.getTagsIsSet().isEmpty() &&
+                !filterRequest.getVendorsIdSet().isEmpty()) {
+
+            Page<Event> eventsPage = filterRequest.isCity() ?
+                    eventRepository.findByVendorsByCity(filterRequest.getLocationId(),
+                            filterRequest.getVendorsIdSet(),
+                            PageRequest.of(pageNumber, pageSize)) :
+                    eventRepository.findByByVendorsCountry(filterRequest.getLocationId(),
+                            filterRequest.getVendorsIdSet(),
                             PageRequest.of(pageNumber, pageSize));
 
             return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);

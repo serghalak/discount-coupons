@@ -85,7 +85,7 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "join e.locations loc " +
             "join loc.city city " +
             "where (cat.id in (?3)) " +
-            "and city.id = ?1" +
+            "and city.id = ?1 " +
             "and e.vendor.id in (?2)")
     Page<Event> findByCategoryByVendorsByCity(Long locationId, Set<Long> vendorsId, Set<Long> categoriesId, PageRequest of);
 
@@ -95,7 +95,22 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "join loc.city city " +
             "join city.country country " +
             "where (cat.id in (?3)) " +
-            "and country.id = ?1" +
+            "and country.id = ?1 " +
             "and e.vendor.id in (?2)")
     Page<Event> findByCategoryByByVendorsCountry(Long locationId, Set<Long> vendorsId, Set<Long> categoriesId, PageRequest of);
+
+    @Query("select distinct e from Event e " +
+            "join e.locations loc " +
+            "join loc.city city " +
+            "where e.vendor.id in (?2) " +
+            "and city.id = ?1")
+    Page<Event> findByVendorsByCity(Long locationId, Set<Long> vendorsId, PageRequest of);
+
+    @Query("select distinct e from Event e " +
+            "join e.category cat " +
+            "join e.locations loc " +
+            "join loc.city city " +
+            "where e.vendor.id in (?2) " +
+            "and city.country.id = ?1")
+    Page<Event> findByByVendorsCountry(Long locationId, Set<Long> vendorsId, PageRequest of);
 }
