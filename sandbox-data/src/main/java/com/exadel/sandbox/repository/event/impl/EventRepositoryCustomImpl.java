@@ -24,11 +24,8 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                         "    LEFT JOIN location ON event_location.location_id = location.id\n" +
                         "    LEFT JOIN city ON location.city_id = city.id\n" +
                         "    LEFT JOIN country ON city.country_id = country.id\n" +
-                        "    LEFT JOIN event_product ep ON event.id = ep.event_id\n" +
-                        "    LEFT JOIN product p ON ep.product_id = p.id\n" +
                         "WHERE vendor_id = ?",
-                Event.class
-        )
+                Event.class)
                 .setParameter(1, vendorId)
                 .getResultList();
     }
