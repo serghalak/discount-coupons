@@ -19,14 +19,18 @@ public class EventResponse {
 
     private String shortDescription;
 
+    private String fullDescription;
+
     private String vendorName;
 
     private Long vendorId;
 
     private Set<LocationShortResponse> locations;
-
-    private LocalDateTime dateEnd;
+    
+    private LocalDateTime dateBegin;
 
     private LocalDateTime dateBegin;
+
+    private LocalDateTime dateEnd;
 
 }

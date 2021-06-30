@@ -33,23 +33,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     void deleteFromUserOrder(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
-    @Modifying
-    @Query(value = "delete from saved_event where event_id=:eventId and user_id=:userId ", nativeQuery = true)
-    @Transactional
-    void deleteFromUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
-
     @Query("SELECT e FROM Event e " +
             " join  e.userOrders uo  " +
             "WHERE uo.id =?1")
     @Transactional
     List<Event> getAllEventsFromUserOrder(@Param("userId") Long userId);
-
-
-    @Query("SELECT e FROM Event e " +
-            " join  e.userSavedEvents uo  " +
-            "WHERE uo.id =?1")
-    @Transactional
-    List<Event> getAllEventsFromUserSaved(Long id);
 
     @Query(value = "SELECT true FROM user_order uo " +
             "WHERE event_id=:eventId and user_id =:userId LIMIT 1", nativeQuery = true)

@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +30,16 @@ public class TagMapper {
         return tags.stream()
                 .map(this::tagToTagResponse)
                 .collect(Collectors.toSet());
+    }
+
+    public List<TagResponse> listTagToListTagResponse(List<Tag> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return tags.stream()
+                .map(this::tagToTagResponse)
+                .collect(Collectors.toList());
     }
 
 }

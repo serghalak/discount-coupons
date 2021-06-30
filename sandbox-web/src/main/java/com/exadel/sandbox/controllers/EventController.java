@@ -54,4 +54,14 @@ public class EventController {
         var event = eventService.getEventById(eventId);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
+    @GetMapping("/by_description")
+    public ResponseEntity<?> getAllEventsByDescription(
+            @RequestHeader("Authorization") AuthenticationResponse authResponse,
+            @RequestParam(name = "city_id", required = false) Long cityId,
+            @RequestParam(name = "search", required = false) String search,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize
+    ) {
+        return new ResponseEntity<>(eventService.getAllEventsByDescription(cityId,search, pageNumber, pageSize), HttpStatus.OK);
+    }
 }

@@ -15,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -40,6 +42,15 @@ public class EventServiceImp implements EventService {
         return getEventResponses(cityId, getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
+    @Override
+    public PageList<EventResponse> getAllEventsByDescription(Long cityId, String search,
+                                                             Integer pageNumber, Integer pageSize) {
+
+        Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
+                cityId, PageRequest.of(pageNumber, pageSize));
+        return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+    }
+
     private PageList<EventResponse> getEventResponses(Long cityId, Integer pageNumber, Integer pageSize) {
         Page<Event> eventsPage = eventRepository.findEventByCityId(cityId, PageRequest.of(pageNumber, pageSize));
 
@@ -49,6 +60,8 @@ public class EventServiceImp implements EventService {
 
     @Override
     public EventDetailsResponse getEventById(Long eventId) {
+
+        var formatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
 
         return Optional.ofNullable(eventRepository.findEventById(eventId))
                 .map(eventMapper::eventToEventDetailResponse)
@@ -133,5 +146,6 @@ public class EventServiceImp implements EventService {
 
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
+
     }
 }

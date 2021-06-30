@@ -66,6 +66,7 @@ public class UserController {
         String response = userService.removeEventFromOrder(
                 eventId,
                 jwtUtil.extractUserIdFromAuthResponse(authResponse));
+
         return ResponseEntity.ok()
                 .body(response);
     }
@@ -75,14 +76,6 @@ public class UserController {
             @RequestHeader("Authorization") AuthenticationResponse authResponse) {
         return ResponseEntity.ok()
                 .body(userService.getAllFromOrder(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse)));
-    }
-
-    @GetMapping(path = "/allEvents/fromUserSaved")
-    public ResponseEntity<?> getAllEventsFromUserSaved
-            (@RequestHeader("Authorization") AuthenticationResponse authResponse) {
-        return ResponseEntity.ok()
-                .body(userService.getAllFromSaved(
                         jwtUtil.extractUserIdFromAuthResponse(authResponse)));
     }
 }

@@ -20,13 +20,5 @@ alter table event
     add constraint FK_event_vendor_id foreign key (vendor_id)
         references vendor (id);
 
-alter table saved_event
-    drop foreign key FK_saved_event_event_id,
-    drop index UK_event_id;
-
-alter table saved_event
-    add constraint FK_saved_event_event_id foreign key (event_id)
-        references event (id);
-
 alter table user_order
     add date_event date;
