@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
+import com.exadel.sandbox.dto.request.FilterRequest;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
@@ -36,7 +37,7 @@ public class EventServiceImp implements EventService {
 
     @Override
     public PageList<EventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize) {
-        return getEventResponses(cityId, pageNumber, pageSize);
+        return getEventResponses(cityId, getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
     private PageList<EventResponse> getEventResponses(Long cityId, Integer pageNumber, Integer pageSize) {
@@ -52,6 +53,78 @@ public class EventServiceImp implements EventService {
         return Optional.ofNullable(eventRepository.findEventById(eventId))
                 .map(eventMapper::eventToEventDetailResponse)
                 .orElseThrow(() -> new EntityNotFoundException("entetity with id " + eventId + " not found"));
+    }
+
+    @Override
+    public PageList<EventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest, Integer pageNumber, Integer pageSize) {
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
+        if (filterRequest.getLocationId() == 0 &&
+                filterRequest.getCategoriesIdSet().isEmpty() &&
+                filterRequest.getTagsIsSet().isEmpty() &&
+                filterRequest.getVendorsIdSet().isEmpty() &&
+                filterRequest.getTimeFilter().isBlank()) {
+            var city = cityRepository.findCityByUserId(userId);
+
+            return getEventResponses(city.getId(), pageNumber, pageSize);
+        }
+        if (filterRequest.getLocationId() == 0) {
+            var city = cityRepository.findCityByUserId(userId);
+            filterRequest.setLocationId(city.getId());
+            filterRequest.setCity(true);
+        }
+        if (!filterRequest.getTagsIsSet().isEmpty() &&
+                filterRequest.getVendorsIdSet().isEmpty() &&
+                filterRequest.getTimeFilter().isEmpty()) {
+
+            Page<Event> eventsPage = filterRequest.isCity() ?
+                    eventRepository.findByTagsByCity(filterRequest.getLocationId(),
+                            filterRequest.getTagsIsSet(),
+                            PageRequest.of(pageNumber, pageSize)) :
+                    eventRepository.findByTagsByCountry(filterRequest.getLocationId(),
+                            filterRequest.getTagsIsSet(),
+                            PageRequest.of(pageNumber, pageSize));
+
+            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+        }
+
+//        if (filterRequest.getTagsIsSet() != null &&
+//                filterRequest.getVendorsIdSet() != null &&
+//                filterRequest.getTimeFilter() == null) {
+//
+//            Page<Event> eventsPage = filterRequest.isCity() ?
+//                    eventRepository.findByTagsByVendorsByCity(filterRequest.getLocationId(),
+//                            filterRequest.getVendorsIdSet(),
+//                            filterRequest.getTagsIsSet(),
+//                            PageRequest.of(pageNumber, pageSize)) :
+//                    eventRepository.findByTagsByVendorsByCountry(filterRequest.getLocationId(),
+//                            filterRequest.getVendorsIdSet(),
+//                            filterRequest.getTagsIsSet(),
+//                            PageRequest.of(pageNumber, pageSize));
+//
+//            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+//        }
+//
+//        if (filterRequest.getCategoriesIdSet() != null &&
+//                filterRequest.getTagsIsSet() == null &&
+//                filterRequest.getVendorsIdSet() != null &&
+//                filterRequest.getTimeFilter() == null) {
+//
+//            Page<Event> eventsPage = filterRequest.isCity() ?
+//                    eventRepository.findByTagsByVendorsByCity(filterRequest.getLocationId(),
+//                            filterRequest.getVendorsIdSet(),
+//                            filterRequest.getTagsIsSet(),
+//                            PageRequest.of(pageNumber, pageSize)) :
+//                    eventRepository.findByTagsByVendorsByCountry(filterRequest.getLocationId(),
+//                            filterRequest.getVendorsIdSet(),
+//                            filterRequest.getTagsIsSet(),
+//                            PageRequest.of(pageNumber, pageSize));
+//
+//            return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+//        }
+
+
+        return null;
     }
 
     private int getPageNumber(Integer pageNumber) {

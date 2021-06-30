@@ -27,4 +27,6 @@ public class EventResponse {
 
     private LocalDateTime dateEnd;
 
+    private LocalDateTime dateBegin;
+
 }
