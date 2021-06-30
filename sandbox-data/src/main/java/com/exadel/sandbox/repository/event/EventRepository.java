@@ -10,14 +10,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, EventRepositoryCustom {
 
-    //    @Query("select e from Event e " +
-//            "join e.locations loc " +
-//            "where loc.city = ?1")
-//    List<Event> findEventByLocations(City city);
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
             "where loc.city.id = ?1")
     Page<Event> findEventByCityId(Long cityId, Pageable pageable);
+
+    @Query("select distinct e from Event e " +
+            "join e.locations loc " +
+            "where loc.city.id = ?2 AND (e.description like ?1 or e.fullDescription like ?1)")
+    Page<Event> findEventByCityId( String search, Long cityId, Pageable pageable);
 
     Event findEventById(Long id);
 

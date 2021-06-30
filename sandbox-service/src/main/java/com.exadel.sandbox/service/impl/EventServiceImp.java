@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -37,6 +39,15 @@ public class EventServiceImp implements EventService {
     @Override
     public PageList<EventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize) {
         return getEventResponses(cityId, pageNumber, pageSize);
+    }
+
+    @Override
+    public PageList<EventResponse> getAllEventsByDescription(Long cityId, String search,
+                                                             Integer pageNumber, Integer pageSize) {
+
+        Page<Event> eventsPage = eventRepository.findEventByCityId(("%" + search + "%"),
+                cityId, PageRequest.of(pageNumber, pageSize));
+        return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
     }
 
     private PageList<EventResponse> getEventResponses(Long cityId, Integer pageNumber, Integer pageSize) {

@@ -29,11 +29,17 @@ public class Event extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "full_description")
+    private String fullDescription;
+
     @Column(name = "date_begin")
     private LocalDateTime dateBegin;
 
     @Column(name = "date_end")
     private LocalDateTime dateEnd;
+
+    @Column(name = "date_of_creation")
+    private LocalDateTime dateOfCreation;
 
     @Column(name = "total_count")
     private int totalCount;
