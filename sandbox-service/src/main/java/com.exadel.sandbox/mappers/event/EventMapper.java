@@ -57,6 +57,7 @@ public class EventMapper {
                         .vendorName(event.getVendor().getName())
                         .vendorId(event.getVendor().getId())
                         .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
+                        .dateBegin(event.getDateBegin())
                         .dateEnd(event.getDateEnd())
                         .build())
                 .collect(Collectors.toList());
