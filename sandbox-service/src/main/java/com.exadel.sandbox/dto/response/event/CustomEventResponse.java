@@ -1,6 +1,6 @@
 package com.exadel.sandbox.dto.response.event;
 
-import com.exadel.sandbox.dto.response.location.LocationResponseByCity;
+import com.exadel.sandbox.dto.response.location.CustomLocationResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +26,7 @@ public class CustomEventResponse {
 
     private Long categoryId;
 
-    private LocationResponseByCity locations;
+    private CustomLocationResponse locations;
 
     private LocalDateTime dateBegin;
 

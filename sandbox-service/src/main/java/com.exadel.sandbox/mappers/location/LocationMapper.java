@@ -1,7 +1,7 @@
 package com.exadel.sandbox.mappers.location;
 
+import com.exadel.sandbox.dto.response.location.CustomLocationResponse;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
-import com.exadel.sandbox.dto.response.location.LocationResponseByCity;
 import com.exadel.sandbox.dto.response.location.LocationShortResponse;
 import com.exadel.sandbox.model.location.Location;
 import lombok.AllArgsConstructor;
@@ -66,8 +66,8 @@ public class LocationMapper {
                 .collect(Collectors.toSet());
     }
 
-    public LocationResponseByCity setLocationToListLocationResponseByCity(Set<Location> locations, Long cityId) {
-        final LocationResponseByCity locResponseByCity = new LocationResponseByCity();
+    public CustomLocationResponse setLocationToListLocationResponseByCity(Set<Location> locations, Long cityId) {
+        final CustomLocationResponse locResponseByCity = new CustomLocationResponse();
 
         final var location = locations.stream()
                 .filter(loc -> loc.getCity().getId().equals(cityId))
@@ -87,8 +87,8 @@ public class LocationMapper {
                 .collect(Collectors.toSet());
     }
 
-    public LocationResponseByCity setLocationToListLocationResponseByCountry(Set<Location> locations, Long countryId) {
-        final LocationResponseByCity locResponseByCity = new LocationResponseByCity();
+    public CustomLocationResponse setLocationToListLocationResponseByCountry(Set<Location> locations, Long countryId) {
+        final CustomLocationResponse locResponseByCity = new CustomLocationResponse();
 
         final var location = locations.stream()
                 .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))

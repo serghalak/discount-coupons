@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LocationResponseByCity {
+public class CustomLocationResponse {
 
     private String countryName;
 
