@@ -1,10 +1,7 @@
-package com.exadel.sandbox.service.impl.filter;
+package com.exadel.sandbox.service.filter.impl;
 
 import com.exadel.sandbox.dto.request.filter.FilterRequest;
-import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.dto.response.filter.*;
-import com.exadel.sandbox.model.vendorinfo.Category;
-import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.LocationService;
 import com.exadel.sandbox.service.VendorDetailsService;
@@ -13,11 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @AllArgsConstructor

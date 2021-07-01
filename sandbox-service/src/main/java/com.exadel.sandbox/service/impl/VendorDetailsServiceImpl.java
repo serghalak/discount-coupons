@@ -1,6 +1,5 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.response.filter.CategoryFilterResponse;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
