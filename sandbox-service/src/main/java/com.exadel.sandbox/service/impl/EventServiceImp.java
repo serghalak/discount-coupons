@@ -7,6 +7,7 @@ import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Status;
+import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
 import com.exadel.sandbox.service.EventService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -29,6 +31,7 @@ public class EventServiceImp implements EventService {
 
     private final EventRepository eventRepository;
     private final CityRepository cityRepository;
+    private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
 
     @Override
@@ -90,14 +93,21 @@ public class EventServiceImp implements EventService {
         if (!filterRequest.getTagsIsSet().isEmpty() &&
                 filterRequest.getVendorsIdSet().isEmpty()) {
 
+            final Set<Long> categoriesIdFromFilter = filterRequest.getCategoriesIdSet();
+            Set<Long> categoriesId = categoriesIdFromFilter.isEmpty() ?
+                    categoryRepository.findCategoryIdByTagsId(filterRequest.getTagsIsSet()) :
+                    categoriesIdFromFilter;
+
             Page<Event> eventsPage = filterRequest.isCity() ?
                     eventRepository.findByTagsByCity(filterRequest.getLocationId(),
                             filterRequest.getTagsIsSet(),
                             filterRequest.getStatus(),
+                            categoriesId,
                             PageRequest.of(pageNumber, pageSize, sort)) :
                     eventRepository.findByTagsByCountry(filterRequest.getLocationId(),
                             filterRequest.getTagsIsSet(),
                             filterRequest.getStatus(),
+                            categoriesId,
                             PageRequest.of(pageNumber, pageSize, sort));
 
             return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
@@ -106,14 +116,23 @@ public class EventServiceImp implements EventService {
         if (!filterRequest.getTagsIsSet().isEmpty() &&
                 !filterRequest.getVendorsIdSet().isEmpty()) {
 
+            final Set<Long> categoriesIdFromFilter = filterRequest.getCategoriesIdSet();
+            Set<Long> categoriesId = categoriesIdFromFilter.isEmpty() ?
+                    categoryRepository.findCategoryIdByTagsId(filterRequest.getTagsIsSet()) :
+                    categoriesIdFromFilter;
+
             Page<Event> eventsPage = filterRequest.isCity() ?
                     eventRepository.findByTagsByVendorsByCity(filterRequest.getLocationId(),
                             filterRequest.getVendorsIdSet(),
                             filterRequest.getTagsIsSet(),
+                            categoriesId,
+                            filterRequest.getStatus(),
                             PageRequest.of(pageNumber, pageSize, sort)) :
                     eventRepository.findByTagsByVendorsByCountry(filterRequest.getLocationId(),
                             filterRequest.getVendorsIdSet(),
                             filterRequest.getTagsIsSet(),
+                            categoriesId,
+                            filterRequest.getStatus(),
                             PageRequest.of(pageNumber, pageSize, sort));
 
             return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
@@ -126,9 +145,11 @@ public class EventServiceImp implements EventService {
             Page<Event> eventsPage = filterRequest.isCity() ?
                     eventRepository.findByCategoryByCity(filterRequest.getLocationId(),
                             filterRequest.getCategoriesIdSet(),
+                            filterRequest.getStatus(),
                             PageRequest.of(pageNumber, pageSize, sort)) :
                     eventRepository.findByCategoryByCountry(filterRequest.getLocationId(),
                             filterRequest.getCategoriesIdSet(),
+                            filterRequest.getStatus(),
                             PageRequest.of(pageNumber, pageSize, sort));
 
             return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
@@ -142,10 +163,12 @@ public class EventServiceImp implements EventService {
                     eventRepository.findByCategoryByVendorsByCity(filterRequest.getLocationId(),
                             filterRequest.getVendorsIdSet(),
                             filterRequest.getCategoriesIdSet(),
+                            filterRequest.getStatus(),
                             PageRequest.of(pageNumber, pageSize)) :
                     eventRepository.findByCategoryByByVendorsCountry(filterRequest.getLocationId(),
                             filterRequest.getVendorsIdSet(),
                             filterRequest.getCategoriesIdSet(),
+                            filterRequest.getStatus(),
                             PageRequest.of(pageNumber, pageSize));
 
             return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
@@ -158,9 +181,11 @@ public class EventServiceImp implements EventService {
             Page<Event> eventsPage = filterRequest.isCity() ?
                     eventRepository.findByVendorsByCity(filterRequest.getLocationId(),
                             filterRequest.getVendorsIdSet(),
+                            filterRequest.getStatus(),
                             PageRequest.of(pageNumber, pageSize)) :
                     eventRepository.findByByVendorsCountry(filterRequest.getLocationId(),
                             filterRequest.getVendorsIdSet(),
+                            filterRequest.getStatus(),
                             PageRequest.of(pageNumber, pageSize));
 
             return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
