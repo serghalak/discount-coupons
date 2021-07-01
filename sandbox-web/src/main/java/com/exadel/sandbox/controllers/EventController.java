@@ -3,7 +3,6 @@ package com.exadel.sandbox.controllers;
 import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.FilterRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
-import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.EventService;
@@ -41,7 +40,7 @@ public class EventController {
             @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize,
             @RequestBody FilterRequest filterRequest
     ) {
-        final PageList<EventResponse> events = eventService.getEventsByFilter(
+        final PageList<CustomEventResponse> events = eventService.getEventsByFilter(
                 jwtUtil.extractUserIdFromAuthResponse(authResponse),
                 filterRequest,
                 pageNumber,

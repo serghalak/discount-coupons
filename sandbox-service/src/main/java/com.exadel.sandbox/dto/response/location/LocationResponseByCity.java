@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -12,10 +14,12 @@ import java.util.Set;
 //for first Main Page
 public class LocationResponseByCity {
 
-    private String cityName;
-
     private String countryName;
 
-    private Set<String> addresses;
+    private Map<String, Set<String>> addresses = new HashMap<>();
+//
+//    private String cityName;
+//
+//    private Set<String> addresses;
 
 }

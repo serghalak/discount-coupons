@@ -65,7 +65,7 @@ public class EventMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<CustomEventResponse> eventListToCustomEventResponseList(List<Event> events, Long cityId) {
+    public List<CustomEventResponse> eventListToCustomEventResponseListByCityId(List<Event> events, Long cityId) {
         return events.stream()
                 .map(event -> CustomEventResponse.builder()
                         .id(event.getId())
@@ -73,6 +73,25 @@ public class EventMapper {
                         .vendorName(event.getVendor().getName())
                         .vendorId(event.getVendor().getId())
                         .locations(locMapper.setLocationToListLocationResponseByCity(event.getLocations(), cityId))
+                        .categoryId(event.getCategory().getId())
+                        .categoryName(event.getCategory().getName())
+                        .dateBegin(event.getDateBegin())
+                        .dateEnd(event.getDateEnd())
+                        .dateBegin(event.getDateBegin())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<CustomEventResponse> eventListToCustomEventResponseListByCountryId(List<Event> events, Long countryId) {
+        return events.stream()
+                .map(event -> CustomEventResponse.builder()
+                        .id(event.getId())
+                        .shortDescription(event.getDescription())
+                        .vendorName(event.getVendor().getName())
+                        .vendorId(event.getVendor().getId())
+                        .locations(locMapper.setLocationToListLocationResponseByCountry(event.getLocations(), countryId))
+                        .categoryId(event.getCategory().getId())
+                        .categoryName(event.getCategory().getName())
                         .dateBegin(event.getDateBegin())
                         .dateEnd(event.getDateEnd())
                         .dateBegin(event.getDateBegin())

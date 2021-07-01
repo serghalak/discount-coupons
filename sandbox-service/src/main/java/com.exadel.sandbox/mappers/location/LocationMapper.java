@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,18 +68,16 @@ public class LocationMapper {
 
     public LocationResponseByCity setLocationToListLocationResponseByCity(Set<Location> locations, Long cityId) {
         final LocationResponseByCity locResponseByCity = new LocationResponseByCity();
-        setCountryAndCity(locResponseByCity, locations, cityId);
-        locResponseByCity.setAddresses(getAddresses(locations, cityId));
-        return locResponseByCity;
-    }
 
-    private void setCountryAndCity(LocationResponseByCity locResponseByCity, Set<Location> locations, Long cityId) {
         final var location = locations.stream()
                 .filter(loc -> loc.getCity().getId().equals(cityId))
                 .findFirst()
                 .orElseThrow();
-        locResponseByCity.setCityName(location.getCity().getName());
+
         locResponseByCity.setCountryName(location.getCity().getCountry().getName());
+        locResponseByCity.getAddresses().put(location.getCity().getName(), getAddresses(locations, cityId));
+
+        return locResponseByCity;
     }
 
     private Set<String> getAddresses(Set<Location> locations, Long cityId) {
@@ -86,5 +85,24 @@ public class LocationMapper {
                 .filter(loc -> loc.getCity().getId().equals(cityId))
                 .map(loc -> loc.getStreet() + " " + loc.getNumber())
                 .collect(Collectors.toSet());
+    }
+
+    public LocationResponseByCity setLocationToListLocationResponseByCountry(Set<Location> locations, Long countryId) {
+        final LocationResponseByCity locResponseByCity = new LocationResponseByCity();
+
+        final var location = locations.stream()
+                .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))
+                .findFirst()
+                .orElseThrow();
+
+        locResponseByCity.setCountryName(location.getCity().getCountry().getName());
+
+        final Map<String, Set<String>> collect1 = locations.stream()
+                .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))
+                .collect(Collectors.groupingBy(loc -> loc.getCity().getName(),
+                        Collectors.mapping(loc -> loc.getStreet() + " " + loc.getNumber(), Collectors.toSet())));
+        locResponseByCity.setAddresses(collect1);
+
+        return locResponseByCity;
     }
 }

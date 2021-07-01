@@ -19,7 +19,7 @@ public class FilterRequest {
 
     private Set<Long> categoriesIdSet = new HashSet<>();
 
-    private Set<Long> tagsIsSet = new HashSet<>();
+    private Set<Long> tagsIdSet = new HashSet<>();
 
     private Set<Long> vendorsIdSet = new HashSet<>();
 

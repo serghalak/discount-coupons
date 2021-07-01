@@ -8,15 +8,13 @@ import com.exadel.sandbox.dto.response.event.EventResponse;
 
 public interface EventService {
 
-    //    List<EventResponse> getAllEventsByUserId(Long userId, Integer pageNumber, Integer pageSize);
     PageList<CustomEventResponse> getAllEventsByUserId(Long userId, Integer pageNumber, Integer pageSize);
 
     EventDetailsResponse getEventById(Long eventId);
 
-    //    List<EventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize);
     PageList<CustomEventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize);
 
     PageList<EventResponse> getAllEventsByDescription(Long cityId, String search, Integer pageNumber, Integer pageSize);
 
-    PageList<EventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest, Integer pageNumber, Integer pageSize);
+    PageList<CustomEventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest, Integer pageNumber, Integer pageSize);
 }

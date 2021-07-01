@@ -85,15 +85,13 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-
-    @Override
-    public List<EventResponse> getAllFromSaved(Long userId) {
-        return userRepository.getAllEventsFromUserSaved(userId).stream()
-                .map(event -> mapper.map(event, EventResponse.class))
-                .collect(Collectors.toList());
-    }
-
-
+//
+//    @Override
+//    public List<EventResponse> getAllFromSaved(Long userId) {
+//        return userRepository.getAllEventsFromUserSaved(userId).stream()
+//                .map(event -> mapper.map(event, EventResponse.class))
+//                .collect(Collectors.toList());
+//    }
 
     private Event verifyEventId(Long eventId) {
         if (eventId <= 0) {
