@@ -11,15 +11,10 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//for first Main Page
 public class LocationResponseByCity {
 
     private String countryName;
 
     private Map<String, Set<String>> addresses = new HashMap<>();
-//
-//    private String cityName;
-//
-//    private Set<String> addresses;
 
 }

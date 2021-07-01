@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-// for first Main page
 public class CustomEventResponse {
 
     private Long id;
