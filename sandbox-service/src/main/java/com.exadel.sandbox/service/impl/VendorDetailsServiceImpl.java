@@ -1,5 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.response.filter.CategoryFilterResponse;
+import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.event.EventShortMapper;
@@ -47,4 +49,27 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
                 .collect(Collectors.toList());
         return new VendorDetailsResponse(vendor, events);
     }
+
+
+    @Override
+    public List<VendorFilterResponse> findAllVendorByLocationFilter(Long id, boolean isCountry) {
+        return repository.findAllByLocationFilterId(id,isCountry).stream()
+                .map(vendorMapper::vendorToVendorFilterResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VendorFilterResponse> findAllVendorByCategoryFilter(List<Long> ids) {
+        return repository.findAllByCategoryFilterIds(ids).stream()
+                .map(vendorMapper::vendorToVendorFilterResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VendorFilterResponse>findAllVendorFilter(){
+        return repository.findAll().stream()
+                .map(vendorMapper::vendorToVendorFilterResponse)
+                .collect(Collectors.toList());
+    }
+
 }
