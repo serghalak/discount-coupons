@@ -2,6 +2,7 @@ package com.exadel.sandbox.controllers;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.FilterRequest;
+import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
@@ -26,7 +27,7 @@ public class EventController {
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false) Integer pageSize
     ) {
-        final PageList<EventResponse> events = cityId == null ?
+        final PageList<CustomEventResponse> events = cityId == null ?
                 eventService.getAllEventsByUserId(jwtUtil.extractUserIdFromAuthResponse(authResponse), pageNumber, pageSize) :
                 eventService.getAllEventsByCityId(cityId, pageNumber, pageSize);
 
