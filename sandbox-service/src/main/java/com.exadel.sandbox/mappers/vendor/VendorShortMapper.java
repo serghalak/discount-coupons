@@ -9,7 +9,10 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Component
@@ -22,5 +25,14 @@ public class VendorShortMapper {
     }
 
 
+    public List<VendorShortResponse> listTagToListTagResponse(List<Vendor> vendors) {
+        if (vendors == null || vendors.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return vendors.stream()
+                .map(this::vendorToVendorShortResponse)
+                .collect(Collectors.toList());
+    }
 
 }

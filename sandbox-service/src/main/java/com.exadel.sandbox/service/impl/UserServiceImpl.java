@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,21 +58,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void removeEventFromOrder(Long userId, Long eventId) {
+    public String removeEventFromOrder(Long eventId, Long userId) {
+        var exist = userRepository.getOneEventsFromUserOrder(eventId, userId);
+        Optional.ofNullable(exist)
+                .orElseThrow(() -> new EntityNotFoundException("Event does not exist in Order"));
         userRepository.deleteFromUserOrder(eventId, userId);
+        return "Event successfully removed from User Order ";
     }
 
     @Override
-    public void removeEventFromSaved(Long userId, Long eventId) {
+    public String removeEventFromSaved(Long userId, Long eventId) {
+        var exist = userRepository.getOneEventsFromUserSaved(eventId, userId);
+        Optional.ofNullable(exist)
+                .orElseThrow(() -> new EntityNotFoundException("Event does not exist in Saved"));
         userRepository.deleteFromUserSaved(eventId, userId);
+        return "Event successfully removed from User Saved ";
     }
 
     @Override
     public List<EventResponse> getAllFromOrder(Long userId) {
+        if (userRepository.getAllEventsFromUserOrder(userId).isEmpty()) {
+            throw new EntityNotFoundException("Your order list is empty");
+        }
         return userRepository.getAllEventsFromUserOrder(userId).stream()
                 .map(event -> mapper.map(event, EventResponse.class))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<EventResponse> getAllFromSaved(Long userId) {
@@ -79,6 +92,7 @@ public class UserServiceImpl implements UserService {
                 .map(event -> mapper.map(event, EventResponse.class))
                 .collect(Collectors.toList());
     }
+
 
 
     private Event verifyEventId(Long eventId) {
@@ -92,3 +106,4 @@ public class UserServiceImpl implements UserService {
     }
 
 }
+

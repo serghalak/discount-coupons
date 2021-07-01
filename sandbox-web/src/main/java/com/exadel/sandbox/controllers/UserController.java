@@ -51,11 +51,11 @@ public class UserController {
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @PathVariable Long eventId) {
 
-        userService.removeEventFromSaved(
+        String response = userService.removeEventFromSaved(
                 jwtUtil.extractUserIdFromAuthResponse(authResponse),
                 eventId);
 
-        return ResponseEntity.ok().body("Event successfully removed from User saved ");
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping(path = "/removeEvent/fromOrder/{eventId}")
@@ -63,11 +63,12 @@ public class UserController {
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @PathVariable Long eventId) {
 
-        userService.removeEventFromOrder(
-                jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                eventId);
+        String response = userService.removeEventFromOrder(
+                eventId,
+                jwtUtil.extractUserIdFromAuthResponse(authResponse));
+
         return ResponseEntity.ok()
-                .body("Event successfully removed from User order ");
+                .body(response);
     }
 
     @GetMapping(path = "/allEvents/fromUserOrder")
@@ -75,14 +76,6 @@ public class UserController {
             @RequestHeader("Authorization") AuthenticationResponse authResponse) {
         return ResponseEntity.ok()
                 .body(userService.getAllFromOrder(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse)));
-    }
-
-    @GetMapping(path = "/allEvents/fromUserSaved")
-    public ResponseEntity<?> getAllEventsFromUserSaved
-            (@RequestHeader("Authorization") AuthenticationResponse authResponse) {
-        return ResponseEntity.ok()
-                .body(userService.getAllFromSaved(
                         jwtUtil.extractUserIdFromAuthResponse(authResponse)));
     }
 }

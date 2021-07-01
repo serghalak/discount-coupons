@@ -8,7 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,8 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = { "category","locations", "userSavedEvents", "userOrders", "userFeedbacks"})
-@EqualsAndHashCode(callSuper = false, exclude = {"category", "locations", "userSavedEvents", "userOrders", "userFeedbacks"})
+@ToString(exclude = {"category", "locations", "userSavedEvents", "userOrders", "userFeedbacks", "tags"})
+@EqualsAndHashCode(callSuper = false, exclude = {"category", "locations", "userSavedEvents", "userOrders",
+        "userFeedbacks", "tags"})
 public class Event extends BaseEntity {
 
     @Column(name = "name")
@@ -28,11 +29,17 @@ public class Event extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "full_description")
+    private String fullDescription;
+
     @Column(name = "date_begin")
-    private LocalDate dateBegin;
+    private LocalDateTime dateBegin;
 
     @Column(name = "date_end")
-    private LocalDate dateEnd;
+    private LocalDateTime dateEnd;
+
+    @Column(name = "date_of_creation")
+    private LocalDateTime dateOfCreation;
 
     @Column(name = "total_count")
     private int totalCount;
@@ -61,29 +68,29 @@ public class Event extends BaseEntity {
     private boolean isOnline;
 
     @ManyToMany
-    @JoinTable(name = "event_location"
-            , joinColumns = @JoinColumn(name = "event_id"),
+    @JoinTable(name = "event_location",
+            joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "location_id"))
     @JsonIgnore
     private Set<Location> locations = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "saved_event"
-            , joinColumns = @JoinColumn(name = "event_id"),
+    @JoinTable(name = "saved_event",
+            joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> userSavedEvents = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "user_order"
-            , joinColumns = @JoinColumn(name = "event_id"),
+    @JoinTable(name = "user_order",
+            joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> userOrders = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "feedback"
-            , joinColumns = @JoinColumn(name = "event_id"),
+    @JoinTable(name = "feedback",
+            joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> userFeedbacks = new HashSet<>();
@@ -97,5 +104,11 @@ public class Event extends BaseEntity {
     @JoinColumn(name = "vendor_id")
     @JsonIgnore
     private Vendor vendor;
+
+    @ManyToMany
+    @JoinTable(name = "event_tag",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
 
 }

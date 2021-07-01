@@ -1,15 +1,13 @@
 package com.exadel.sandbox.controllers.vendor;
 
-import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
+import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
-import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.VendorDetailsService;
+import com.exadel.sandbox.service.VendorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/vendors")
@@ -17,23 +15,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VendorController {
 
-    private final VendorDetailsService service;
-
-    private final JwtUtil jwtUtil;
+    private final VendorService service;
+    private final VendorDetailsService detailsService;
 
     @GetMapping
-    public ResponseEntity<List<VendorShortResponse>> getAllByUserLocation(
-            @RequestHeader("Authorization") AuthenticationResponse authenticationResponse
-    ) {
-
-        Long userId = jwtUtil.extractUserIdFromAuthResponse(authenticationResponse);
-        return ResponseEntity.ok(service.findAllByUserLocation(userId));
+    public PageList<VendorShortResponse> getAll(
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize) {
+        return service.findAll(pageNumber, pageSize);
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<VendorDetailsResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(detailsService.findById(id));
     }
-
 }
