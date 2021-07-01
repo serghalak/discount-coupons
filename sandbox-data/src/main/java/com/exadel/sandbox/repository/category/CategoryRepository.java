@@ -15,7 +15,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
 
     Set<Category> findAllByOrderByNameAsc();
 
-    List<Category> findDistinctByEventsVendorIdOrderByNameAsc(Long vendorId);
+    List<Category>findDistinctByEventsVendorIdOrderByNameAsc(Long vendorId);
+
+    List<Category>findAllByVendorFilterIds(List<Long>ids);
 
     @Query("select distinct c.id from Category c " +
             "join c.tags tag " +

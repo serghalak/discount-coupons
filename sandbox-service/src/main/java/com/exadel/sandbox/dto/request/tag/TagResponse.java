@@ -1,17 +1,14 @@
-package com.exadel.sandbox.dto.response.category;
+package com.exadel.sandbox.dto.request.tag;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryShortResponse {
+public class TagResponse {
 
     private Long id;
-
     private String name;
-
 }
