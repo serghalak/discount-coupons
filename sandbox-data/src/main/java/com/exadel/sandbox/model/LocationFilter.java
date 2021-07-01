@@ -9,16 +9,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@SqlResultSetMapping(
-//        name = "LocalFilterMapping",
-//        classes = @ConstructorResult(
-//                targetClass = LocationFilter.class,
-//                columns = {
-//                        @ColumnResult(name = "countryId",type = Long.class),
-//                        @ColumnResult(name = "countryName"),
-//                        @ColumnResult(name = "cityId", type=Long.class),
-//                        @ColumnResult(name = "cityName")}))
- public class LocationFilter {
+public class LocationFilter {
     long countryId;
     String countryName;
     long cityId;

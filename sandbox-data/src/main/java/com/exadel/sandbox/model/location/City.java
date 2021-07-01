@@ -1,6 +1,7 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.LocationFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -16,6 +17,7 @@ import java.util.Set;
 @Builder
 @ToString(exclude = {"locations", "country"})
 @EqualsAndHashCode(callSuper = false, exclude = {"locations", "country"})
+
 public class City extends BaseEntity {
 
     @NonNull

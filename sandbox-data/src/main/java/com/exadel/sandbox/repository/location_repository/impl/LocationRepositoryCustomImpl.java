@@ -2,6 +2,7 @@ package com.exadel.sandbox.repository.location_repository.impl;
 
 import com.exadel.sandbox.model.LocationFilter;
 import com.exadel.sandbox.model.location.Location;
+import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.repository.location_repository.LocationRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +16,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
 
+    private static final String WHERE_EVENT_STATUS=
+            " AND e.status IN('" + Status.ACTIVE.name() + "'" + ", '" + Status.NEW.name() + "'" +")";
+
     private final EntityManager entityManager;
 
     @Override
     public List<LocationFilter> findAllByCategoryFilterIds(List<Long> ids) {
         String sqlWhere=getWhereCondition(ids, "category_id");
 
-        List<Object[]>listObjects=entityManager.createNativeQuery(
+
+
+        return entityManager.createNativeQuery(
                 "SELECT DISTINCT cn.id as countryId, " +
                         "cn.name as countryName, " +
                         "ct.id as cityId, " +
@@ -34,16 +40,13 @@ public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
                          sqlWhere + " ORDER BY cn.name ASC, ct.name ASC ")
                 .getResultList();
 
-        return listObjects.stream()
-                .map(this::transformObjectToLocationFilter)
-                .collect(Collectors.toList());
     }
 
     @Override
     public List<LocationFilter> findAllByVendorFilterIds(List<Long> ids) {
         String sqlWhere=getWhereCondition(ids, "vendor_id");
 
-        List<Object[]>listObjects = entityManager.createNativeQuery(
+        return entityManager.createNativeQuery(
                 "SELECT DISTINCT cn.id as countryId, " +
                         "cn.name as countryName, " +
                         "ct.id as cityId, " +
@@ -56,16 +59,12 @@ public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
                         sqlWhere + " ORDER BY cn.name ASC, ct.name ASC ")
                 .getResultList();
 
-        return listObjects.stream()
-                .map(this::transformObjectToLocationFilter)
-                .collect(Collectors.toList());
-
     }
 
     @Override
-    public List<LocationFilter>getAllLocationFilter(){
+    public List<LocationFilter>getAllLocationFilter() {
 
-        List<Object[]>listObjects = entityManager.createNativeQuery(
+        return entityManager.createNativeQuery(
                 "SELECT DISTINCT cn.id as countryId, " +
                         "cn.name as countryName, " +
                         "ct.id as cityId, " +
@@ -73,25 +72,11 @@ public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
                         //"FROM city ct " +
                         "FROM location l " +
                         "INNER JOIN city ct on l.city_id=ct.id " +
-                        "INNER JOIN country cn on ct.country_id=cn.id "  +
-                        " ORDER BY cn.name ASC, ct.name ASC ")
+                        "INNER JOIN country cn on ct.country_id=cn.id " +
+                        " ORDER BY cn.name ASC, ct.name ASC ", "LocalFilterMapping")
                 .getResultList();
 
-        return listObjects.stream()
-                .map(this::transformObjectToLocationFilter)
-                .collect(Collectors.toList());
     }
-
-    private LocationFilter transformObjectToLocationFilter(Object[] obj){
-        return new LocationFilter(convertToLong(obj[0]),String.valueOf(obj[1]),convertToLong(obj[2]),String.valueOf(obj[3]));
-    }
-
-    public Long convertToLong(Object o){
-        String stringToConvert = String.valueOf(o);
-        Long convertedLong = Long.parseLong(stringToConvert);
-        return convertedLong;
-    }
-
 
     private String getWhereCondition(List<Long>ids, String fieldForWhere){
 

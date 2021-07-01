@@ -1,6 +1,9 @@
 package com.exadel.sandbox.mappers.tag;
 
+import com.exadel.sandbox.dto.response.filter.CategoryFilterResponse;
+import com.exadel.sandbox.dto.response.filter.TagFilterResponse;
 import com.exadel.sandbox.dto.response.tag.TagResponse;
+import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Tag;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -40,6 +43,10 @@ public class TagMapper {
         return tags.stream()
                 .map(this::tagToTagResponse)
                 .collect(Collectors.toList());
+    }
+
+    public TagFilterResponse tagToTagFilterResponse(Tag tag){
+        return Objects.isNull(tag) ? null : mapper.map(tag, TagFilterResponse.class);
     }
 
 }

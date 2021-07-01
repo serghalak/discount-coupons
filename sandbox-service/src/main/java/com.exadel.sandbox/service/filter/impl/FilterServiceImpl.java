@@ -4,6 +4,7 @@ import com.exadel.sandbox.dto.request.filter.FilterRequest;
 import com.exadel.sandbox.dto.response.filter.*;
 import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.LocationService;
+import com.exadel.sandbox.service.TagService;
 import com.exadel.sandbox.service.VendorDetailsService;
 import com.exadel.sandbox.service.filter.FilterService;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -20,6 +22,7 @@ public class FilterServiceImpl implements FilterService {
     private CategoryService categoryService;
     private VendorDetailsService vendorService;
     private LocationService locationService;
+    private TagService tagService;
 
     @Override
     public FilterResponse getFilterResponse(FilterRequest filterRequest) {
@@ -41,12 +44,12 @@ public class FilterServiceImpl implements FilterService {
     }
 
     private FilterResponse getFilterResponseAll(FilterRequest filterRequest){
-        List<LocationFilterResponse> allLocationfilter=locationService.findAllLocationFilter();
+        List<LocationFilterResponse> allLocationFilter=locationService.findAllLocationFilter();
         List<CategoryFilterResponse> allCategoriesFilter=categoryService.findAllCategoryFilter();
-        List<TagFilterResponse>allTagsFilter=null;
+        List<TagFilterResponse>allTagsFilter=tagService.findAllTagFilter();
         List<VendorFilterResponse>allVendorsFilter=vendorService.findAllVendorFilter();
 
-        return new FilterResponse(allLocationfilter,allCategoriesFilter,null,allVendorsFilter);
+        return new FilterResponse(allLocationFilter,allCategoriesFilter,allTagsFilter,allVendorsFilter);
     }
 
     private FilterResponse getFilterResponseMainTags(FilterRequest filterRequest){
@@ -68,20 +71,39 @@ public class FilterServiceImpl implements FilterService {
         List<CategoryFilterResponse> allCategiriesByLocationFilter =
                 getAllCategiriesByLocationFilter(filterRequest.getLocationId(), filterRequest.getIsCountry());
 
+        List<TagFilterResponse>allTagsByCategoryFilter=
+                getAllTagsByCategoryFilter(allCategiriesByLocationFilter);
+
         List<VendorFilterResponse> allVendorsByLocationFilter =
                 getAllVendorsByLocationFilter(filterRequest.getLocationId(), filterRequest.getIsCountry());
 
-        return new FilterResponse(null,allCategiriesByLocationFilter,null,allVendorsByLocationFilter);
+        return new FilterResponse(null,allCategiriesByLocationFilter,allTagsByCategoryFilter,allVendorsByLocationFilter);
     }
+
 
     private FilterResponse getFilterResponseMainCategories(FilterRequest filterRequest){
 
         List<LocationFilterResponse>allLocationFiltersByCategoryFilter=
                 getAllLocationFiltersByCategoryFilter(filterRequest.getCategories());
 
+
         List<VendorFilterResponse> allVendorsByCategoryFilter =
                 getAllVendorsByCategoryFilter(filterRequest.getCategories());
         return new FilterResponse(allLocationFiltersByCategoryFilter,null,null,allVendorsByCategoryFilter);
+    }
+
+    private List<TagFilterResponse>getAllTagsByCategoryFilter(
+            List<CategoryFilterResponse>categoryFilterResponses){
+
+        if(categoryFilterResponses.isEmpty()){
+            return null;
+        }else {
+            List<Long> ids = categoryFilterResponses.stream()
+                    .map(CategoryFilterResponse::getId)
+                    .collect(Collectors.toList());
+            return tagService.findAllTagsByCategoryFilter(ids);
+        }
+
     }
 
     private List<LocationFilterResponse> getAllLocationFiltersByCategoryFilter(List<Long>ids){

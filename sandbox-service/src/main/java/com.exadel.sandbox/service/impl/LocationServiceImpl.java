@@ -107,10 +107,13 @@ public class LocationServiceImpl implements LocationService {
             Long currentCountryId=locations.get(i).getCountryId();
             boolean isCountry=true;
 
-            while(locations.get(i).getCountryId()==currentCountryId && i<locations.size()){
+            while(true){
 
+                if(!(locations.get(i).getCountryId()==currentCountryId && i<locations.size())){
+                    i--;
+                    break;
+                }
                 if(isCountry){
-                   //if(i>0)i--;
                    filterResponseList.add(
                            transformLocationFilterToLocationFilterResponse(locations.get(i),true));
                     filterResponseList.add(
@@ -120,7 +123,6 @@ public class LocationServiceImpl implements LocationService {
                     filterResponseList.add(
                             transformLocationFilterToLocationFilterResponse(locations.get(i),false));
                 }
-
 
                 i++;
 
