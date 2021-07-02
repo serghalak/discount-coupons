@@ -1,5 +1,6 @@
 package com.exadel.sandbox.mappers.location;
 
+import com.exadel.sandbox.dto.response.location.CustomLocationResponse;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.dto.response.location.LocationShortResponse;
 import com.exadel.sandbox.model.location.Location;
@@ -8,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,4 +55,54 @@ public class LocationMapper {
                 .collect(Collectors.toSet());
     }
 
+    public Set<LocationShortResponse> setLocationToListCustomLocationResponse(Set<Location> locations) {
+        if (locations == null || locations.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+
+        return locations.stream()
+                .map(this::locationToLocationShortResponse)
+                .collect(Collectors.toSet());
+    }
+
+    public CustomLocationResponse setLocationToListLocationResponseByCity(Set<Location> locations, Long cityId) {
+        final CustomLocationResponse locResponseByCity = new CustomLocationResponse();
+
+        final var location = locations.stream()
+                .filter(loc -> loc.getCity().getId().equals(cityId))
+                .findFirst()
+                .orElseThrow();
+
+        locResponseByCity.setCountryName(location.getCity().getCountry().getName());
+        locResponseByCity.getAddresses().put(location.getCity().getName(), getAddresses(locations, cityId));
+
+        return locResponseByCity;
+    }
+
+    private Set<String> getAddresses(Set<Location> locations, Long cityId) {
+        return locations.stream()
+                .filter(loc -> loc.getCity().getId().equals(cityId))
+                .map(loc -> loc.getStreet() + " " + loc.getNumber())
+                .collect(Collectors.toSet());
+    }
+
+    public CustomLocationResponse setLocationToListLocationResponseByCountry(Set<Location> locations, Long countryId) {
+        final CustomLocationResponse locResponseByCity = new CustomLocationResponse();
+
+        final var location = locations.stream()
+                .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))
+                .findFirst()
+                .orElseThrow();
+
+        locResponseByCity.setCountryName(location.getCity().getCountry().getName());
+
+        final Map<String, Set<String>> collect1 = locations.stream()
+                .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))
+                .collect(Collectors.groupingBy(loc -> loc.getCity().getName(),
+                        Collectors.mapping(loc -> loc.getStreet() + " " + loc.getNumber(), Collectors.toSet())));
+        locResponseByCity.setAddresses(collect1);
+
+        return locResponseByCity;
+    }
 }
