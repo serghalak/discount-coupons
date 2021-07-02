@@ -20,7 +20,7 @@ public class EventDetailsResponse {
 
     private String shortDescription;
 
-    private String detailedDescription;
+    private String fullDescription;
 
     private String vendorName;
 
