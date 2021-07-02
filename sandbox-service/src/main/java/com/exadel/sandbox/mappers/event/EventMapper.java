@@ -1,6 +1,7 @@
 package com.exadel.sandbox.mappers.event;
 
 import com.exadel.sandbox.dto.request.event.EventRequest;
+import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.mappers.location.LocationMapper;
@@ -43,7 +44,7 @@ public class EventMapper {
                 .dateEnd(event.getDateEnd())
                 .tags(tagMapper.setTagToSetTagResponse(event.getTags()))
                 .locations(locMapper.setLocationToListLocation(event.getLocations()))
-                .detailedDescription(event.getDescription())
+                .fullDescription(event.getDescription())
                 .build();
     }
 
@@ -53,12 +54,47 @@ public class EventMapper {
                 .map(event -> EventResponse.builder()
                         .id(event.getId())
                         .shortDescription(event.getDescription())
-                        .fullDescription(event.getFullDescription())
+//                        .fullDescription(event.getFullDescription())
                         .vendorName(event.getVendor().getName())
                         .vendorId(event.getVendor().getId())
-                        .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
+                        .locations(locMapper.setLocationToListCustomLocationResponse(event.getLocations()))
                         .dateBegin(event.getDateBegin())
                         .dateEnd(event.getDateEnd())
+                        .dateBegin(event.getDateBegin())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<CustomEventResponse> eventListToCustomEventResponseListByCityId(List<Event> events, Long cityId) {
+        return events.stream()
+                .map(event -> CustomEventResponse.builder()
+                        .id(event.getId())
+                        .shortDescription(event.getDescription())
+                        .vendorName(event.getVendor().getName())
+                        .vendorId(event.getVendor().getId())
+                        .locations(locMapper.setLocationToListLocationResponseByCity(event.getLocations(), cityId))
+                        .categoryId(event.getCategory().getId())
+                        .categoryName(event.getCategory().getName())
+                        .dateBegin(event.getDateBegin())
+                        .dateEnd(event.getDateEnd())
+                        .dateBegin(event.getDateBegin())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<CustomEventResponse> eventListToCustomEventResponseListByCountryId(List<Event> events, Long countryId) {
+        return events.stream()
+                .map(event -> CustomEventResponse.builder()
+                        .id(event.getId())
+                        .shortDescription(event.getDescription())
+                        .vendorName(event.getVendor().getName())
+                        .vendorId(event.getVendor().getId())
+                        .locations(locMapper.setLocationToListLocationResponseByCountry(event.getLocations(), countryId))
+                        .categoryId(event.getCategory().getId())
+                        .categoryName(event.getCategory().getName())
+                        .dateBegin(event.getDateBegin())
+                        .dateEnd(event.getDateEnd())
+                        .dateBegin(event.getDateBegin())
                         .build())
                 .collect(Collectors.toList());
     }
