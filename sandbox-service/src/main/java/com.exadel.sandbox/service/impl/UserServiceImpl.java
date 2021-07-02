@@ -51,28 +51,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public EventShortResponse saveEventToSaved(Long userId, Long eventId) {
-        var event = verifyEventId(eventId);
-        userRepository.insertIntoUserSaved(eventId, userId);
-        return eventShortMapper.eventToEventShortResponse(event);
-    }
-
-    @Override
     public String removeEventFromOrder(Long eventId, Long userId) {
         var exist = userRepository.getOneEventsFromUserOrder(eventId, userId);
         Optional.ofNullable(exist)
                 .orElseThrow(() -> new EntityNotFoundException("Event does not exist in Order"));
         userRepository.deleteFromUserOrder(eventId, userId);
         return "Event successfully removed from User Order ";
-    }
-
-    @Override
-    public String removeEventFromSaved(Long userId, Long eventId) {
-        var exist = userRepository.getOneEventsFromUserSaved(eventId, userId);
-        Optional.ofNullable(exist)
-                .orElseThrow(() -> new EntityNotFoundException("Event does not exist in Saved"));
-        userRepository.deleteFromUserSaved(eventId, userId);
-        return "Event successfully removed from User Saved ";
     }
 
     @Override
@@ -84,14 +68,6 @@ public class UserServiceImpl implements UserService {
                 .map(event -> mapper.map(event, EventResponse.class))
                 .collect(Collectors.toList());
     }
-
-//
-//    @Override
-//    public List<EventResponse> getAllFromSaved(Long userId) {
-//        return userRepository.getAllEventsFromUserSaved(userId).stream()
-//                .map(event -> mapper.map(event, EventResponse.class))
-//                .collect(Collectors.toList());
-//    }
 
     private Event verifyEventId(Long eventId) {
         if (eventId <= 0) {

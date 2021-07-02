@@ -3,6 +3,7 @@ package com.exadel.sandbox.service;
 
 import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
+import com.exadel.sandbox.dto.response.event.EventShortResponse;
 import com.exadel.sandbox.dto.response.location.LocationShortResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 
@@ -17,4 +18,8 @@ public interface FavouriteService {
     List<CategoryShortResponse> categoriesFromSaved(final Long userId);
 
     List<EventResponse> getAllFromSaved(final Long userId);
+
+    String removeEventFromSaved(final Long userId, final Long eventId);
+
+    EventShortResponse saveEventToSaved(final Long userId, final Long eventId);
 }

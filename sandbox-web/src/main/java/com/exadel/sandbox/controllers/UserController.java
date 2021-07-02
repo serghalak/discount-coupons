@@ -35,33 +35,10 @@ public class UserController {
                         jwtUtil.extractEmailFromAuthResponse(authResponse)));
     }
 
-    @PostMapping(path = "/addEvent/toSaved/{eventId}")
-    public ResponseEntity<?> addEventToSaved(
-            @RequestHeader("Authorization") AuthenticationResponse authResponse,
-            @PathVariable Long eventId) {
-
-        return ResponseEntity.ok()
-                .body(userService.saveEventToSaved(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                        eventId));
-    }
-
-    @DeleteMapping(path = "/removeEvent/fromSaved/{eventId}")
-    public ResponseEntity<?> removeEventFromSaved(
-            @RequestHeader("Authorization") AuthenticationResponse authResponse,
-            @PathVariable Long eventId) {
-
-        String response = userService.removeEventFromSaved(
-                jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                eventId);
-
-        return ResponseEntity.ok().body(response);
-    }
-
-    @DeleteMapping(path = "/removeEvent/fromOrder/{eventId}")
+    @DeleteMapping(path = "/removeEvent/fromOrder")
     public ResponseEntity<?> removeEventFromOrder(
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
-            @PathVariable Long eventId) {
+            @RequestParam(name = "eventId") Long eventId) {
 
         String response = userService.removeEventFromOrder(
                 eventId,
