@@ -1,7 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.request.location.LocationRequest;
-import com.exadel.sandbox.dto.response.filter.CategoryFilterResponse;
 import com.exadel.sandbox.dto.response.filter.LocationFilterResponse;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.model.LocationFilter;
@@ -15,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -111,10 +107,13 @@ public class LocationServiceImpl implements LocationService {
             Long currentCountryId=locations.get(i).getCountryId();
             boolean isCountry=true;
 
-            while(locations.get(i).getCountryId()==currentCountryId && i<locations.size()){
+            while(true){
 
+                if(!(locations.get(i).getCountryId()==currentCountryId && i<locations.size())){
+                    i--;
+                    break;
+                }
                 if(isCountry){
-                   //if(i>0)i--;
                    filterResponseList.add(
                            transformLocationFilterToLocationFilterResponse(locations.get(i),true));
                     filterResponseList.add(
@@ -124,7 +123,6 @@ public class LocationServiceImpl implements LocationService {
                     filterResponseList.add(
                             transformLocationFilterToLocationFilterResponse(locations.get(i),false));
                 }
-
 
                 i++;
 

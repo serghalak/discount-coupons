@@ -1,6 +1,7 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.LocationFilter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,6 +14,15 @@ import javax.persistence.*;
 @Builder
 @ToString(exclude = "city")
 @EqualsAndHashCode(callSuper = false, exclude = "city")
+@SqlResultSetMapping(
+        name = "LocalFilterMapping",
+        classes = @ConstructorResult(
+                targetClass = LocationFilter.class,
+                columns = {
+                        @ColumnResult(name = "countryId",type = Long.class),
+                        @ColumnResult(name = "countryName"),
+                        @ColumnResult(name = "cityId", type=Long.class),
+                        @ColumnResult(name = "cityName")}))
 public class Location extends BaseEntity {
 
     @NonNull
