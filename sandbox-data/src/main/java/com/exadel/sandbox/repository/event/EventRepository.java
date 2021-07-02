@@ -53,7 +53,7 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "where (tag.id in (?3)) " +
             "and country.id = ?1 " +
             "and e.vendor.id in (?2) " +
-            "and e.status =?5")
+            "and e.status =?4")
     Page<Event> findByTagsByVendorsByCountry(Long locationId, Set<Long> vendorsId, Set<Long> tagsIs, Status status, PageRequest of);
 
     @Query("select distinct e from Event e " +
@@ -62,7 +62,7 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "where (tag.id in (?3)) " +
             "and loc.city.id = ?1 " +
             "and e.vendor.id in (?2) " +
-            "and e.status =?5")
+            "and e.status =?4")
     Page<Event> findByTagsByVendorsByCity(Long locationId, Set<Long> vendorsId, Set<Long> tagsIs, Status status, PageRequest of);
 
     @Query("select distinct e from Event e " +
