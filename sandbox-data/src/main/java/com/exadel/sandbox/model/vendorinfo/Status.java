@@ -1,5 +1,5 @@
 package com.exadel.sandbox.model.vendorinfo;
 
 public enum Status {
-    NEW, ACTIVE, EXPIRED
+    NEW, COMING_SOON, ACTIVE, EXPIRED, PERPETUAL
 }
