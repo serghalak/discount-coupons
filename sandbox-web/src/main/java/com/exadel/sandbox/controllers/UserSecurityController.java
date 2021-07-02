@@ -9,10 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.nio.file.AccessDeniedException;
 
 @AllArgsConstructor
 @RestController
@@ -25,16 +26,14 @@ public class UserSecurityController {
     private final JwtUtil jwtTokenUtil;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody UserRequest userRequest) throws BadCredentialsException {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody UserRequest userRequest) throws AccessDeniedException {
         try {
             authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userRequest.getUsername(), userRequest.getPassword())
             );
-
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Incorrect email or password");
+        } catch (BadCredentialsException e) {
+            throw new AccessDeniedException("Incorrect email or password");
         }
-
         final var userDetails = userService.loadUserByUsername(userRequest.getUsername());
 
         final String jwt = jwtTokenUtil.generateToken(userDetails);
