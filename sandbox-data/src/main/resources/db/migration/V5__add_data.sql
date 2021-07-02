@@ -4,7 +4,7 @@
 -- ------------------------------------------------------
 -- Server version	8.0.22
 
-use db;
+use heroku_a75daef564eac27;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
