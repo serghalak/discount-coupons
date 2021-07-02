@@ -1,6 +1,7 @@
 package com.exadel.sandbox.repository.vendor.impl;
 
 import com.exadel.sandbox.model.vendorinfo.Category;
+import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.repository.vendor.VendorRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,9 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
+
+    private static final String WHERE_EVENT_STATUS=
+            " AND e.status IN('" + Status.ACTIVE.name() + "'" + ", '" + Status.NEW.name() + "'" +")";
 
     private final EntityManager entityManager;
 
@@ -36,6 +40,12 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
     public List<Vendor> findAllByLocationFilterId(Long id, boolean isCountry) {
 
         String sqlWhere="";
+
+        if(id==null){
+            sqlWhere="WHERE true ";
+        }else {
+            sqlWhere = (isCountry) ? "WHERE cn.id=?" : "WHERE ct.id=?";
+        }
         sqlWhere =(isCountry) ?  "WHERE cn.id=?" : "WHERE ct.id=?";
 
         return entityManager.createNativeQuery(
@@ -45,7 +55,7 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                         "INNER JOIN location l on el.location_id=l.id " +
                         "INNER JOIN city ct on l.city_id=ct.id " +
                         "INNER JOIN country cn on ct.country_id=cn.id " +
-                        sqlWhere + " ORDER BY v.name ASC ",
+                        sqlWhere + WHERE_EVENT_STATUS + " ORDER BY v.name ASC ",
                 Vendor.class)
                 .setParameter(1, id )
                 .getResultList();
