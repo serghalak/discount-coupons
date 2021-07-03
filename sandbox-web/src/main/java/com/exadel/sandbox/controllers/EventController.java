@@ -54,6 +54,7 @@ public class EventController {
         var event = eventService.getEventById(eventId);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
+
     @GetMapping("/by_description")
     public ResponseEntity<?> getAllEventsByDescription(
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
@@ -62,6 +63,16 @@ public class EventController {
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize
     ) {
-        return new ResponseEntity<>(eventService.getAllEventsByDescription(cityId,search, pageNumber, pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getAllEventsByDescription(cityId, search, pageNumber, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/events")
+    public ResponseEntity<?> getAllEvents(
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize
+    ) {
+        final PageList<CustomEventResponse> events = eventService.getAll(pageNumber, pageSize);
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
     }
 }
