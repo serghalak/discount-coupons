@@ -1,5 +1,6 @@
 package com.exadel.sandbox.mappers.location;
 
+import com.exadel.sandbox.dto.response.city.CustomCityResponse;
 import com.exadel.sandbox.dto.response.location.CustomLocationResponse;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.dto.response.location.LocationShortResponse;
@@ -8,10 +9,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -60,24 +58,29 @@ public class LocationMapper {
             return Collections.emptySet();
         }
 
-
         return locations.stream()
                 .map(this::locationToLocationShortResponse)
                 .collect(Collectors.toSet());
     }
 
-    public CustomLocationResponse setLocationToListLocationResponseByCity(Set<Location> locations, Long cityId) {
-        final CustomLocationResponse locResponseByCity = new CustomLocationResponse();
+    public CustomLocationResponse convertLocToCustomLocResponseByCity(Set<Location> locations, Long cityId) {
+        final var locResponseByCity = new CustomLocationResponse();
 
-        final var location = locations.stream()
+        final var location = getLocationByCityId(locations, cityId);
+
+        locResponseByCity.setCountryName(location.getCity().getCountry().getName());
+        final var customCityResponse = getCustomCityResponse(locations, location, cityId);
+
+        locResponseByCity.getCities().add(customCityResponse);
+
+        return locResponseByCity;
+    }
+
+    private Location getLocationByCityId(Set<Location> locations, Long cityId) {
+        return locations.stream()
                 .filter(loc -> loc.getCity().getId().equals(cityId))
                 .findFirst()
                 .orElseThrow();
-
-        locResponseByCity.setCountryName(location.getCity().getCountry().getName());
-        locResponseByCity.getAddresses().put(location.getCity().getName(), getAddresses(locations, cityId));
-
-        return locResponseByCity;
     }
 
     private Set<String> getAddresses(Set<Location> locations, Long cityId) {
@@ -87,22 +90,53 @@ public class LocationMapper {
                 .collect(Collectors.toSet());
     }
 
-    public CustomLocationResponse setLocationToListLocationResponseByCountry(Set<Location> locations, Long countryId) {
-        final CustomLocationResponse locResponseByCity = new CustomLocationResponse();
+    private CustomCityResponse getCustomCityResponse(Set<Location> locations, Location location, Long cityId) {
+        return CustomCityResponse.builder()
+                .cityName(location.getCity().getName())
+                .addresses(getAddresses(locations, cityId))
+                .build();
+    }
 
-        final var location = locations.stream()
-                .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))
-                .findFirst()
-                .orElseThrow();
+    public CustomLocationResponse convertLocToCustomLocResponseByCountry(Set<Location> locations, Long countryId) {
+        final var locResponseByCity = new CustomLocationResponse();
 
-        locResponseByCity.setCountryName(location.getCity().getCountry().getName());
+        locResponseByCity.setCountryName(getCountryNameByCountryId(locations, countryId));
 
-        final Map<String, Set<String>> collect1 = locations.stream()
-                .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))
-                .collect(Collectors.groupingBy(loc -> loc.getCity().getName(),
-                        Collectors.mapping(loc -> loc.getStreet() + " " + loc.getNumber(), Collectors.toSet())));
-        locResponseByCity.setAddresses(collect1);
+        final Map<String, Set<String>> citiesMap = getCitiesMap(locations, countryId);
+
+        locResponseByCity.setCities(getCustomCityResponses(citiesMap));
 
         return locResponseByCity;
     }
+
+    private String getCountryNameByCountryId(Set<Location> locations, Long countryId) {
+        return locations.stream()
+                .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))
+                .map(loc -> loc.getCity().getCountry().getName())
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private Map<String, Set<String>> getCitiesMap(Set<Location> locations, Long countryId) {
+        return locations.stream()
+                .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))
+                .collect(Collectors.groupingBy(loc -> loc.getCity().getName(),
+                        Collectors.mapping(loc -> loc.getStreet() + " " + loc.getNumber(), Collectors.toSet())));
+    }
+
+    private Set<CustomCityResponse> getCustomCityResponses(Map<String, Set<String>> collect) {
+        Set<CustomCityResponse> customCityResponses = new HashSet<>();
+
+        collect.forEach((k, v) -> customCityResponses.add(convertMapEntryToCustomCityResponse(k, v)));
+
+        return customCityResponses;
+    }
+
+    private CustomCityResponse convertMapEntryToCustomCityResponse(String name, Set<String> addresses) {
+        return CustomCityResponse.builder()
+                .cityName(name)
+                .addresses(addresses)
+                .build();
+    }
+
 }
