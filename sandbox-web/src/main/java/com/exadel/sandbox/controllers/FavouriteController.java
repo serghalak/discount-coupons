@@ -5,6 +5,7 @@ import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.FavouriteService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,12 +26,14 @@ public class FavouriteController {
     private final FavouriteService favouriteService;
     private final JwtUtil jwtUtil;
 
-    @GetMapping(path = "/allEvents/fromUserSaved")
+    @GetMapping(path = "/allEvents/fromFavorites")
     public ResponseEntity<?> getAllEventsFromUserSaved
-            (@RequestHeader("Authorization") AuthenticationResponse authResponse) {
-        return ResponseEntity.ok()
-                .body(favouriteService.getAllFromSaved(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse)));
+            (@RequestHeader("Authorization") AuthenticationResponse authResponse,
+             @RequestParam(name = "city_id", required = false) Long cityId,
+             @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
+        return new ResponseEntity<>(favouriteService.getAllFromSaved(
+                        jwtUtil.extractUserIdFromAuthResponse(authResponse),cityId, pageNumber, pageSize), HttpStatus.OK);
     }
 
     @PostMapping(path = "/addEvent/toSaved")

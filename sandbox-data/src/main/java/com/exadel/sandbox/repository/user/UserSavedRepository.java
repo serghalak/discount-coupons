@@ -3,6 +3,8 @@ package com.exadel.sandbox.repository.user;
 import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,7 +37,7 @@ public interface UserSavedRepository extends JpaRepository<User, Long> {
             " join  e.userSavedEvents uo  " +
             "WHERE uo.id =?1")
     @Transactional
-    List<Event> getAllEventsFromUserSaved(Long id);
+    Page<Event> getAllEventsFromUserSaved(Long id, PageRequest of);
 
     @Modifying
     @Query(value = "delete from saved_event where event_id=:eventId and user_id=:userId ", nativeQuery = true)

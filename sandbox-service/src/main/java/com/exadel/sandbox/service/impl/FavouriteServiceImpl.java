@@ -1,11 +1,14 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
+import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.dto.response.event.EventShortResponse;
 import com.exadel.sandbox.dto.response.location.LocationShortResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.category.CategoryShortMapper;
+import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.mappers.event.EventShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.repository.UserRepository;
@@ -15,6 +18,9 @@ import com.exadel.sandbox.repository.user.UserSavedRepository;
 import com.exadel.sandbox.service.FavouriteService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,6 +33,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class FavouriteServiceImpl implements FavouriteService {
 
+    private static final Integer DEFAULT_PAGE_NUMBER = 0;
+    private static final Integer DEFAULT_PAGE_SIZE = 10;
+    private static final String DEFAULT_FIELD_SORT = "name";
+
     private final UserSavedRepository userSavedRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
@@ -34,6 +44,7 @@ public class FavouriteServiceImpl implements FavouriteService {
     private final EventShortMapper eventShortMapper;
     private final CategoryRepository categoryRepository;
     private final CategoryShortMapper categoryMapper;
+    private final EventMapper eventMapper;
 
     @Override
     public List<LocationShortResponse> eventsLocationsFromSaved(Long userId) {
@@ -56,15 +67,16 @@ public class FavouriteServiceImpl implements FavouriteService {
     }
 
     @Override
-    public List<EventResponse> getAllFromSaved(Long userId) {
-        final List<Event> allEventFromSaved = userSavedRepository.getAllEventsFromUserSaved(userId);
+    public PageList<CustomEventResponse> getAllFromSaved(Long userId,Long cityId,  Integer pageNumber, Integer pageSize) {
+        final Page<Event> allEventFromSaved = userSavedRepository.getAllEventsFromUserSaved(userId,
+                PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize), Sort.by(Sort.Direction.DESC, "dateEnd")) );
         if (allEventFromSaved.isEmpty()) {
             throw new EntityNotFoundException("Your saved list is empty");
         }
-        return allEventFromSaved.stream()
-                .map(event -> mapper.map(event, EventResponse.class))
-                .sorted(Comparator.comparing(EventResponse::getDateEnd))
-                .collect(Collectors.toList());
+        return new PageList<CustomEventResponse>(
+                eventMapper.eventListToCustomEventResponseListByCityId(allEventFromSaved.getContent(),
+                        cityId),
+                allEventFromSaved);
     }
 
     @Override
@@ -91,5 +103,12 @@ public class FavouriteServiceImpl implements FavouriteService {
         return eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " does not found"));
 
+    }
+    private int getPageNumber(Integer pageNumber) {
+        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
+    }
+
+    private int getPageSize(Integer pageSize) {
+        return pageSize == null || pageSize < 0 ? DEFAULT_PAGE_SIZE : pageSize;
     }
 }
