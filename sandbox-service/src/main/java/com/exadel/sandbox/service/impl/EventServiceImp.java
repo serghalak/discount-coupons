@@ -34,6 +34,14 @@ public class EventServiceImp implements EventService {
     private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
 
+    /*TODO implement method*/
+    @Override
+    public PageList<CustomEventResponse> getAll(Integer pageNumber, Integer pageSize) {
+        Page<Event> eventsPage = eventRepository.findAll(PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize), Sort.by("id")));
+
+        return null;
+    }
+
     @Override
     public PageList<CustomEventResponse> getAllEventsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
         var city = cityRepository.findCityByUserId(userId);
@@ -74,7 +82,6 @@ public class EventServiceImp implements EventService {
         var sort = getSorting(filterRequest.getStatus());
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
-        final Page<Event> eventPage;
 
         if (filterRequest.getLocationId() == 0 &&
                 filterRequest.getCategoriesIdSet().isEmpty() &&
@@ -249,7 +256,6 @@ public class EventServiceImp implements EventService {
             default:
                 return Sort.by(Sort.Direction.DESC, "name");
         }
-
     }
 
     private int getPageNumber(Integer pageNumber) {
