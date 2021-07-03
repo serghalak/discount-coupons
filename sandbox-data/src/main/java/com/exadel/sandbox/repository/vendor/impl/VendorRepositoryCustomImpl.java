@@ -14,8 +14,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
 
-    private static final String WHERE_EVENT_STATUS=
-            " AND e.status IN('" + Status.ACTIVE.name() + "'" + ", '" + Status.NEW.name() + "'" +")";
+    private static final String WHERE_EVENT_STATUS=" AND e.status NOT IN('" + Status.EXPIRED.name() + "')";
+            //" AND e.status IN('" + Status.ACTIVE.name() + "'" + ", '" + Status.NEW.name() + "'" +")";
 
     private final EntityManager entityManager;
 

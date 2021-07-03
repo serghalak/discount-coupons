@@ -17,4 +17,6 @@ public interface EventService {
     PageList<EventResponse> getAllEventsByDescription(Long cityId, String search, Integer pageNumber, Integer pageSize);
 
     PageList<CustomEventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest, Integer pageNumber, Integer pageSize);
+
+
 }
