@@ -1,12 +1,14 @@
 package com.exadel.sandbox.controllers;
 
-import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -21,38 +23,5 @@ public class UserController {
     public ResponseEntity<?> getUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok().body(userService.findByName(authentication.getName()));
-    }
-
-    @PostMapping(path = "/addEvent/toOrder/{eventId}")
-    public ResponseEntity<?> addEventToUserOrder(
-            @PathVariable Long eventId,
-            @RequestHeader("Authorization") AuthenticationResponse authResponse) {
-
-        return ResponseEntity.ok()
-                .body(userService.saveEventToOrder(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                        eventId,
-                        jwtUtil.extractEmailFromAuthResponse(authResponse)));
-    }
-
-    @DeleteMapping(path = "/removeEvent/fromOrder")
-    public ResponseEntity<?> removeEventFromOrder(
-            @RequestHeader("Authorization") AuthenticationResponse authResponse,
-            @RequestParam(name = "eventId") Long eventId) {
-
-        String response = userService.removeEventFromOrder(
-                eventId,
-                jwtUtil.extractUserIdFromAuthResponse(authResponse));
-
-        return ResponseEntity.ok()
-                .body(response);
-    }
-
-    @GetMapping(path = "/allEvents/fromUserOrder")
-    public ResponseEntity<?> getAllEventsFromUserOrder(
-            @RequestHeader("Authorization") AuthenticationResponse authResponse) {
-        return ResponseEntity.ok()
-                .body(userService.getAllFromOrder(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse)));
     }
 }

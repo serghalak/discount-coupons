@@ -1,12 +1,10 @@
 package com.exadel.sandbox.controllers;
 
-import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.FavouriteService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -33,10 +29,27 @@ public class FavouriteController {
              @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
              @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         return new ResponseEntity<>(favouriteService.getAllFromSaved(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse),cityId, pageNumber, pageSize), HttpStatus.OK);
+                jwtUtil.extractUserIdFromAuthResponse(authResponse),
+                cityId, pageNumber, pageSize), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/addEvent/toSaved")
+    @GetMapping(path = "/getCategory/fromFavorites")
+    public ResponseEntity<?> grtCategoryFromSaved(
+            @RequestHeader("Authorization") AuthenticationResponse authResponse
+    ) {
+        return ResponseEntity.ok().body(favouriteService.
+                categoriesFromSaved(jwtUtil.extractUserIdFromAuthResponse(authResponse)));
+    }
+
+    @GetMapping(path = "/getVendors/fromFavorites")
+    public ResponseEntity<?> grtVendorsFromSaved(
+            @RequestHeader("Authorization") AuthenticationResponse authResponse
+    ) {
+        return ResponseEntity.ok().body(favouriteService.
+                vendorsFromSaved(jwtUtil.extractUserIdFromAuthResponse(authResponse)));
+    }
+
+    @PostMapping(path = "/addEvent/toFavorites")
     public ResponseEntity<?> addEventToSaved(
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @RequestParam(name = "eventId") Long eventId) {
@@ -47,24 +60,14 @@ public class FavouriteController {
                         eventId));
     }
 
-    @GetMapping(path = "/getCategory/fromSaved")
-    public ResponseEntity<?> grtCategoryFromSaved(
-            @RequestHeader("Authorization") AuthenticationResponse authResponse
-    ){
-
-        return ResponseEntity.ok().body(favouriteService.categoriesFromSaved(2L));
-    }
-
-    @DeleteMapping(path = "/removeEvent/fromSaved")
+    @DeleteMapping(path = "/removeEvent/fromFavorites")
     public ResponseEntity<?> removeEventFromSaved(
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @RequestParam(name = "eventId") Long eventId) {
 
-        String response = favouriteService.removeEventFromSaved(
+        return ResponseEntity.ok().body( favouriteService.removeEventFromSaved(
                 jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                eventId);
-
-        return ResponseEntity.ok().body(response);
+                eventId));
     }
 
 
