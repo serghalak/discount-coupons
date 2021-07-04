@@ -1,6 +1,5 @@
 package com.exadel.sandbox.repository.vendor.impl;
 
-import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.repository.vendor.VendorRepositoryCustom;
@@ -14,8 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
 
-    private static final String WHERE_EVENT_STATUS=" AND e.status NOT IN('" + Status.EXPIRED.name() + "')";
-            //" AND e.status IN('" + Status.ACTIVE.name() + "'" + ", '" + Status.NEW.name() + "'" +")";
+    private static final String WHERE_EVENT_STATUS = " AND e.status NOT IN('" + Status.EXPIRED.name() + "')";
 
     private final EntityManager entityManager;
 
@@ -39,17 +37,17 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
     @Override
     public List<Vendor> findAllByLocationFilterId(Long id, boolean isCountry) {
 
-        String sqlWhere="";
+        String sqlWhere = "";
 
-        if(id==null){
-            sqlWhere="WHERE true ";
-        }else {
+        if (id == null) {
+            sqlWhere = "WHERE true ";
+        } else {
             sqlWhere = (isCountry) ? "WHERE cn.id=?" : "WHERE ct.id=?";
         }
-        sqlWhere =(isCountry) ?  "WHERE cn.id=?" : "WHERE ct.id=?";
+        sqlWhere = (isCountry) ? "WHERE cn.id=?" : "WHERE ct.id=?";
 
         return entityManager.createNativeQuery(
-                "SELECT DISTINCT v.* FROM vendor v "+
+                "SELECT DISTINCT v.* FROM vendor v " +
                         "INNER JOIN event e on v.id=e.vendor_id " +
                         "INNER JOIN event_location el on e.id= el.event_id " +
                         "INNER JOIN location l on el.location_id=l.id " +
@@ -57,7 +55,7 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                         "INNER JOIN country cn on ct.country_id=cn.id " +
                         sqlWhere + WHERE_EVENT_STATUS + " ORDER BY v.name ASC ",
                 Vendor.class)
-                .setParameter(1, id )
+                .setParameter(1, id)
                 .getResultList();
 
     }
@@ -65,27 +63,27 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
     @Override
     public List<Vendor> findAllByCategoryFilterIds(List<Long> ids) {
 
-        String sqlWhere=getWhereCondition(ids);
+        String sqlWhere = getWhereCondition(ids);
 
         return entityManager.createNativeQuery(
-                "SELECT DISTINCT v.* FROM vendor v "+
+                "SELECT DISTINCT v.* FROM vendor v " +
                         "INNER JOIN event e on v.id=e.vendor_id " +
                         sqlWhere + " ORDER BY v.name ASC ",
                 Vendor.class)
                 .getResultList();
     }
 
-    private String getWhereCondition(List<Long>ids){
+    private String getWhereCondition(List<Long> ids) {
 
-        if(ids.isEmpty() || ids.size() ==0 ){
+        if (ids.isEmpty() || ids.size() == 0) {
             return "";
         }
 
-        String result="WHERE e.category_id IN (";
-        int numberOfElements=0;
+        String result = "WHERE e.category_id IN (";
+        int numberOfElements = 0;
 
-        for(Long id : ids){
-            result += (numberOfElements != 0) ?  ", " + id : id;
+        for (Long id : ids) {
+            result += (numberOfElements != 0) ? ", " + id : id;
             numberOfElements++;
         }
 

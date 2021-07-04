@@ -14,6 +14,4 @@ public interface TagService {
 
     List<TagFilterResponse>findAllTagsByCategoryFilter(List<Long>ids);
 
-    void deleteTagById(Long categoryId);
-
 }

@@ -47,27 +47,10 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagFilterResponse>findAllTagsByCategoryFilter(List<Long>ids){
+    public List<TagFilterResponse> findAllTagsByCategoryFilter(List<Long> ids) {
         return repository.findAllByCategoryFilter(ids).stream()
                 .map(mapper::tagToTagFilterResponse)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void deleteTagById(Long tagId) {
-        Optional<Tag> tagOptional = repository.findById(tagId);
-        if(tagOptional.isPresent()){
-            Set<Event> events = tagOptional.get().getEvents();
-            if(events.isEmpty() || events.size()==0){
-                repository.delete(tagOptional.get());
-            }else{
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                        "You cannot delete tag. Tag is uses");
-            }
-        }else{
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    "Tag is not exists");
-        }
     }
 
     private int getPageNumber(Integer pageNumber) {
@@ -77,6 +60,5 @@ public class TagServiceImpl implements TagService {
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
-
 
 }

@@ -23,13 +23,4 @@ public class TagController {
         return service.findAll(pageNumber, pageSize);
     }
 
-    @DeleteMapping(path = {"/{tagId}"})
-    //@ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable("tagId") Long tagId) {
-
-        log.debug(">>>>>>>>>>controller delete tag by Id");
-
-        service.deleteTagById(tagId);
-    }
-
 }

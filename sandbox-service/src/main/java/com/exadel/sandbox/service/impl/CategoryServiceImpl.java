@@ -8,9 +8,7 @@ import com.exadel.sandbox.mappers.category.CategoryMapper;
 import com.exadel.sandbox.mappers.category.CategoryShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Event;
-import com.exadel.sandbox.model.vendorinfo.Tag;
 import com.exadel.sandbox.repository.category.CategoryRepository;
-import com.exadel.sandbox.repository.tag.TagRepository;
 import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.EventService;
 import com.exadel.sandbox.service.TagService;
@@ -47,15 +45,15 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug(">>>>>>>>delete category id " + categoryId);
 
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-        if(categoryOptional.isPresent()){
-            Set<Event> events=categoryOptional.get().getEvents();
-            if(events.isEmpty() ||events.size()==0){
+        if (categoryOptional.isPresent()) {
+            Set<Event> events = categoryOptional.get().getEvents();
+            if (events.isEmpty() || events.size() == 0) {
                 categoryRepository.deleteById(categoryId);
-            }else{
+            } else {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
                         "You cannot delete category. Category is uses");
             }
-        }else{
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
                     "Category is not exists");
         }
@@ -94,7 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Set<CategoryResponse> listCategoriesByPartOfName(String categoryName) {
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
 
-        categoryName=categoryName.isEmpty() ? "" : categoryName;
+        categoryName = categoryName.isEmpty() ? "" : categoryName;
 
         return categoryRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(categoryName).stream()
                 .map(categoryMapper::categoryToCategoryResponse)
@@ -169,7 +167,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryFilterResponse> findAllCategoryByLocationFilter(Long id, boolean isCountry) {
-        return categoryRepository.findAllByLocationFilterId(id,isCountry).stream()
+        return categoryRepository.findAllByLocationFilterId(id, isCountry).stream()
                 .map(categoryMapper::categoryToCategoryFilterResponse)
                 .collect(Collectors.toList());
     }
@@ -182,7 +180,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryFilterResponse>findAllCategoryFilter(){
+    public List<CategoryFilterResponse> findAllCategoryFilter() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::categoryToCategoryFilterResponse)
                 .collect(Collectors.toList());

@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class TagRequest {
 
     private Long id;
+
     private String name;
 }
