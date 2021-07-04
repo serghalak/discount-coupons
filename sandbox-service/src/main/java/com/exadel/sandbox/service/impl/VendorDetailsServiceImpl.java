@@ -3,10 +3,8 @@ package com.exadel.sandbox.service.impl;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
-import com.exadel.sandbox.mappers.event.EventShortMapper;
 import com.exadel.sandbox.mappers.vendor.VendorMapper;
 import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
-import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.VendorDetailsService;
@@ -21,8 +19,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VendorDetailsServiceImpl implements VendorDetailsService {
     private final VendorRepository repository;
-    private final EventRepository eventRepository;
-    private final EventShortMapper eventMapper;
     private final VendorMapper vendorMapper;
     private final VendorShortMapper vendorShortMapper;
     private final CityRepository cityRepository;
@@ -38,15 +34,10 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
     }
 
     @Override
-    public VendorDetailsResponse findById(Long id) {
-        var vendor = repository.findById(id)
-                .map(vendorMapper::vendorToVendorResponse)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Vendor with id %d not found", id)));
-        var events = eventRepository.findAllByVendorId(id)
-                .stream()
-                .map(eventMapper::eventToEventShortResponse)
-                .collect(Collectors.toList());
-        return new VendorDetailsResponse(vendor, events);
+    public VendorDetailsResponse findByIdWithLocations(Long id) {
+        return repository.findByIdFetchLocations(id)
+                .map(vendorMapper::vendorToVendorDetailsResponse)
+                .orElseThrow(() -> new EntityNotFoundException((String.format("Vendor with id %d not found", id))));
     }
 
 
