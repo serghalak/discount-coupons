@@ -6,6 +6,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +32,15 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         //403
         response.sendError(HttpServletResponse.SC_FORBIDDEN,
                 "Authorization Failed : " + accessDeniedException.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         EntityNotFoundException entityNotFoundException) throws IOException {
+        //404
+        response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                "Requested resource is not available : " + entityNotFoundException.getMessage());
     }
 
     @ExceptionHandler(value = {Exception.class})
