@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     private final OrderService orderService;
-    private final EventRepository eventRepository;
     private final JwtUtil jwtUtil;
 
     @PostMapping(path = "/addEvent/toOrder")
