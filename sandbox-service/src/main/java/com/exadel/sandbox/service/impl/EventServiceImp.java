@@ -4,7 +4,6 @@ import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.FilterRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
-import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Status;
@@ -37,7 +36,8 @@ public class EventServiceImp implements EventService {
     /*TODO implement method*/
     @Override
     public PageList<CustomEventResponse> getAll(Integer pageNumber, Integer pageSize) {
-        Page<Event> eventsPage = eventRepository.findAll(PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize), Sort.by("id")));
+        Page<Event> eventsPage = eventRepository.findAll(PageRequest.of(getPageNumber(pageNumber),
+                getPageSize(pageSize), Sort.by("id")));
 
         return null;
     }
@@ -54,19 +54,22 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public PageList<EventResponse> getAllEventsByDescription(Long cityId, String search,
-                                                             Integer pageNumber, Integer pageSize) {
+    public PageList<CustomEventResponse> getAllEventsByDescription(Long cityId, String search,
+                                                                   Integer pageNumber, Integer pageSize) {
 
         Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
-                cityId, PageRequest.of(pageNumber, pageSize));
-        return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
+                cityId, PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
+                        Sort.by(Sort.Direction.DESC, "dateEnd")));
+        return new PageList<>(eventMapper.
+                eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
     }
 
     private PageList<CustomEventResponse> getEventResponsesByCity(Long cityId, Integer pageNumber, Integer pageSize) {
         Page<Event> eventsPage = eventRepository.findEventByCityId(cityId,
                 PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "dateEnd")));
 
-        return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
+        return new PageList<>(eventMapper.
+                eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
     }
 
     @Override
@@ -78,7 +81,8 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public PageList<CustomEventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest, Integer pageNumber, Integer pageSize) {
+    public PageList<CustomEventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest,
+                                                           Integer pageNumber, Integer pageSize) {
         var sort = getSorting(filterRequest.getStatus());
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
@@ -134,7 +138,8 @@ public class EventServiceImp implements EventService {
         return null;
     }
 
-    private PageList<CustomEventResponse> getCustomEventResponsePageListByVendors(FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
+    private PageList<CustomEventResponse> getCustomEventResponsePageListByVendors
+            (FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
         final Page<Event> eventPage;
 
         if (filterRequest.isCity()) {
@@ -143,7 +148,8 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
 
         } else {
             eventPage = eventRepository.findByByVendorsCountry(filterRequest.getLocationId(),
@@ -151,11 +157,13 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
         }
     }
 
-    private PageList<CustomEventResponse> getCustomEventResponsePageListByCategoriesAndVendors(FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
+    private PageList<CustomEventResponse> getCustomEventResponsePageListByCategoriesAndVendors
+            (FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
         final Page<Event> eventPage;
 
         if (filterRequest.isCity()) {
@@ -165,7 +173,8 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
 
         } else {
             eventPage = eventRepository.findByCategoryByByVendorsCountry(filterRequest.getLocationId(),
@@ -174,11 +183,13 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
         }
     }
 
-    private PageList<CustomEventResponse> getCustomEventResponsePageListByCategories(FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
+    private PageList<CustomEventResponse> getCustomEventResponsePageListByCategories
+            (FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
         final Page<Event> eventPage;
 
         if (filterRequest.isCity()) {
@@ -187,7 +198,8 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
 
         } else {
             eventPage = eventRepository.findByCategoryByCountry(filterRequest.getLocationId(),
@@ -195,11 +207,13 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
         }
     }
 
-    private PageList<CustomEventResponse> getCustomEventResponsePageListByTagsAndVedors(FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
+    private PageList<CustomEventResponse> getCustomEventResponsePageListByTagsAndVedors
+            (FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
         final Page<Event> eventPage;
         if (filterRequest.isCity()) {
             eventPage = eventRepository.findByTagsByVendorsByCity(filterRequest.getLocationId(),
@@ -208,7 +222,8 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
 
         } else {
             eventPage = eventRepository.findByTagsByVendorsByCountry(filterRequest.getLocationId(),
@@ -217,11 +232,13 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
         }
     }
 
-    private PageList<CustomEventResponse> getCustomEventResponsePageListByTags(FilterRequest filterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
+    private PageList<CustomEventResponse> getCustomEventResponsePageListByTags(FilterRequest filterRequest,
+                                                                               Integer pageNumber, Integer pageSize, Sort sort) {
         final Page<Event> eventPage;
 
         if (filterRequest.isCity()) {
@@ -230,7 +247,8 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCityId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
 
         } else {
             eventPage = eventRepository.findByTagsByCountry(filterRequest.getLocationId(),
@@ -238,7 +256,8 @@ public class EventServiceImp implements EventService {
                     filterRequest.getStatus(),
                     PageRequest.of(pageNumber, pageSize, sort));
 
-            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(), filterRequest.getLocationId()), eventPage);
+            return new PageList<>(eventMapper.eventListToCustomEventResponseListByCountryId(eventPage.getContent(),
+                    filterRequest.getLocationId()), eventPage);
         }
     }
 
