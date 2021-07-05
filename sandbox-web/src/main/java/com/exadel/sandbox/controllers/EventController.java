@@ -76,15 +76,13 @@ public class EventController {
     }
 
 
-    /*TODO fixed endpoint*/
-//    @DeleteMapping(path = {"/{eventId}"})
-//    public ResponseEntity<?> deleteEvent(@PathVariable("eventId") Long eventId) {
-//
-//        return eventService.deleteEventById(eventId) ?
-//                ResponseEntity.status(HttpStatus.OK).build() :
-//                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//
-//    }
+    @DeleteMapping(path = {"/{eventId}"})
+    public ResponseEntity<?> deleteEvent(@PathVariable("eventId") Long eventId) {
+
+        return eventService.deleteEventById(eventId) ?
+                ResponseEntity.status(HttpStatus.OK).build() :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 
     /*TODO fixed endpoint*/
 //    @PostMapping(produces = {"application/json"},

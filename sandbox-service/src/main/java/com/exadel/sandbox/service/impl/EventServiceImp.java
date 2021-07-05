@@ -5,7 +5,6 @@ import com.exadel.sandbox.dto.request.FilterRequest;
 import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
-import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
@@ -289,9 +288,17 @@ public class EventServiceImp implements EventService {
     public boolean deleteEventById(Long eventId) {
         final var event = eventRepository.getById(eventId);
 
-        return event.getUserFeedbacks() == null &&
-                event.getUserOrders() == null &&
-                event.getUserSavedEvents() == null;
+        if (checkRightForRemove(event)) return false;
+
+        eventRepository.delete(event);
+
+        return true;
+    }
+
+    private boolean checkRightForRemove(Event event) {
+        return event.getUserFeedbacks().isEmpty() ||
+                event.getUserOrders().isEmpty() ||
+                event.getUserSavedEvents().isEmpty();
     }
 
     @Override
