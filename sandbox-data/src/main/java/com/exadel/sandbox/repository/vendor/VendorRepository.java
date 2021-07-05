@@ -15,7 +15,7 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRep
             "       v.id,\n" +
             "       v.name\n" +
             "FROM vendor v\n" +
-            "         JOIN event e ON v.id = e.vendor_id\n" +
+            "       LEFT JOIN event e ON v.id = e.vendor_id\n" +
             "GROUP BY v.id, v.name", nativeQuery = true)
     Page<VendorProjection> findAllWithEventsCount(Pageable pageable);
 
@@ -29,4 +29,5 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRep
             "WHERE v.id = ?", nativeQuery = true)
     Optional<Vendor> findByIdFetchLocations(Long id);
 
+    Optional<Vendor> findByName(String name);
 }

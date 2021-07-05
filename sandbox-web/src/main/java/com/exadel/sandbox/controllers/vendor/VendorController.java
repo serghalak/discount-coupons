@@ -1,6 +1,7 @@
 package com.exadel.sandbox.controllers.vendor;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
+import com.exadel.sandbox.dto.request.vendor.VendorRequest;
 import com.exadel.sandbox.dto.response.vendor.CustomVendorResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
@@ -9,6 +10,8 @@ import com.exadel.sandbox.service.VendorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/vendors")
@@ -36,5 +39,10 @@ public class VendorController {
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false) Integer pageSize) {
         return service.findAllWithEventsCount(pageNumber, pageSize);
+    }
+
+    @PostMapping
+    public void create(@RequestParam Long cityId, @Valid @RequestBody VendorRequest request) {
+        detailsService.create(cityId, request);
     }
 }
