@@ -3,6 +3,7 @@ package com.exadel.sandbox.controllers;
 import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.FilterRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
+import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.EventService;
@@ -67,12 +68,30 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public ResponseEntity<?> getAllEvents(
+    public PageList<EventDetailsResponse> getAllEvents(
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false) Integer pageSize
     ) {
-        final PageList<CustomEventResponse> events = eventService.getAll(pageNumber, pageSize);
-
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        return eventService.getAll(pageNumber, pageSize);
     }
+
+
+    /*TODO fixed endpoint*/
+//    @DeleteMapping(path = {"/{eventId}"})
+//    public ResponseEntity<?> deleteEvent(@PathVariable("eventId") Long eventId) {
+//
+//        return eventService.deleteEventById(eventId) ?
+//                ResponseEntity.status(HttpStatus.OK).build() :
+//                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//
+//    }
+
+    /*TODO fixed endpoint*/
+//    @PostMapping(produces = {"application/json"},
+//            consumes = {"application/json"},
+//            path = {"/{vendorId}"})
+//    public ResponseEntity<?> createEvent(@PathVariable("vendorId") Long vendorId,
+//                                         @Valid @RequestBody EventRequest eventRequest) {
+//        return new ResponseEntity<>(eventService.saveEvent(vendorId, eventRequest), HttpStatus.OK);
+//    }
 }

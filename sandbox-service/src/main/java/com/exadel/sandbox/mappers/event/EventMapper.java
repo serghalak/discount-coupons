@@ -9,10 +9,12 @@ import com.exadel.sandbox.mappers.location.LocationMapper;
 import com.exadel.sandbox.mappers.tag.TagMapper;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.model.vendorinfo.Tag;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -28,8 +30,25 @@ public class EventMapper {
     private final LocationMapper locMapper;
     private final TagMapper tagMapper;
 
-    public Event eventRequestToEvent(EventRequest eventRequest) {
-        return Objects.isNull(eventRequest) ? null : mapper.map(eventRequest, Event.class);
+    public Event eventRequestToEvent(EventRequest eventRequest, Set<Location> locations, Set<Tag> tags) {
+
+        return Event.builder()
+                .name(eventRequest.getName())
+                .description(eventRequest.getDescription())
+                .fullDescription(eventRequest.getFullDescription())
+                .dateBegin(eventRequest.getDateBegin())
+                .dateEnd(eventRequest.getDateEnd())
+                .dateOfCreation(LocalDateTime.now())
+                .discount(eventRequest.getDiscount())
+                .email(eventRequest.getEmail())
+                .isOnline(eventRequest.isOnline())
+                .limitation(eventRequest.getLimitation())
+                .phoneNumber(eventRequest.getPhoneNumber())
+                .totalCount(eventRequest.getTotalCount())
+                .price(eventRequest.getPrice())
+                .locations(locations)
+                .tags(tags)
+                .build();
     }
 
     public EventResponse eventToEventResponse(Event event) {
@@ -39,7 +58,7 @@ public class EventMapper {
     public EventDetailsResponse eventToEventDetailResponse(Event event) {
         return EventDetailsResponse.builder()
                 .id(event.getId())
-                .shortDescription(event.getDescription())
+                .description(event.getDescription())
                 .vendorName(event.getVendor().getName())
                 .vendorId(event.getVendor().getId())
                 .categoryName(event.getCategory().getName())
@@ -92,6 +111,12 @@ public class EventMapper {
                         .dateEnd(event.getDateEnd())
                         .dateBegin(event.getDateBegin())
                         .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<EventDetailsResponse> eventListToDetailEventResponse(List<Event> events) {
+        return events.stream()
+                .map(event -> mapper.map(event, EventDetailsResponse.class))
                 .collect(Collectors.toList());
     }
 }

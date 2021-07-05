@@ -2,15 +2,20 @@ package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.FilterRequest;
+import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
+import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Status;
-import com.exadel.sandbox.repository.category.CategoryRepository;
+import com.exadel.sandbox.model.vendorinfo.Tag;
+import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
+import com.exadel.sandbox.repository.location_repository.LocationRepository;
+import com.exadel.sandbox.repository.tag.TagRepository;
 import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -31,15 +37,17 @@ public class EventServiceImp implements EventService {
 
     private final EventRepository eventRepository;
     private final CityRepository cityRepository;
-    private final CategoryRepository categoryRepository;
+    private final LocationRepository locationRepository;
+    private final TagRepository tagRepository;
+    private final UserRepository userRepository;
     private final EventMapper eventMapper;
 
-    /*TODO implement method*/
     @Override
-    public PageList<CustomEventResponse> getAll(Integer pageNumber, Integer pageSize) {
-        Page<Event> eventsPage = eventRepository.findAll(PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize), Sort.by("id")));
+    public PageList<EventDetailsResponse> getAll(Integer pageNumber, Integer pageSize) {
+        final Page<Event> eventsPage = eventRepository.findAll(PageRequest.of(getPageNumber(pageNumber),
+                getPageSize(pageSize), Sort.by("id").descending()));
 
-        return null;
+        return new PageList<>(eventMapper.eventListToDetailEventResponse(eventsPage.getContent()), eventsPage);
     }
 
     @Override
@@ -59,6 +67,7 @@ public class EventServiceImp implements EventService {
 
         Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
                 cityId, PageRequest.of(pageNumber, pageSize));
+
         return new PageList<>(eventMapper.eventListToEventResponseList(eventsPage.getContent()), eventsPage);
     }
 
@@ -258,6 +267,32 @@ public class EventServiceImp implements EventService {
         }
     }
 
+    @Override
+    public boolean deleteEventById(Long eventId) {
+        final var event = eventRepository.getById(eventId);
+
+        return event.getUserFeedbacks() == null &&
+                event.getUserOrders() == null &&
+                event.getUserSavedEvents() == null;
+    }
+
+    @Override
+    public PageList<CustomEventResponse> saveEvent(Long vendorId, EventRequest eventRequest) {
+
+        if (vendorId <= 0 || vendorId == null || eventRequest == null) {
+            throw new IllegalArgumentException("Enter wright information");
+        }
+
+        final Set<Location> locationsById = locationRepository.getLocationsById(eventRequest.getLocationsId());
+        final Set<Tag> tagsById = tagRepository.getTagsById(eventRequest.getTagsId());
+
+        final Event event = eventMapper.eventRequestToEvent(eventRequest, locationsById, tagsById);
+
+
+        return null;
+    }
+
+
     private int getPageNumber(Integer pageNumber) {
         return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
     }
@@ -265,6 +300,4 @@ public class EventServiceImp implements EventService {
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
-
-
 }
