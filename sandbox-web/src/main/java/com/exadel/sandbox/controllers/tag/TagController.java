@@ -4,8 +4,11 @@ import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.response.tag.TagResponse;
 import com.exadel.sandbox.service.TagService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @CrossOrigin
 @AllArgsConstructor
 @RestController
@@ -19,4 +22,5 @@ public class TagController {
                                         @RequestParam(name = "pageSize", required = false) Integer pageSize){
         return service.findAll(pageNumber, pageSize);
     }
+
 }

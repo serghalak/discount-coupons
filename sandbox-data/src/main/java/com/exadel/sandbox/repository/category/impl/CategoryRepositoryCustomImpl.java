@@ -13,8 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
-    private static final String WHERE_EVENT_STATUS=
-            " AND e.status IN('" + Status.ACTIVE.name() + "'" + ", '" + Status.NEW.name() + "'" +")";
+    private static final String WHERE_EVENT_STATUS = " AND e.status NOT IN('" + Status.EXPIRED.name() + "')";
 
     private final EntityManager entityManager;
 
@@ -31,40 +30,37 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
                 .getResultList();
     }
 
-
     @Override
     public List<Category> findAllByLocationFilterId(Long id, boolean isCountry) {
 
-        String sqlWhere="";
-        if(id==null){
-            sqlWhere="WHERE true ";
-        }else {
+        String sqlWhere = "";
+        if (id == null) {
+            sqlWhere = "WHERE true ";
+        } else {
             sqlWhere = (isCountry) ? "WHERE cn.id=?" : "WHERE ct.id=?";
         }
 
         return entityManager.createNativeQuery(
-                "SELECT DISTINCT c.* FROM category c "+
-                    "INNER JOIN event e on c.id=e.category_id " +
-                    "INNER JOIN event_location el on e.id= el.event_id " +
-                    "INNER JOIN location l on el.location_id=l.id " +
-                    "INNER JOIN city ct on l.city_id=ct.id " +
-                    "INNER JOIN country cn on ct.country_id=cn.id " +
-                 sqlWhere + WHERE_EVENT_STATUS + " ORDER BY c.name ASC ",
+                "SELECT DISTINCT c.* FROM category c " +
+                        "INNER JOIN event e on c.id=e.category_id " +
+                        "INNER JOIN event_location el on e.id= el.event_id " +
+                        "INNER JOIN location l on el.location_id=l.id " +
+                        "INNER JOIN city ct on l.city_id=ct.id " +
+                        "INNER JOIN country cn on ct.country_id=cn.id " +
+                        sqlWhere + WHERE_EVENT_STATUS + " ORDER BY c.name ASC ",
                 Category.class)
-                .setParameter(1, id )
+                .setParameter(1, id)
                 .getResultList();
-
     }
-
 
 
     @Override
     public List<Category> findAllByVendorFilterIds(List<Long> ids) {
 
-        String sqlWhere=getWhereConditionForIds(ids);
+        String sqlWhere = getWhereConditionForIds(ids);
 
         return entityManager.createNativeQuery(
-                "SELECT DISTINCT c.* FROM category c "+
+                "SELECT DISTINCT c.* FROM category c " +
                         "INNER JOIN event e on c.id=e.category_id " +
                         sqlWhere + WHERE_EVENT_STATUS + " ORDER BY c.name ASC ",
                 Category.class)
@@ -72,18 +68,17 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     }
 
 
+    private String getWhereConditionForIds(List<Long> ids) {
 
-    private String getWhereConditionForIds(List<Long>ids){
-
-        if(ids.isEmpty() || ids.size() ==0 ){
+        if (ids.isEmpty() || ids.size() == 0) {
             return "WHERE true";
         }
 
-        String result="WHERE e.vendor_id IN (";
-        int numberOfElements=0;
+        String result = "WHERE e.vendor_id IN (";
+        int numberOfElements = 0;
 
-        for(Long id : ids){
-            result += (numberOfElements != 0) ?  ", " + id : id;
+        for (Long id : ids) {
+            result += (numberOfElements != 0) ? ", " + id : id;
             numberOfElements++;
         }
 
