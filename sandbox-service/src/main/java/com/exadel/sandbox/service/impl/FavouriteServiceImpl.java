@@ -47,7 +47,7 @@ public class FavouriteServiceImpl implements FavouriteService {
 
     @Override
     public List<VendorShortResponse> vendorsFromSaved(Long userId) {
-        return vendorRepository.getAllCategoriesFromSaved(userId).stream()
+        return vendorRepository.getAllVendorsFromSaved(userId).stream()
                 .map(el -> mapper.map(el, VendorShortResponse.class))
                 .collect(Collectors.toList());
     }

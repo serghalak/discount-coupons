@@ -12,5 +12,5 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRep
             "JOIN event e on e.vendor_id=v.id " +
             "JOIN saved_event se on se.event_id=e.id " +
             "WHERE se.user_id = ?1", nativeQuery = true)
-    Set<Vendor> getAllCategoriesFromSaved(Long userId);
+    Set<Vendor> getAllVendorsFromSaved(Long userId);
 }
