@@ -49,7 +49,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public Set<CityResponse> findCitiesByEventStatusActive() {
-        return cityRepository.findCitiesByEventStatus(Status.NEW)
+        return cityRepository.findCitiesByEventStatus(Status.ACTIVE)
                 .stream()
                 .map(city -> mapper.map(city, CityResponse.class))
                 .collect(Collectors.toSet());
