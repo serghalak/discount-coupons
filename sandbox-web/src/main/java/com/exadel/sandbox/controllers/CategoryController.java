@@ -41,7 +41,7 @@ public class CategoryController {
 
     @GetMapping(produces = {"application/json"}, path = "categoryname/{name}")
     public Set<CategoryResponse> getCategoriesByPartOfName(
-            @PathVariable(value = "name",required = false) String categoryName){
+            @PathVariable(value = "name", required = false) String categoryName) {
 
         log.debug(">>>>>>>>>>Category List by part of name: " + categoryName);
 

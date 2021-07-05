@@ -1,20 +1,17 @@
 package com.exadel.sandbox.service.filter.impl;
 
 import com.exadel.sandbox.dto.request.filter.FilterRequest;
+import com.exadel.sandbox.dto.response.city.CityResponse;
 import com.exadel.sandbox.dto.response.filter.*;
-import com.exadel.sandbox.service.CategoryService;
-import com.exadel.sandbox.service.LocationService;
-import com.exadel.sandbox.service.TagService;
-import com.exadel.sandbox.service.VendorDetailsService;
+import com.exadel.sandbox.service.*;
 import com.exadel.sandbox.service.filter.FilterService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @AllArgsConstructor
 @Service
 public class FilterServiceImpl implements FilterService {
@@ -23,45 +20,49 @@ public class FilterServiceImpl implements FilterService {
     private VendorDetailsService vendorService;
     private LocationService locationService;
     private TagService tagService;
+    private CityService cityService;
 
     @Override
-    public FilterResponse getFilterResponse(FilterRequest filterRequest) {
+    public FilterResponse getFilterResponse(FilterRequest filterRequest, Long userId) {
 
         switch (filterRequest.getMain()) {
             case "location":
                 return getFilterResponseMainLocation(filterRequest);
             case "categories":
                 return getFilterResponseMainCategories(filterRequest);
-            case "tags":
-                return getFilterResponseMainTags(filterRequest);
-            case "vendors":
-                return getFilterResponseMainVendors(filterRequest);
             default:
-                return getFilterResponseAll(filterRequest);
+                return getFilterResponseAll(filterRequest, userId);
         }
     }
 
-    private FilterResponse getFilterResponseAll(FilterRequest filterRequest) {
+    private FilterResponse getFilterResponseAll(FilterRequest filterRequest, Long userId) {
+
+        CityResponse cityByUserId = cityService.findCityByUserId(userId);
+
         List<LocationFilterResponse> allLocationFilter = locationService.findAllLocationFilter();
-        List<CategoryFilterResponse> allCategoriesFilter = categoryService.findAllCategoryFilter();
-        List<TagFilterResponse> allTagsFilter = tagService.findAllTagFilter();
-        List<VendorFilterResponse> allVendorsFilter = vendorService.findAllVendorFilter();
+        allLocationFilter.stream()
+                .filter(locationFilterResponse -> locationFilterResponse.isCountry() == false &&
+                        locationFilterResponse.getId() == cityByUserId.getId())
+                .forEach(locationFilterResponse -> locationFilterResponse.setChecked(true));
+
+        List<CategoryFilterResponse> allCategoriesFilter = categoryService.findAllCategoryByLocationFilter(cityByUserId.getId(), false);
+        List<TagFilterResponse> allTagsFilter = Collections.emptyList();
+        List<VendorFilterResponse> allVendorsFilter = vendorService.findAllVendorByLocationFilter(cityByUserId.getId(), false);
 
         return new FilterResponse(allLocationFilter, allCategoriesFilter, allTagsFilter, allVendorsFilter);
     }
 
     private FilterResponse getFilterResponseMainLocation(FilterRequest filterRequest) {
 
-        List<CategoryFilterResponse> allCategiriesByLocationFilter =
+        List<CategoryFilterResponse> allCategoriesByLocationFilter =
                 getAllCategiriesByLocationFilter(filterRequest.getLocationId(), filterRequest.getIsCountry());
 
-        List<TagFilterResponse> allTagsByCategoryFilter =
-                getAllTagsByCategoryFilterResponse(allCategiriesByLocationFilter);
+        List<TagFilterResponse> allTagsByCategoryFilter = Collections.emptyList();
 
         List<VendorFilterResponse> allVendorsByLocationFilter =
                 getAllVendorsByLocationFilter(filterRequest.getLocationId(), filterRequest.getIsCountry());
 
-        return new FilterResponse(null, allCategiriesByLocationFilter, allTagsByCategoryFilter, allVendorsByLocationFilter);
+        return new FilterResponse(null, allCategoriesByLocationFilter, allTagsByCategoryFilter, allVendorsByLocationFilter);
     }
 
     private FilterResponse getFilterResponseMainCategories(FilterRequest filterRequest) {
@@ -69,47 +70,19 @@ public class FilterServiceImpl implements FilterService {
         List<TagFilterResponse> allTagsByCategoryFilter =
                 getAllTagsByCategoryFilter(filterRequest.getCategories());
 
-        List<VendorFilterResponse> allVendorsByCategoryFilter =
-                getAllVendorsByCategoryFilter(filterRequest.getCategories());
-
-        return new FilterResponse(null, null, allTagsByCategoryFilter, allVendorsByCategoryFilter);
+        return new FilterResponse(null, null, allTagsByCategoryFilter, null);
     }
-
-    private FilterResponse getFilterResponseMainTags(FilterRequest filterRequest) {
-        return new FilterResponse(null, null, null, null);
-    }
-
-
-    private FilterResponse getFilterResponseMainVendors(FilterRequest filterRequest) {
-        return new FilterResponse(null, null, null, null);
-    }
-
 
     private List<TagFilterResponse> getAllTagsByCategoryFilter(List<Long> ids) {
 
         if (ids.isEmpty() || ids.size() == 0) {
-            return null;
+            return Collections.emptyList();
         } else {
             return tagService.findAllTagsByCategoryFilter(ids);
         }
     }
 
-
-    private List<TagFilterResponse> getAllTagsByCategoryFilterResponse(
-            List<CategoryFilterResponse> categoryFilterResponses) {
-
-        if (categoryFilterResponses.isEmpty()) {
-            return null;
-        } else {
-            List<Long> ids = categoryFilterResponses.stream()
-                    .map(CategoryFilterResponse::getId)
-                    .collect(Collectors.toList());
-            return tagService.findAllTagsByCategoryFilter(ids);
-        }
-
-    }
-
-    private List<CategoryFilterResponse> getAllCategiriesByLocationFilter(long locationId, boolean isCountry) {
+   private List<CategoryFilterResponse> getAllCategiriesByLocationFilter(long locationId, boolean isCountry) {
         return categoryService.findAllCategoryByLocationFilter(locationId, isCountry);
     }
 
@@ -117,7 +90,4 @@ public class FilterServiceImpl implements FilterService {
         return vendorService.findAllVendorByLocationFilter(locationId, isCountry);
     }
 
-    private List<VendorFilterResponse> getAllVendorsByCategoryFilter(List<Long> ids) {
-        return vendorService.findAllVendorByCategoryFilter(ids);
-    }
 }

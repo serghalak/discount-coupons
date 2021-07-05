@@ -59,7 +59,7 @@ public class Event extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "status", columnDefinition = "ENUM('NEW', 'ACTIVE', 'EXPIRED')")
+    @Column(name = "status", columnDefinition = "ENUM('NEW', 'COMING_SOON', 'ACTIVE', 'EXPIRED', 'PERPETUAL')")
     @Enumerated(EnumType.STRING)
     private Status status;
 
