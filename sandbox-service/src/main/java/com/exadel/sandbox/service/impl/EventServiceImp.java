@@ -296,9 +296,9 @@ public class EventServiceImp implements EventService {
     }
 
     private boolean checkRightForRemove(Event event) {
-        return event.getUserFeedbacks().isEmpty() ||
-                event.getUserOrders().isEmpty() ||
-                event.getUserSavedEvents().isEmpty();
+        return !event.getUserFeedbacks().isEmpty() ||
+                !event.getUserOrders().isEmpty() ||
+                !event.getUserSavedEvents().isEmpty();
     }
 
     @Override
