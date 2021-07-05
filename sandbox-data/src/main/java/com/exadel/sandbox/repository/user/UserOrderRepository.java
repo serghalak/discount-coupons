@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface UserOrderRepository extends JpaRepository<User, Long> {
 

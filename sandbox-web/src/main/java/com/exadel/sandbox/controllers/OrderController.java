@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     private final OrderService orderService;
-    private final EventRepository eventRepository;
     private final JwtUtil jwtUtil;
 
     @PostMapping(path = "/addEvent/toOrder")
@@ -49,11 +48,10 @@ public class OrderController {
     @GetMapping(path = "/allEvents/fromUserOrder")
     public ResponseEntity<?> getAllEventsFromUserOrder(
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
-            @RequestParam(name = "city_id", required = false) Long cityId,
             @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         return ResponseEntity.ok()
                 .body(orderService.getAllFromOrder(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse), cityId, pageNumber, pageSize));
+                        jwtUtil.extractUserIdFromAuthResponse(authResponse), pageNumber, pageSize));
     }
 }

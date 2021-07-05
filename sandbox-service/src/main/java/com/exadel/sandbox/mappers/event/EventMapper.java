@@ -4,9 +4,12 @@ import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
+import com.exadel.sandbox.dto.response.event.EventResponseFoOrders;
 import com.exadel.sandbox.dto.response.location.CustomLocationResponse;
+import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.location.LocationMapper;
 import com.exadel.sandbox.mappers.tag.TagMapper;
+import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Tag;
@@ -29,6 +32,7 @@ public class EventMapper {
     private final ModelMapper mapper;
     private final LocationMapper locMapper;
     private final TagMapper tagMapper;
+    private final VendorShortMapper vendorShortMapper;
 
     public Event eventRequestToEvent(EventRequest eventRequest, Set<Location> locations, Set<Tag> tags) {
 
@@ -119,4 +123,18 @@ public class EventMapper {
                 .map(event -> mapper.map(event, EventDetailsResponse.class))
                 .collect(Collectors.toList());
     }
+
+    public List<EventResponseFoOrders> eventToEventResponseFoOrder(List<Event> events) {
+        return events.stream()
+        .map(event -> EventResponseFoOrders.builder()
+                .id(event.getId())
+                .gettingDate(event.getDateOfCreation())
+                .description(event.getDescription())
+                .vendorShortResponse(vendorShortMapper.vendorToVendorShortResponse(event.getVendor()))
+                .dateEnd(event.getDateEnd())
+                .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
+                .build())
+                .collect(Collectors.toList());
+    }
+
 }

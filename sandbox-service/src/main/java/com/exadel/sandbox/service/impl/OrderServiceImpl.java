@@ -2,6 +2,7 @@ package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
+import com.exadel.sandbox.dto.response.event.EventResponseFoOrders;
 import com.exadel.sandbox.mail.MailUtil;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
@@ -54,8 +55,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageList<CustomEventResponse> getAllFromOrder(Long userId, Long cityId,
-                                                         Integer pageNumber, Integer pageSize) {
+    public PageList<EventResponseFoOrders> getAllFromOrder(Long userId,
+                                                           Integer pageNumber, Integer pageSize) {
         final Page<Event> eventsFromOrder = userOrderRepository.getAllEventsFromUserOrder(userId,
                 PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
                         Sort.by(Sort.Direction.DESC, "dateEnd")));
@@ -66,8 +67,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return new PageList<>(
-                eventMapper.eventListToCustomEventResponseListByCityId(eventsFromOrder.getContent(),
-                        cityId),
+                eventMapper.eventToEventResponseFoOrder(eventsFromOrder.getContent()),
                 eventsFromOrder);
     }
 
