@@ -19,4 +19,5 @@ public interface EventService {
     PageList<CustomEventResponse> getEventsByFilter(Long userId, FilterRequest filterRequest, Integer pageNumber, Integer pageSize);
 
     PageList<CustomEventResponse> getAll(Integer pageNumber, Integer pageSize);
+
 }
