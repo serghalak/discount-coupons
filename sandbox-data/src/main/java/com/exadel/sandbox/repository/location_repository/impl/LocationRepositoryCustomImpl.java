@@ -16,16 +16,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
 
-    private static final String WHERE_EVENT_STATUS=
-            " AND e.status IN('" + Status.ACTIVE.name() + "'" + ", '" + Status.NEW.name() + "'" +")";
+    private static final String WHERE_EVENT_STATUS=" AND e.status NOT IN('" + Status.EXPIRED.name() + "')";
 
     private final EntityManager entityManager;
 
     @Override
     public List<LocationFilter> findAllByCategoryFilterIds(List<Long> ids) {
         String sqlWhere=getWhereCondition(ids, "category_id");
-
-
 
         return entityManager.createNativeQuery(
                 "SELECT DISTINCT cn.id as countryId, " +
