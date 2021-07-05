@@ -1,13 +1,11 @@
 package com.exadel.sandbox.model.vendorinfo;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.location.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,5 +34,12 @@ public class Vendor extends BaseEntity {
     @OneToMany(mappedBy = "vendor")
     @JsonIgnore
     private Set<Event> events = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "vendor_location",
+            joinColumns = @JoinColumn(name = "vendor_id"),
+            inverseJoinColumns = @JoinColumn(name = "location_id"))
+    @JsonIgnore
+    private Set<Location> locations = new HashSet<>();
 
 }

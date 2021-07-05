@@ -22,6 +22,6 @@ public interface LocationRepository extends JpaRepository<Location, Long> ,Locat
 //            "JOIN event e on e.category_id=c.id " +
 //            "JOIN saved_event se on se.event_id=e.id " +
 //            "WHERE se.user_id = :userId", nativeQuery = true)
-    List<Location> getAllEventsLocationsFromSaved(Long userId);
+//    List<Location> getAllEventsLocationsFromSaved(Long userId);
 
 }
