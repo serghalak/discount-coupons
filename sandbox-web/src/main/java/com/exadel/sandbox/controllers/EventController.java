@@ -34,7 +34,7 @@ public class EventController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @GetMapping("/by_filter")
+    @PostMapping("/by_filter")
     public ResponseEntity<?> getAllEventsByFilter(
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
