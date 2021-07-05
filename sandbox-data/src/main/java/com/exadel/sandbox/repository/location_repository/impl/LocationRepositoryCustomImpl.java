@@ -66,9 +66,9 @@ public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
                         "cn.name as countryName, " +
                         "ct.id as cityId, " +
                         "ct.name as cityName " +
-                        //"FROM city ct " +
-                        "FROM location l " +
-                        "INNER JOIN city ct on l.city_id=ct.id " +
+                        "FROM city ct " +
+                        //"FROM location l " +
+                        //"INNER JOIN city ct on l.city_id=ct.id " +
                         "INNER JOIN country cn on ct.country_id=cn.id " +
                         " ORDER BY cn.name ASC, ct.name ASC ", "LocalFilterMapping")
                 .getResultList();
