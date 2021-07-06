@@ -29,7 +29,7 @@ public class Category extends BaseEntity {
     @JsonIgnore
     private Set<Event> events = new HashSet<>();
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category",cascade=CascadeType.ALL)
     private Set<Tag> tags = new HashSet<>();
 
 }
