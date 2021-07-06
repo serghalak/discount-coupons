@@ -6,13 +6,13 @@ import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.dto.response.event.EventResponseFoOrders;
 import com.exadel.sandbox.dto.response.location.CustomLocationResponse;
-import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.location.LocationMapper;
 import com.exadel.sandbox.mappers.tag.TagMapper;
 import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Tag;
+import com.exadel.sandbox.model.vendorinfo.Vendor;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,8 @@ public class EventMapper {
     private final TagMapper tagMapper;
     private final VendorShortMapper vendorShortMapper;
 
-    public Event eventRequestToEvent(EventRequest eventRequest, Set<Location> locations, Set<Tag> tags) {
+    public Event eventRequestToEvent(EventRequest eventRequest, Vendor vendor,
+                                     Set<Location> locations, Set<Tag> tags) {
 
         return Event.builder()
                 .name(eventRequest.getName())
@@ -51,6 +52,7 @@ public class EventMapper {
                 .totalCount(eventRequest.getTotalCount())
                 .price(eventRequest.getPrice())
                 .locations(locations)
+                .vendor(vendor)
                 .tags(tags)
                 .build();
     }

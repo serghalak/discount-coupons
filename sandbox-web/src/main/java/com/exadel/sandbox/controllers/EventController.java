@@ -1,7 +1,7 @@
 package com.exadel.sandbox.controllers;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
-import com.exadel.sandbox.dto.request.FilterRequest;
+import com.exadel.sandbox.dto.request.EventFilterRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/event")
@@ -39,11 +40,11 @@ public class EventController {
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize,
-            @RequestBody FilterRequest filterRequest
+            @RequestBody EventFilterRequest eventFilterRequest
     ) {
         final PageList<CustomEventResponse> events = eventService.getEventsByFilter(
                 jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                filterRequest,
+                eventFilterRequest,
                 pageNumber,
                 pageSize);
 
@@ -75,7 +76,6 @@ public class EventController {
         return eventService.getAll(pageNumber, pageSize);
     }
 
-
     @DeleteMapping(path = {"/{eventId}"})
     public ResponseEntity<?> deleteEvent(@PathVariable("eventId") Long eventId) {
 
@@ -89,7 +89,20 @@ public class EventController {
 //            consumes = {"application/json"},
 //            path = {"/{vendorId}"})
 //    public ResponseEntity<?> createEvent(@PathVariable("vendorId") Long vendorId,
-//                                         @Valid @RequestBody EventRequest eventRequest) {
-//        return new ResponseEntity<>(eventService.saveEvent(vendorId, eventRequest), HttpStatus.OK);
+//                                         @Valid @RequestBody EventRequest eventRequest,
+//                                         BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//
+//            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
+//        }
+//        return eventService.saveEvent(vendorId, eventRequest);
+//    }
+//
+//    @NotNull
+//    private List<String> getErrorMessages(BindingResult bindingResult) {
+//        return bindingResult.getAllErrors().
+//                stream()
+//                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+//                .collect(Collectors.toList());
 //    }
 }
