@@ -18,7 +18,7 @@ public class EventDetailsResponse {
 
     private Long id;
 
-    private String shortDescription;
+    private String description;
 
     private String fullDescription;
 

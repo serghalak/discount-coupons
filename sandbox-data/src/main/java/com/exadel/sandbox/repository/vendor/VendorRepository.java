@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.Set;
 
 public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRepositoryCustom {
 
@@ -17,4 +20,10 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRep
             "GROUP BY v.id, v.name", nativeQuery = true)
     Page<VendorProjection> findAllWithEventsCount(Pageable pageable);
 
+
+    @Query(value = "SELECT v.* FROM vendor v " +
+            "JOIN event e on e.vendor_id=v.id " +
+            "JOIN saved_event se on se.event_id=e.id " +
+            "WHERE se.user_id = ?1", nativeQuery = true)
+    Set<Vendor> getAllVendorsFromSaved(Long userId);
 }

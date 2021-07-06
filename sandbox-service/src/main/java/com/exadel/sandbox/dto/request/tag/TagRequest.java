@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagResponse {
+public class TagRequest {
 
     private Long id;
+
     private String name;
 }
