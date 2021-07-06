@@ -22,12 +22,12 @@ public class VendorLocationRequest {
     @Max(180)
     private double longitude;
 
-    @NotNull
-    @Size(min = 4, max = 80)
+    @NotNull(message = "Street is mandatory")
+    @Size(min = 4, max = 80, message = "Street must be between 4 and 80 characters")
     private String street;
 
-    @NotNull
-    @Size(min = 1, max = 20)
+    @NotNull(message = "Number is mandatory")
+    @Size(min = 1, max = 10, message = "Number must be between 1 and 10 characters")
     private String number;
 
 }
