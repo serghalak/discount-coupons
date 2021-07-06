@@ -28,10 +28,10 @@ public class VendorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<VendorDetailsResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(detailsService.findById(id));
+        return ResponseEntity.ok(detailsService.findByIdWithLocations(id));
     }
 
-    @GetMapping("/custom")
+    @GetMapping("/all")
     public PageList<CustomVendorResponse> count(
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false) Integer pageSize) {

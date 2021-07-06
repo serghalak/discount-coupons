@@ -10,7 +10,7 @@ public interface VendorDetailsService {
 
     List<VendorShortResponse> findAllByUserLocation(Long userId);
 
-    VendorDetailsResponse findById(Long id);
+    VendorDetailsResponse findByIdWithLocations(Long id);
 
     List<VendorFilterResponse>findAllVendorByLocationFilter(Long id, boolean isCountry);
 
