@@ -44,8 +44,8 @@ public class VendorController {
     }
 
     @PostMapping
-    public void create(@RequestParam Long cityId, @Valid @RequestBody VendorRequest request) {
-        detailsService.create(cityId, request);
+    public void create( @Valid @RequestBody VendorRequest request) {
+        detailsService.create(request);
     }
 
     @PutMapping

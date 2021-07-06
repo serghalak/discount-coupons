@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.request.location.LocationRequest;
+import com.exadel.sandbox.dto.request.location.VendorLocationRequest;
 import com.exadel.sandbox.dto.request.location.VendorLocationUpdateRequest;
 import com.exadel.sandbox.dto.request.vendor.VendorRequest;
 import com.exadel.sandbox.dto.response.filter.LocationFilterResponse;
@@ -174,5 +175,20 @@ public class LocationServiceImpl implements LocationService {
     public Location findById(Long id) {
         return locationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Not found location by id %d", id)));
+    }
+
+    @Override
+    public Location create(VendorLocationRequest request) {
+        var city = cityService.findById(request.getCityId());
+        var location = getLocation(request, city);
+        return locationRepository.save(location);
+    }
+
+    public Location getLocation(VendorLocationRequest request, City city) {
+        return Location.builder().latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .number(request.getNumber())
+                .street(request.getStreet())
+                .city(city).build();
     }
 }
