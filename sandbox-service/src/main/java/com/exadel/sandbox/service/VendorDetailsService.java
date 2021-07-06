@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service;
 
+import com.exadel.sandbox.dto.request.vendor.VendorRequest;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
@@ -17,4 +18,6 @@ public interface VendorDetailsService {
     List<VendorFilterResponse>findAllVendorByCategoryFilter(List<Long> ids);
 
     List<VendorFilterResponse>findAllVendorFilter();
+
+    void create(Long cityId, VendorRequest request);
 }

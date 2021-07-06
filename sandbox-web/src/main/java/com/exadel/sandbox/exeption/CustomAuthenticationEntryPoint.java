@@ -1,8 +1,11 @@
 package com.exadel.sandbox.exeption;
 
+import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -12,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -43,6 +48,30 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 "Requested resource is not available : " + entityNotFoundException.getMessage());
     }
 
+    @ExceptionHandler(DuplicateNameException.class)
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         DuplicateNameException exception) throws IOException {
+        //409
+        response.sendError(HttpServletResponse.SC_CONFLICT,
+                "Requested resource is not available : " + exception.getMessage());
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         MethodArgumentNotValidException exception) throws IOException {
+        Map<String, String> errors = new HashMap<>();
+        exception.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        //400
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, exception.getMessage());
+    }
+
     @ExceptionHandler(value = {Exception.class})
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
@@ -51,6 +80,4 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                 "Internal Server Error : " + exception.getMessage());
     }
-
-
 }
