@@ -1,6 +1,8 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.request.location.LocationRequest;
+import com.exadel.sandbox.dto.request.location.VendorLocationRequest;
+import com.exadel.sandbox.dto.request.vendor.VendorRequest;
 import com.exadel.sandbox.dto.response.filter.LocationFilterResponse;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.model.LocationFilter;
@@ -13,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +103,14 @@ public class LocationServiceImpl implements LocationService {
         return groupByCountry(locationRepository.getAllLocationFilter());
     }
 
+    @Override
+    public Location update(Long id, VendorRequest request, City city) {
+        var locationFromDB = findById(id);
+        var location = getLocation(request, city);
+        location.setId(locationFromDB.getId());
+        return locationRepository.save(location);
+    }
+
     private List<LocationFilterResponse>groupByCountry(List<LocationFilter> locations){
         List<LocationFilterResponse>filterResponseList=new ArrayList<>();
 
@@ -151,5 +162,19 @@ public class LocationServiceImpl implements LocationService {
         }
 
         return locationFilterResponse;
+    }
+
+    public Location getLocation(VendorRequest request, City city) {
+        return Location.builder().latitude(request.getLocationRequest().getLatitude())
+                .longitude(request.getLocationRequest().getLongitude())
+                .number(request.getPhoneNumber())
+                .street(request.getLocationRequest().getStreet())
+                .city(city).build();
+    }
+
+    @Override
+    public Location findById(Long id) {
+        return locationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Not found location by id %d", id)));
     }
 }
