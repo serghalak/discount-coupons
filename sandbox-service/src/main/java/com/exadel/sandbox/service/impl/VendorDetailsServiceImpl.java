@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.request.vendor.VendorRequest;
+import com.exadel.sandbox.dto.request.vendor.VendorUpdateRequest;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
@@ -8,9 +9,10 @@ import com.exadel.sandbox.mappers.vendor.VendorMapper;
 import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.location.Location;
-import com.exadel.sandbox.repository.location_repository.CityRepository;
 import com.exadel.sandbox.repository.location_repository.LocationRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
+import com.exadel.sandbox.service.CityService;
+import com.exadel.sandbox.service.LocationService;
 import com.exadel.sandbox.service.VendorDetailsService;
 import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +28,14 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
     private final VendorRepository repository;
     private final VendorMapper vendorMapper;
     private final VendorShortMapper vendorShortMapper;
-    private final CityRepository cityRepository;
     private final LocationRepository locationRepository;
+    private final CityService cityService;
+    private final LocationService locationService;
 
     @Override
     public List<VendorShortResponse> findAllByUserLocation(Long userId) {
-        var city = cityRepository.findCityNameByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("City with userId %d not found", userId)));
-        return repository.findAllByUserLocation(city)
+        var cityName = cityService.findCityNameByUserId(userId);
+        return repository.findAllByUserLocation(cityName)
                 .stream()
                 .map(vendorShortMapper::vendorToVendorShortResponse)
                 .collect(Collectors.toList());
@@ -70,9 +72,8 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
 
     @Override
     public void create(Long cityId, VendorRequest request) {
-        var city = cityRepository.findById(cityId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Not found city by id%d", cityId)));
-        checkVendorNameExisting(request);
+        var city = cityService.findById(cityId);
+        checkVendorNameExisting(request.getName());
         var location = getLocation(request, city);
         var savedLocation = locationRepository.save(location);
         var vendor = vendorMapper.vendorRequestToVendor(request);
@@ -80,13 +81,28 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
         repository.save(vendor);
     }
 
-    private void checkVendorNameExisting(VendorRequest request) {
-        if (repository.findByName(request.getName()).isPresent()) {
+    @Override
+    public void update(Long vendorId, VendorUpdateRequest request) {
+        var vendorFromDB = repository.findById(vendorId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Not found vendor by id ,k. %d", vendorId)));
+        checkVendorNameExisting(request.getName());
+        var locations = request.getLocationRequests()
+                .stream()
+                .map(l -> locationService.update(l))
+                .collect(Collectors.toSet());
+        var vendor = vendorMapper.vendorUpdateRequestToVendor(request);
+        vendor.getLocations().addAll(locations);
+        vendor.setId(vendorFromDB.getId());
+        repository.save(vendor);
+    }
+
+    private void checkVendorNameExisting(String name) {
+        if (repository.findByName(name).isPresent()) {
             throw new DuplicateNameException("Vendor already exists");
         }
     }
 
-    private Location getLocation(VendorRequest request, City city) {
+    public Location getLocation(VendorRequest request, City city) {
         return Location.builder().latitude(request.getLocationRequest().getLatitude())
                 .longitude(request.getLocationRequest().getLongitude())
                 .number(request.getPhoneNumber())
