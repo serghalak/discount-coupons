@@ -105,6 +105,19 @@ public class EventController {
         return eventService.saveEvent(vendorId, eventRequest);
     }
 
+    @PutMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = {"/{eventId}"})
+    public ResponseEntity<?> updateEvent(@PathVariable("eventId") Long eventId,
+                                         @Valid @RequestBody EventRequest eventRequest,
+                                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+
+            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
+        }
+        return eventService.updateEvent(eventId, eventRequest);
+    }
+
     @NotNull
     private List<String> getErrorMessages(BindingResult bindingResult) {
         return bindingResult.getAllErrors().

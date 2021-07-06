@@ -337,6 +337,35 @@ public class EventServiceImp implements EventService {
         return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
     }
 
+    @Override
+    public ResponseEntity<?> updateEvent(Long eventId, EventRequest eventRequest) {
+
+        if (eventId == null || eventId <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        var event = eventRepository.getById(eventId);
+
+        if (event == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final Set<Location> locationsById = locationRepository.getLocationsById(eventRequest.getLocationsId());
+        final var vendor = vendorRepository.getById(eventRequest.getVendorId());
+
+        if (locationsById.isEmpty() || vendor == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        event.setDescription(eventRequest.getDescription());
+        event.setVendor(vendor);
+        event.setDateBegin(eventRequest.getDateBegin());
+        event.setDateEnd(eventRequest.getDateEnd());
+
+        event = eventRepository.save(event);
+
+        return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
+    }
 
     private int getPageNumber(Integer pageNumber) {
         return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
@@ -345,6 +374,5 @@ public class EventServiceImp implements EventService {
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
-
 
 }

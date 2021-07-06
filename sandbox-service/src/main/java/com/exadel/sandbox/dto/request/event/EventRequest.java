@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ public class EventRequest {
     @NotNull(message = "The 'status' cannot be empty")
     private Status status;
 
+    @Min(1)
     private Long vendorId;
-
 
 }
