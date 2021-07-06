@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterRequest {
+public class EventFilterRequest {
 
     private Long locationId = 0L;
 

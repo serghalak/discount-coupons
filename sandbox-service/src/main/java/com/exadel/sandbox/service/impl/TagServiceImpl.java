@@ -41,9 +41,17 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagFilterResponse>findAllTagsByCategoryFilter(List<Long>ids){
+    public List<TagFilterResponse> findAllTagsByCategoryFilter(List<Long> ids) {
         return repository.findAllByCategoryFilter(ids).stream()
                 .map(mapper::tagToTagFilterResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TagResponse> getTagById(Long categoryId) {
+        return repository.findTagsByCategoryId(categoryId)
+                .stream()
+                .map(mapper::tagToTagResponse)
                 .collect(Collectors.toList());
     }
 
@@ -54,6 +62,5 @@ public class TagServiceImpl implements TagService {
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
-
 
 }

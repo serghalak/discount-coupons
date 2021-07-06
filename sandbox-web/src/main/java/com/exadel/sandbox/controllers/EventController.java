@@ -1,16 +1,26 @@
 package com.exadel.sandbox.controllers;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
-import com.exadel.sandbox.dto.request.FilterRequest;
+import com.exadel.sandbox.dto.request.EventFilterRequest;
+import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
+import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@CrossOrigin
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/event")
@@ -33,16 +43,16 @@ public class EventController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @GetMapping("/by_filter")
+    @PostMapping("/by_filter")
     public ResponseEntity<?> getAllEventsByFilter(
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize,
-            @RequestBody FilterRequest filterRequest
+            @RequestBody EventFilterRequest eventFilterRequest
     ) {
         final PageList<CustomEventResponse> events = eventService.getEventsByFilter(
                 jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                filterRequest,
+                eventFilterRequest,
                 pageNumber,
                 pageSize);
 
@@ -67,12 +77,39 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public ResponseEntity<?> getAllEvents(
+    public PageList<EventDetailsResponse> getAllEvents(
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false) Integer pageSize
     ) {
-        final PageList<CustomEventResponse> events = eventService.getAll(pageNumber, pageSize);
+        return eventService.getAll(pageNumber, pageSize);
+    }
 
-        return new ResponseEntity<>(events, HttpStatus.OK);
+    @DeleteMapping(path = {"/{eventId}"})
+    public ResponseEntity<?> deleteEvent(@PathVariable("eventId") Long eventId) {
+
+        return eventService.deleteEventById(eventId) ?
+                ResponseEntity.status(HttpStatus.OK).build() :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @PostMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = {"/{vendorId}"})
+    public ResponseEntity<?> createEvent(@PathVariable("vendorId") Long vendorId,
+                                         @Valid @RequestBody EventRequest eventRequest,
+                                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+
+            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
+        }
+        return eventService.saveEvent(vendorId, eventRequest);
+    }
+
+    @NotNull
+    private List<String> getErrorMessages(BindingResult bindingResult) {
+        return bindingResult.getAllErrors().
+                stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
     }
 }

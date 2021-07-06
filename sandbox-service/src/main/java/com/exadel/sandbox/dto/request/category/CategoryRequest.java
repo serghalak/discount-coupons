@@ -1,10 +1,13 @@
 package com.exadel.sandbox.dto.request.category;
 
+import com.exadel.sandbox.dto.request.tag.TagRequest;
 import com.exadel.sandbox.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -15,5 +18,7 @@ public class CategoryRequest extends BaseEntity {
     private String name;
 
     private String description;
+
+    private Set<TagRequest> tags;
 
 }
