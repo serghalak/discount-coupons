@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.Set;
 
 public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRepositoryCustom {
 
@@ -29,4 +32,10 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRep
             "WHERE v.id = ?", nativeQuery = true)
     Optional<Vendor> findByIdFetchLocations(Long id);
 
+
+    @Query(value = "SELECT v.* FROM vendor v " +
+            "JOIN event e on e.vendor_id=v.id " +
+            "JOIN saved_event se on se.event_id=e.id " +
+            "WHERE se.user_id = ?1", nativeQuery = true)
+    Set<Vendor> getAllVendorsFromSaved(Long userId);
 }
