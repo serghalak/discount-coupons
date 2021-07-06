@@ -13,4 +13,6 @@ public interface TagService {
     List<TagFilterResponse> findAllTagFilter();
 
     List<TagFilterResponse>findAllTagsByCategoryFilter(List<Long>ids);
+
+    List<TagResponse> getTagById(Long categoryId);
 }
