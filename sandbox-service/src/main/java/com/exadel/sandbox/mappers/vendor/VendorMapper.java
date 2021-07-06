@@ -1,6 +1,7 @@
 package com.exadel.sandbox.mappers.vendor;
 
 import com.exadel.sandbox.dto.request.vendor.VendorRequest;
+import com.exadel.sandbox.dto.request.vendor.VendorUpdateRequest;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
@@ -39,5 +40,10 @@ public class VendorMapper {
                 .vendorResponse(vendorToVendorResponse(vendor))
                 .locationResponses(locationMapper.setLocationToSetLocationResponse(vendor.getLocations()))
                 .build();
+    }
+
+    public Vendor vendorUpdateRequestToVendor(VendorUpdateRequest request) {
+        return Objects.isNull(request) ? null : mapper.map(request, Vendor.class);
+
     }
 }

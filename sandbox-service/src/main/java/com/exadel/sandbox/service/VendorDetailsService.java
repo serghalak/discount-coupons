@@ -1,6 +1,7 @@
 package com.exadel.sandbox.service;
 
 import com.exadel.sandbox.dto.request.vendor.VendorRequest;
+import com.exadel.sandbox.dto.request.vendor.VendorUpdateRequest;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
@@ -21,5 +22,5 @@ public interface VendorDetailsService {
 
     void create(Long cityId, VendorRequest request);
 
-    void update(Long cityId, Long vendorId, Long locationId, VendorRequest request);
+    void update(Long vendorId, VendorUpdateRequest request);
 }

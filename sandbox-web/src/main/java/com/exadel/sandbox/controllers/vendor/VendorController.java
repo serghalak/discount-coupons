@@ -2,6 +2,7 @@ package com.exadel.sandbox.controllers.vendor;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.vendor.VendorRequest;
+import com.exadel.sandbox.dto.request.vendor.VendorUpdateRequest;
 import com.exadel.sandbox.dto.response.vendor.CustomVendorResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
@@ -49,8 +50,7 @@ public class VendorController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestParam Long cityId, @RequestParam Long vendorId, @RequestParam Long locationId,
-                       @Valid @RequestBody VendorRequest request) {
-        detailsService.update(cityId, vendorId, locationId, request);
+    public void update(@RequestParam Long vendorId, @Valid @RequestBody VendorUpdateRequest request) {
+        detailsService.update(vendorId, request);
     }
 }

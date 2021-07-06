@@ -2,6 +2,7 @@ package com.exadel.sandbox.service;
 
 import com.exadel.sandbox.dto.request.location.LocationRequest;
 import com.exadel.sandbox.dto.request.location.VendorLocationRequest;
+import com.exadel.sandbox.dto.request.location.VendorLocationUpdateRequest;
 import com.exadel.sandbox.dto.request.vendor.VendorRequest;
 import com.exadel.sandbox.dto.response.filter.LocationFilterResponse;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
@@ -28,9 +29,9 @@ public interface LocationService {
 
     List<LocationFilterResponse>findAllLocationFilter();
 
-    Location update(Long id, VendorRequest request, City city);
+    Location update(VendorLocationUpdateRequest request);
 
-    Location getLocation(VendorRequest request, City city);
+    Location getLocation(VendorLocationUpdateRequest request, City city);
 
     Location findById(Long id);
 }
