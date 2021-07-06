@@ -34,4 +34,8 @@ public interface LocationService {
     Location getLocation(VendorLocationUpdateRequest request, City city);
 
     Location findById(Long id);
+
+    Location create(VendorLocationRequest request);
+
+    Location getLocation(VendorLocationRequest request, City city);
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,13 +72,14 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
     }
 
     @Override
-    public void create(Long cityId, VendorRequest request) {
-        var city = cityService.findById(cityId);
+    public void create(VendorRequest request) {
         checkVendorNameExisting(request.getName());
-        var location = getLocation(request, city);
-        var savedLocation = locationRepository.save(location);
+        var locations = request.getLocationRequests()
+                .stream()
+                .map(l -> locationService.create(l))
+                .collect(Collectors.toSet());
         var vendor = vendorMapper.vendorRequestToVendor(request);
-        vendor.getLocations().add(savedLocation);
+        vendor.getLocations().addAll(locations);
         repository.save(vendor);
     }
 
@@ -85,7 +87,9 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
     public void update(Long vendorId, VendorUpdateRequest request) {
         var vendorFromDB = repository.findById(vendorId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Not found vendor by id ,k. %d", vendorId)));
-        checkVendorNameExisting(request.getName());
+        if(!vendorFromDB.getName().equalsIgnoreCase(request.getName())){
+            checkVendorNameExisting(request.getName());
+        }
         var locations = request.getLocationRequests()
                 .stream()
                 .map(l -> locationService.update(l))
@@ -100,13 +104,5 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
         if (repository.findByName(name).isPresent()) {
             throw new DuplicateNameException("Vendor already exists");
         }
-    }
-
-    public Location getLocation(VendorRequest request, City city) {
-        return Location.builder().latitude(request.getLocationRequest().getLatitude())
-                .longitude(request.getLocationRequest().getLongitude())
-                .number(request.getPhoneNumber())
-                .street(request.getLocationRequest().getStreet())
-                .city(city).build();
     }
 }

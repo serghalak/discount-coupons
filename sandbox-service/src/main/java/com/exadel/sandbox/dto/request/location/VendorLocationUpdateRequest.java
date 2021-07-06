@@ -2,6 +2,7 @@ package com.exadel.sandbox.dto.request.location;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class VendorLocationUpdateRequest {
 
     @NotNull(message = "Id is mandatory")
@@ -33,6 +35,6 @@ public class VendorLocationUpdateRequest {
     @Size(min = 1, max = 10, message = "Number must be between 1 and 10 characters")
     private String number;
 
-    @NotNull(message = "Id is mandatory")
+    @NotNull(message = "City id is mandatory")
     private Long cityId;
 }

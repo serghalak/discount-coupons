@@ -3,20 +3,20 @@ package com.exadel.sandbox.dto.request.vendor;
 import com.exadel.sandbox.dto.request.location.VendorLocationUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "locationRequests")
 public class VendorUpdateRequest {
-
-//    @NotNull(message = "Id is mandatory")
-//    private Long id;
 
     @NotNull(message = "Name is mandatory")
     @Size(min = 2, max = 80, message = "Name must be between 2 and 80 characters")
@@ -34,5 +34,6 @@ public class VendorUpdateRequest {
     @NotNull(message = "Email is mandatory")
     private String email;
 
-    private List<VendorLocationUpdateRequest> locationRequests;
+    @Size(min = 1, message = "Count of locations must be not less than 1")
+    private Set<VendorLocationUpdateRequest> locationRequests;
 }

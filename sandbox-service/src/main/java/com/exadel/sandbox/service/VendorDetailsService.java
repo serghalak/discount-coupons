@@ -20,7 +20,7 @@ public interface VendorDetailsService {
 
     List<VendorFilterResponse>findAllVendorFilter();
 
-    void create(Long cityId, VendorRequest request);
+    void create(VendorRequest request);
 
     void update(Long vendorId, VendorUpdateRequest request);
 }

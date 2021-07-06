@@ -72,12 +72,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, exception.getMessage());
     }
 
-    @ExceptionHandler(value = {Exception.class})
+    @ExceptionHandler(IllegalArgumentException.class)
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
-                         Exception exception) throws IOException {
-        //500
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "Internal Server Error : " + exception.getMessage());
+                         IllegalArgumentException exception) throws IOException {
+        //400
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                "Requested resource is not available : " + exception.getMessage());
     }
 }
