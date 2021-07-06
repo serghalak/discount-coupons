@@ -1,47 +1,44 @@
 package com.exadel.sandbox.repository.location_repository.impl;
 
 import com.exadel.sandbox.model.LocationFilter;
-import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Status;
-import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.repository.location_repository.LocationRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
 public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
 
-    private static final String WHERE_EVENT_STATUS=" AND e.status NOT IN('" + Status.EXPIRED.name() + "')";
+    private static final String WHERE_EVENT_STATUS = " AND e.status NOT IN('" + Status.EXPIRED.name() + "')";
 
     private final EntityManager entityManager;
 
     @Override
     public List<LocationFilter> findAllByCategoryFilterIds(List<Long> ids) {
-        String sqlWhere=getWhereCondition(ids, "category_id");
+        String sqlWhere = getWhereCondition(ids, "category_id");
 
         return entityManager.createNativeQuery(
                 "SELECT DISTINCT cn.id as countryId, " +
                         "cn.name as countryName, " +
                         "ct.id as cityId, " +
-                        "ct.name as cityName FROM category c "+
+                        "ct.name as cityName FROM category c " +
                         "INNER JOIN event e on c.id=e.category_id " +
                         "INNER JOIN event_location el on e.id= el.event_id " +
                         "INNER JOIN location l on el.location_id=l.id " +
                         "INNER JOIN city ct on l.city_id=c.id " +
                         "INNER JOIN country cn on ct.country_id=cn.id " +
-                         sqlWhere + " ORDER BY cn.name ASC, ct.name ASC ")
+                        sqlWhere + " ORDER BY cn.name ASC, ct.name ASC ")
                 .getResultList();
 
     }
 
     @Override
     public List<LocationFilter> findAllByVendorFilterIds(List<Long> ids) {
-        String sqlWhere=getWhereCondition(ids, "vendor_id");
+        String sqlWhere = getWhereCondition(ids, "vendor_id");
 
         return entityManager.createNativeQuery(
                 "SELECT DISTINCT cn.id as countryId, " +
@@ -59,33 +56,31 @@ public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
     }
 
     @Override
-    public List<LocationFilter>getAllLocationFilter() {
+    public List<LocationFilter> getAllLocationFilter() {
 
         return entityManager.createNativeQuery(
                 "SELECT DISTINCT cn.id as countryId, " +
                         "cn.name as countryName, " +
                         "ct.id as cityId, " +
                         "ct.name as cityName " +
-                        //"FROM city ct " +
-                        "FROM location l " +
-                        "INNER JOIN city ct on l.city_id=ct.id " +
+                        "FROM city ct " +
                         "INNER JOIN country cn on ct.country_id=cn.id " +
                         " ORDER BY cn.name ASC, ct.name ASC ", "LocalFilterMapping")
                 .getResultList();
 
     }
 
-    private String getWhereCondition(List<Long>ids, String fieldForWhere){
+    private String getWhereCondition(List<Long> ids, String fieldForWhere) {
 
-        if(ids.isEmpty() || ids.size() ==0 ){
+        if (ids.isEmpty() || ids.size() == 0) {
             return "";
         }
 
-        String result="WHERE e." + fieldForWhere + " IN (";
-        int numberOfElements=0;
+        String result = "WHERE e." + fieldForWhere + " IN (";
+        int numberOfElements = 0;
 
-        for(Long id : ids){
-            result += (numberOfElements != 0) ?  ", " + id : id;
+        for (Long id : ids) {
+            result += (numberOfElements != 0) ? ", " + id : id;
             numberOfElements++;
         }
 
