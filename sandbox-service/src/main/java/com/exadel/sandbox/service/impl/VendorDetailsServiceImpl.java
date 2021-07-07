@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.request.location.VendorLocationUpdateRequest;
 import com.exadel.sandbox.dto.request.vendor.VendorRequest;
 import com.exadel.sandbox.dto.request.vendor.VendorUpdateRequest;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
