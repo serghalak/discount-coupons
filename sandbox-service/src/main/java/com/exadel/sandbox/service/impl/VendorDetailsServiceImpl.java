@@ -7,7 +7,6 @@ import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.vendor.VendorMapper;
 import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
-import com.exadel.sandbox.repository.location_repository.LocationRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.CityService;
 import com.exadel.sandbox.service.LocationService;
@@ -26,7 +25,6 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
     private final VendorRepository repository;
     private final VendorMapper vendorMapper;
     private final VendorShortMapper vendorShortMapper;
-    private final LocationRepository locationRepository;
     private final CityService cityService;
     private final LocationService locationService;
 
