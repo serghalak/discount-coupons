@@ -24,6 +24,13 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
 
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
+            "join loc.city city " +
+            "where city.country.id = ?1 " +
+            "and e.status = ?2")
+    Page<Event> findEventByCountryIdAndStatus(Long countryId, Status status, PageRequest of);
+
+    @Query("select distinct e from Event e " +
+            "join e.locations loc " +
             "where loc.city.id = ?2 AND (e.description like ?1 or e.fullDescription like ?1)")
     Page<Event> findEventByDescription(String search, Long cityId, Pageable pageable);
 
@@ -138,4 +145,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "and city.country.id = ?1 " +
             "and e.status =?3")
     Page<Event> findByByVendorsCountry(Long locationId, Set<Long> vendorsId, Status status, PageRequest of);
+
+
 }
