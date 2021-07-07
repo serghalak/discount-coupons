@@ -44,7 +44,7 @@ public class VendorController {
     }
 
     @PostMapping
-    public void create( @Valid @RequestBody VendorRequest request) {
+    public void create(@Valid @RequestBody VendorRequest request) {
         detailsService.create(request);
     }
 
@@ -52,5 +52,12 @@ public class VendorController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestParam Long vendorId, @Valid @RequestBody VendorUpdateRequest request) {
         detailsService.update(vendorId, request);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        return detailsService.remove(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.unprocessableEntity().build();
     }
 }

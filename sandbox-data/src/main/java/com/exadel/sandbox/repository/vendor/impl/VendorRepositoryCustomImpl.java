@@ -5,6 +5,7 @@ import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.repository.vendor.VendorRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -70,6 +71,17 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                         sqlWhere + " ORDER BY v.name ASC ",
                 Vendor.class)
                 .getResultList();
+    }
+
+    @Override
+    @Transactional
+    public boolean drop(Long id) {
+        return entityManager
+                .createNativeQuery("DELETE FROM vendor WHERE id = ? AND " +
+                        "NOT exists(SELECT * FROM event WHERE vendor_id = ?)")
+                .setParameter(1, id)
+                .setParameter(2, id)
+                .executeUpdate() > 0;
     }
 
     private String getWhereCondition(List<Long> ids) {
