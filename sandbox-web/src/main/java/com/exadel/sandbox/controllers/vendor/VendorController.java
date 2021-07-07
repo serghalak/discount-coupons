@@ -9,11 +9,16 @@ import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.service.VendorDetailsService;
 import com.exadel.sandbox.service.VendorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/vendors")
@@ -44,20 +49,36 @@ public class VendorController {
     }
 
     @PostMapping
-    public void create(@Valid @RequestBody VendorRequest request) {
+    public ResponseEntity<List<String>> create(@Valid @RequestBody VendorRequest request,
+                                               BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
+        }
         detailsService.create(request);
+
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestParam Long vendorId, @Valid @RequestBody VendorUpdateRequest request) {
+    public ResponseEntity<List<String>> update(@RequestParam Long vendorId,
+                                               @Valid @RequestBody VendorUpdateRequest request,
+                                               BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
+        }
+
         detailsService.update(vendorId, request);
+
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
-        return detailsService.remove(id)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.unprocessableEntity().build();
+    @NotNull
+    private List<String> getErrorMessages(BindingResult bindingResult) {
+        return bindingResult.getAllErrors().
+                stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
     }
 }
