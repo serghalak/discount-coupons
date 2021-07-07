@@ -1,16 +1,18 @@
 package com.exadel.sandbox.exeption;
 
 import com.exadel.sandbox.service.exceptions.DuplicateNameException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,17 +20,19 @@ import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @ControllerAdvice
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+//public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAuthenticationEntryPoint {
 
-    @Override
-    @ExceptionHandler(value = {BadCredentialsException.class})
-    public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
-                         AuthenticationException e) throws IOException, ServletException {
-        //401
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-    }
+//    @Override
+//    @ExceptionHandler(value = {BadCredentialsException.class})
+//    public void commence(HttpServletRequest request,
+//                         HttpServletResponse response,
+//                         AuthenticationException e) throws IOException, ServletException {
+//        //401
+//        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
+//    }
 
     @ExceptionHandler(value = {AccessDeniedException.class})
     public void commence(HttpServletRequest request,
@@ -39,14 +43,14 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 "Authorization Failed : " + accessDeniedException.getMessage());
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
-                         EntityNotFoundException entityNotFoundException) throws IOException {
-        //404
-        response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                "Requested resource is not available : " + entityNotFoundException.getMessage());
-    }
+//    @ExceptionHandler(EntityNotFoundException.class)
+//    public void commence(HttpServletRequest request,
+//                         HttpServletResponse response,
+//                         EntityNotFoundException entityNotFoundException) throws IOException {
+//        //404
+//        response.sendError(HttpServletResponse.SC_NOT_FOUND,
+//                "Requested resource is not available : " + entityNotFoundException.getMessage());
+//    }
 
     @ExceptionHandler(DuplicateNameException.class)
     public void commence(HttpServletRequest request,
@@ -79,5 +83,27 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         //400
         response.sendError(HttpServletResponse.SC_BAD_REQUEST,
                 "Requested resource is not available : " + exception.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> entityNotFoundExceptionHandler(HttpServletRequest request, EntityNotFoundException exception) {
+        return getResponse(request, HttpStatus.NOT_FOUND, exception);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> badCredentialsExceptionHandler(HttpServletRequest request, AuthenticationException exception) {
+        return getResponse(request, HttpStatus.UNAUTHORIZED, exception);
+    }
+
+    private ResponseEntity<?> getResponse(HttpServletRequest request, HttpStatus httpStatus, Exception exception) {
+        log.error("Exception raised = {} :: URL = {}", exception.getMessage(), request.getRequestURL());
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", httpStatus.value() + " / " + httpStatus.getReasonPhrase());
+        response.put("message", exception.getMessage());
+//        response.put("path", request.getRequestURL());
+        response.put("path", request.getRequestURI());
+        return new ResponseEntity<>(response, httpStatus);
     }
 }

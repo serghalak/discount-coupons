@@ -90,7 +90,7 @@ public class EventServiceImp implements EventService {
     public EventDetailsResponse getEventById(Long eventId) {
         return Optional.ofNullable(eventRepository.findEventById(eventId))
                 .map(eventMapper::eventToEventDetailResponse)
-                .orElseThrow(() -> new EntityNotFoundException("entity with id " + eventId + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " not found"));
     }
 
     @Override
