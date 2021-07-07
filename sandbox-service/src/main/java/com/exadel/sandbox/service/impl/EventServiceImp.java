@@ -57,13 +57,13 @@ public class EventServiceImp implements EventService {
     @Override
     public PageList<CustomEventResponse> getAllEventsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
         var city = cityRepository.findCityByUserId(userId);
-        return getEventResponsesByCity(city.getId(), Status.ACTIVE,
+        return getEventResponsesByCityAndStatus(city.getId(), Status.ACTIVE,
                 Sort.by(Sort.Direction.DESC, "dateEnd"), getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
     @Override
     public PageList<CustomEventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize) {
-        return getEventResponsesByCity(cityId, Status.ACTIVE,
+        return getEventResponsesByCityAndStatus(cityId, Status.ACTIVE,
                 Sort.by(Sort.Direction.DESC, "dateEnd"), getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
@@ -78,7 +78,7 @@ public class EventServiceImp implements EventService {
                 eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
     }
 
-    private PageList<CustomEventResponse> getEventResponsesByCity(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
+    private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
         Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatus(cityId, status,
                 PageRequest.of(pageNumber, pageSize, sort));
 
@@ -100,19 +100,16 @@ public class EventServiceImp implements EventService {
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
-        if (eventFilterRequest.getLocationId() == 0 &&
-                eventFilterRequest.getCategoriesIdSet().isEmpty() &&
-                eventFilterRequest.getTagsIdSet().isEmpty() &&
-                eventFilterRequest.getVendorsIdSet().isEmpty()) {
-            var city = cityRepository.findCityByUserId(userId);
-
-            return getEventResponsesByCity(city.getId(), eventFilterRequest.getStatus(), sort, pageNumber, pageSize);
-        }
-
         if (eventFilterRequest.getLocationId() == 0) {
             var city = cityRepository.findCityByUserId(userId);
             eventFilterRequest.setLocationId(city.getId());
             eventFilterRequest.setCity(true);
+        }
+
+        if (eventFilterRequest.getCategoriesIdSet().isEmpty() &&
+                eventFilterRequest.getTagsIdSet().isEmpty() &&
+                eventFilterRequest.getVendorsIdSet().isEmpty()) {
+            return getCustomEventResponsePageListByLocationAndStatus(eventFilterRequest, pageNumber, pageSize, sort);
         }
 
         if (!eventFilterRequest.getTagsIdSet().isEmpty() &&
@@ -148,6 +145,20 @@ public class EventServiceImp implements EventService {
             return getCustomEventResponsePageListByVendors(eventFilterRequest, pageNumber, pageSize, sort);
         }
         return null;
+    }
+
+    private PageList<CustomEventResponse> getCustomEventResponsePageListByLocationAndStatus(EventFilterRequest eventFilterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
+        if (eventFilterRequest.isCity()) {
+
+            return getEventResponsesByCityAndStatus(eventFilterRequest.getLocationId(), eventFilterRequest.getStatus(), sort, pageNumber, pageSize);
+
+        } else {
+            Page<Event> eventsPage = eventRepository.findEventByCountryIdAndStatus(eventFilterRequest.getLocationId(), eventFilterRequest.getStatus(),
+                    PageRequest.of(pageNumber, pageSize, sort));
+
+            return new PageList<>(eventMapper.
+                    eventListToCustomEventResponseListByCountryId(eventsPage.getContent(), eventFilterRequest.getLocationId()), eventsPage);
+        }
     }
 
     private PageList<CustomEventResponse> getCustomEventResponsePageListByVendors
