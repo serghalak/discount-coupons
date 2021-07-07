@@ -76,7 +76,7 @@ public class FavouriteServiceImpl implements FavouriteService {
         }
 
         return new PageList<>(
-                eventMapper.eventListToCustomEventResponseListByCityId(allEventFromSaved.getContent(),
+                eventMapper.eventListToCustomEventResponseListFavorites(allEventFromSaved.getContent(),
                         cityId),
                 allEventFromSaved);
     }

@@ -96,6 +96,9 @@ public class EventMapper {
     public List<CustomEventResponse> eventListToCustomEventResponseListByCountryId(List<Event> events, Long countryId) {
         return eventListToCustomEventResponseListId(locMapper::convertLocToCustomLocResponseByCountry, events, countryId);
     }
+    public List<CustomEventResponse> eventListToCustomEventResponseListFavorites(List<Event> events, Long countryId) {
+        return eventListToEventResponseListFavorites(events, countryId);
+    }
 
     public List<CustomEventResponse> eventListToCustomEventResponseListId(BiFunction<Set<Location>, Long, CustomLocationResponse> biFunction,
                                                                           List<Event> events,
@@ -131,6 +134,23 @@ public class EventMapper {
                         .vendorShortResponse(vendorShortMapper.vendorToVendorShortResponse(event.getVendor()))
                         .dateEnd(event.getDateEnd())
                         .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<CustomEventResponse> eventListToEventResponseListFavorites(List<Event> events,Long id) {
+        return events.stream()
+                .map(event -> CustomEventResponse.builder()
+                        .id(event.getId())
+                        .shortDescription(event.getDescription())
+                        .vendorName(event.getVendor().getName())
+                        .vendorId(event.getVendor().getId())
+                        .locations(locMapper.convertLocToCustomLocResponseFavorites(event.getLocations(),id))
+                        .categoryId(event.getCategory().getId())
+                        .categoryName(event.getCategory().getName())
+                        .dateBegin(event.getDateBegin())
+                        .dateEnd(event.getDateEnd())
+                        .dateBegin(event.getDateBegin())
                         .build())
                 .collect(Collectors.toList());
     }
