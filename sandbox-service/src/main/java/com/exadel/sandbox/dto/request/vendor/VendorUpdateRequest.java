@@ -26,7 +26,6 @@ public class VendorUpdateRequest {
     private String description;
 
     @NotNull(message = "phoneNumber is mandatory")
-    @Size(min = 12, max = 12, message = "Phone number must contain 12 characters")
     private String phoneNumber;
 
     @Email(message = "Incorrect email")
