@@ -306,35 +306,9 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public ResponseEntity<?> saveEvent(Long vendorId, EventRequest eventRequest) {
+    public ResponseEntity<?> createEvent(EventRequest eventRequest) {
 
-        if (vendorId == null || vendorId <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        final Set<Location> locationsById = locationRepository.getLocationsById(eventRequest.getLocationsId());
-        final Set<Tag> tagsById = tagRepository.getTagsById(eventRequest.getTagsId());
-        final var vendor = vendorRepository.getById(vendorId);
-
-        if (locationsById.isEmpty() || tagsById.isEmpty() || vendor == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        final List<Tag> tags = tagsById.stream()
-                .filter(tag -> !tag.getCategory().getId().equals(eventRequest.getCategoryId()))
-                .collect(Collectors.toList());
-
-
-        if (!tags.isEmpty()) {
-            return ResponseEntity.badRequest().body("Tag's don't agree with the inputted category");
-        }
-
-        final var category = categoryRepository.getById(eventRequest.getCategoryId());
-        var event = eventMapper.eventRequestToEvent(eventRequest, vendor, locationsById, category, tagsById);
-
-        event = eventRepository.save(event);
-
-        return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
+        return getResponseEntity(null, eventRequest);
     }
 
     @Override
@@ -344,23 +318,36 @@ public class EventServiceImp implements EventService {
             return ResponseEntity.badRequest().build();
         }
 
-        var event = eventRepository.getById(eventId);
-
-        if (event == null) {
+        if (!eventRepository.existsById(eventId)) {
             return ResponseEntity.badRequest().build();
         }
 
+        return getResponseEntity(eventId, eventRequest);
+    }
+
+    private ResponseEntity<?> getResponseEntity(Long eventId, EventRequest eventRequest) {
         final Set<Location> locationsById = locationRepository.getLocationsById(eventRequest.getLocationsId());
+        final Set<Tag> tagsById = tagRepository.getTagsById(eventRequest.getTagsId());
         final var vendor = vendorRepository.getById(eventRequest.getVendorId());
 
-        if (locationsById.isEmpty() || vendor == null) {
+        if (locationsById.isEmpty() || tagsById.isEmpty() || vendor == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        event.setDescription(eventRequest.getDescription());
-        event.setVendor(vendor);
-        event.setDateBegin(eventRequest.getDateBegin());
-        event.setDateEnd(eventRequest.getDateEnd());
+        final List<Tag> tags = tagsById.stream()
+                .filter(tag -> !tag.getCategory().getId().equals(eventRequest.getCategoryId()))
+                .collect(Collectors.toList());
+
+        if (!tags.isEmpty()) {
+            return ResponseEntity.badRequest().body("Tag's don't agree with the inputted category");
+        }
+
+        final var category = categoryRepository.getById(eventRequest.getCategoryId());
+        var event = eventMapper.eventRequestToEvent(eventRequest, vendor, locationsById, category, tagsById);
+
+        if (eventId != null) {
+            event.setId(eventId);
+        }
 
         event = eventRepository.save(event);
 
