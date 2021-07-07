@@ -7,8 +7,6 @@ import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.vendor.VendorMapper;
 import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
-import com.exadel.sandbox.model.location.City;
-import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.repository.location_repository.LocationRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.CityService;
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
