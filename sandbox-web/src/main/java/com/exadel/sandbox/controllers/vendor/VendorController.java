@@ -74,6 +74,13 @@ public class VendorController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        return detailsService.remove(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.unprocessableEntity().build();
+    }
+
     @NotNull
     private List<String> getErrorMessages(BindingResult bindingResult) {
         return bindingResult.getAllErrors().
