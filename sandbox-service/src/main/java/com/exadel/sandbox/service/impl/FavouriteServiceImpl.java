@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -64,19 +63,15 @@ public class FavouriteServiceImpl implements FavouriteService {
     @Override
     public PageList<CustomEventResponse> getAllFromSaved(Long userId, Long cityId,
                                                          Integer pageNumber, Integer pageSize) {
-        final Page<Event> allEventFromSaved = userSavedRepository.getAllEventsFromUserSaved(userId,
+        final Page<Event> allEventFromSaved = eventRepository.getAllEventsFromUserSaved(userId,
                 PageRequest.of(getPageNumber(pageNumber),
-                        getPageSize(pageSize), Sort.by(Sort.Direction.DESC, "dateEnd")));
-        if (cityId==null||cityId==0){
+                        getPageSize(pageSize)));
+        if (cityId == null || cityId == 0) {
             cityId = userRepository.getById(userId).getLocation().getCity().getId();
-        }
-        if (allEventFromSaved.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Not Found. Your Favorite list is empty");
         }
 
         return new PageList<>(
-                eventMapper.eventListToCustomEventResponseListByCityId(allEventFromSaved.getContent(),
+                eventMapper.eventListToCustomEventResponseListFavorites(allEventFromSaved.getContent(),
                         cityId),
                 allEventFromSaved);
     }
@@ -92,8 +87,8 @@ public class FavouriteServiceImpl implements FavouriteService {
     @Override
     public String removeEventFromSaved(Long userId, Long eventId) {
         if (verifyEventId(eventId, userId) == null)
-                throw  new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Not Found. EventId: " + eventId + " in User Favorites");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Not Found. EventId: " + eventId + " in User Favorites");
         userSavedRepository.deleteFromUserSaved(eventId, userId);
         return "Event successfully removed from User Favorites ";
     }
