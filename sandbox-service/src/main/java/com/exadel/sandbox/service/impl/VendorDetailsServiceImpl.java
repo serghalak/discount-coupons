@@ -7,6 +7,7 @@ import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.vendor.VendorMapper;
 import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
+import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.CityService;
 import com.exadel.sandbox.service.LocationService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -93,6 +95,11 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
         vendor.getLocations().addAll(locations);
         vendor.setId(vendorFromDB.getId());
         repository.save(vendor);
+    }
+
+    @Override
+    public boolean remove(Long id) {
+        return repository.drop(id);
     }
 
     private void checkVendorNameExisting(String name) {
