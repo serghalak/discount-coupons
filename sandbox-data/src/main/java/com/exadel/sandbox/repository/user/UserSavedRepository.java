@@ -23,12 +23,6 @@ public interface UserSavedRepository extends JpaRepository<User, Long> {
     @Transactional
     void insertIntoUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
-    @Query("SELECT e FROM Event e " +
-            " join  e.userSavedEvents uo  " +
-            "WHERE uo.id =?1")
-    @Transactional
-    Page<Event> getAllEventsFromUserSaved(Long id, PageRequest of);
-
     @Modifying
     @Query(value = "delete from saved_event where event_id=:eventId and user_id=:userId ", nativeQuery = true)
     @Transactional

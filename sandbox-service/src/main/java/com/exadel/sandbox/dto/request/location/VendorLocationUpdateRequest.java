@@ -16,7 +16,6 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode
 public class VendorLocationUpdateRequest {
 
-    @NotNull(message = "Id is mandatory")
     private Long id;
 
     @Min(-90)

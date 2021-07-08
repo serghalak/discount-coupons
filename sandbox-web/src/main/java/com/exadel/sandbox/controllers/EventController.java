@@ -43,7 +43,7 @@ public class EventController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @PostMapping("/by_filter")
+    @PostMapping(consumes = {"application/json"}, path = "/by_filter")
     public ResponseEntity<?> getAllEventsByFilter(
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
@@ -94,15 +94,25 @@ public class EventController {
 
     @PostMapping(produces = {"application/json"},
             consumes = {"application/json"},
-            path = {"/{vendorId}"})
-    public ResponseEntity<?> createEvent(@PathVariable("vendorId") Long vendorId,
+            path = {"/newEvent"})
+    public ResponseEntity<?> createEvent(@Valid @RequestBody EventRequest eventRequest,
+                                         BindingResult bindingResult) {
+
+        return bindingResult.hasErrors() ?
+                ResponseEntity.badRequest().body(getErrorMessages(bindingResult)) :
+                eventService.createEvent(eventRequest);
+    }
+
+    @PutMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = {"/{eventId}"})
+    public ResponseEntity<?> updateEvent(@PathVariable("eventId") Long eventId,
                                          @Valid @RequestBody EventRequest eventRequest,
                                          BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
 
-            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
-        }
-        return eventService.saveEvent(vendorId, eventRequest);
+        return bindingResult.hasErrors() ?
+                ResponseEntity.badRequest().body(getErrorMessages(bindingResult)) :
+                eventService.updateEvent(eventId, eventRequest);
     }
 
     @NotNull

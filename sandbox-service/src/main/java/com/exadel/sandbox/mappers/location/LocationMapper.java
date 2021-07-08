@@ -117,6 +117,31 @@ public class LocationMapper {
                 .orElseThrow();
     }
 
+    public CustomLocationResponse convertLocToCustomLocResponseFavorites(Set<Location> locations, Long countryId) {
+        final var locResponseByCity = new CustomLocationResponse();
+
+        locResponseByCity.setCountryName(getCountryNameFavorites(locations, countryId));
+
+        final Map<String, Set<String>> citiesMap = getCitiesMapFavorites(locations, countryId);
+
+        locResponseByCity.setCities(getCustomCityResponses(citiesMap));
+
+        return locResponseByCity;
+    }
+
+    private String getCountryNameFavorites(Set<Location> locations, Long countryId) {
+        return locations.stream()
+                .map(loc -> loc.getCity().getCountry().getName())
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private Map<String, Set<String>> getCitiesMapFavorites(Set<Location> locations, Long countryId) {
+        return locations.stream()
+                .collect(Collectors.groupingBy(loc -> loc.getCity().getName(),
+                        Collectors.mapping(loc -> loc.getStreet() + " " + loc.getNumber(), Collectors.toSet())));
+    }
+
     private Map<String, Set<String>> getCitiesMap(Set<Location> locations, Long countryId) {
         return locations.stream()
                 .filter(loc -> loc.getCity().getCountry().getId().equals(countryId))

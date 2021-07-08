@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.util.Set;
 
 @Repository
@@ -19,8 +18,16 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
 
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
-            "where loc.city.id = ?1")
-    Page<Event> findEventByCityId(Long cityId, Pageable pageable);
+            "where loc.city.id = ?1 " +
+            "and e.status = ?2")
+    Page<Event> findEventByCityIdAndStatus(Long cityId, Status status, Pageable pageable);
+
+    @Query("select distinct e from Event e " +
+            "join e.locations loc " +
+            "join loc.city city " +
+            "where city.country.id = ?1 " +
+            "and e.status = ?2")
+    Page<Event> findEventByCountryIdAndStatus(Long countryId, Status status, PageRequest of);
 
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
@@ -36,6 +43,10 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "join user_order uo on e.id = uo.event_id " +
             "WHERE event_id=:eventId and user_id =:userId LIMIT 1", nativeQuery = true)
     Event getOneEventsFromUserOrder(@Param("eventId") Long eventId, @Param("userId") Long userId);
+
+    @Query(value = "SELECT e.* FROM event e join saved_event se on e.id = se.event_id WHERE  user_id =?1", nativeQuery = true)
+    @Transactional
+    Page<Event> getAllEventsFromUserSaved(Long userId, PageRequest of);
 
     Event findEventById(Long id);
 
@@ -134,4 +145,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "and city.country.id = ?1 " +
             "and e.status =?3")
     Page<Event> findByByVendorsCountry(Long locationId, Set<Long> vendorsId, Status status, PageRequest of);
+
+
 }
