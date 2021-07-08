@@ -9,8 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LocationFilterResponse {
 
-    private long id;
+    private Long id;
+
     private String name;
+
     private boolean isCountry;
+
     private boolean isChecked;
 }

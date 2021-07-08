@@ -75,6 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryId != categoryRequest.getId()) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
                     , "Category name cannot be empty");
+
         }
 
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
