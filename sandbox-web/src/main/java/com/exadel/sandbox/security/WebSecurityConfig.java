@@ -1,5 +1,6 @@
 package com.exadel.sandbox.security;
 
+import com.exadel.sandbox.exeption.CustomAuthenticationEntryPoint;
 import com.exadel.sandbox.security.filters.JwtRequestFilter;
 import com.exadel.sandbox.service.impl.UserSecurityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
                 .csrf().disable();
 

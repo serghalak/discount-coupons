@@ -4,8 +4,6 @@ import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,13 +23,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> illegalArgumentExceptionHandler(HttpServletRequest request, IllegalArgumentException exception) {
         return getResponse(request, HttpStatus.BAD_REQUEST, exception);
-    }
-
-    /*401*/
-    @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<?> badCredentialsExceptionHandler(HttpServletRequest request, AuthenticationException exception) {
-        return getResponse(request, HttpStatus.UNAUTHORIZED, exception);
     }
 
     /*403*/
