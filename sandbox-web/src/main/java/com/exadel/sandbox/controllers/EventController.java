@@ -73,7 +73,9 @@ public class EventController {
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize
     ) {
-        return new ResponseEntity<>(eventService.getAllEventsByDescription(cityId, search, pageNumber, pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getAllEventsByDescription(
+                jwtUtil.extractUserIdFromAuthResponse(authResponse),
+                cityId, search, pageNumber, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/events")

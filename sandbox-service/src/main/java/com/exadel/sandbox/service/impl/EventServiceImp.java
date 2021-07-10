@@ -68,8 +68,10 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public PageList<CustomEventResponse> getAllEventsByDescription(Long cityId, String search,
+    public PageList<CustomEventResponse> getAllEventsByDescription(Long userId, Long cityId, String search,
                                                                    Integer pageNumber, Integer pageSize) {
+
+        cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
 
         Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
                 cityId, PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
@@ -79,6 +81,7 @@ public class EventServiceImp implements EventService {
     }
 
     private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
+
         Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatus(cityId, status,
                 PageRequest.of(pageNumber, pageSize, sort));
 
