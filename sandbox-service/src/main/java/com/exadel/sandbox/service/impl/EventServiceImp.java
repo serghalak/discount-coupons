@@ -23,9 +23,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -353,7 +356,9 @@ public class EventServiceImp implements EventService {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
 
+
     private void createNotificationUsersByFavorite(Event event) {
+
         Category category = event.getCategory();
         Set<Tag> tags = category.getTags();
         Vendor vendor = event.getVendor();
@@ -363,8 +368,17 @@ public class EventServiceImp implements EventService {
         Set<User> allUsersByTagsFavorite = userService.findAllUsersByTagsFavorite(getTagIds(tags));
 
         Set<User> totalSetOfUsers = unionSetsOfUsers(allUsersByCategoryFavorite, allUsersByVendorFavorite, allUsersByTagsFavorite);
+        for(int i=0;i<10;i++)
+            if(i==5){
+                try {
+                    throw new MessagingException("email 5 not sent");
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+            }else{
         totalSetOfUsers.stream()
                 .forEach(user -> mailUtil.sendFavoriteMessage(user.getEmail(), String.valueOf(event.getId())));
+            }
     }
 
     private Set<Long> getTagIds(Set<Tag> tags) {
