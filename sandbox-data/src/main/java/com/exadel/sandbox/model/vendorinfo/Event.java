@@ -1,6 +1,7 @@
 package com.exadel.sandbox.model.vendorinfo;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.EventStatistic;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -110,5 +111,9 @@ public class Event extends BaseEntity {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "statistic_id", referencedColumnName = "id")
+    private EventStatistic eventStatistic;
 
 }
