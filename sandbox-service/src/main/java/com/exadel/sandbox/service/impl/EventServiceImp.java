@@ -7,7 +7,6 @@ import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.location.Location;
-import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.model.vendorinfo.Tag;
@@ -71,12 +70,12 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public PageList<CustomEventResponse> getAllEventsByDescription(Long userId, Long cityId, String search,
+    public PageList<?> getAllEventsByDescription(Long userId, Long cityId, String search,
                                                                    Integer pageNumber, Integer pageSize) {
 
         return userRepository.isAdmin(userId) ?
-                getAllEventsByDescriptionWithoutCityId(userId, cityId, search, pageNumber, pageSize) :
-                getAllEventsByDescriptionWithCityId(userId, cityId, search, pageNumber, pageSize);
+                getAllEventsByDescriptionIsAdmin(search, pageNumber, pageSize) :
+                getAllEventsByDescriptionNotAdmin(userId, cityId, search, pageNumber, pageSize);
     }
 
     private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
@@ -368,7 +367,7 @@ public class EventServiceImp implements EventService {
         return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
     }
 
-    public PageList<CustomEventResponse> getAllEventsByDescriptionWithCityId(Long userId, Long cityId, String search,
+    public PageList<CustomEventResponse> getAllEventsByDescriptionNotAdmin(Long userId, Long cityId, String search,
                                                                              Integer pageNumber, Integer pageSize) {
 
         cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
@@ -380,14 +379,13 @@ public class EventServiceImp implements EventService {
                 eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
     }
 
-    public PageList<CustomEventResponse> getAllEventsByDescriptionWithoutCityId(Long userId, Long cityId, String search,
-                                                                                Integer pageNumber, Integer pageSize) {
-        cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
+    public PageList<EventDetailsResponse> getAllEventsByDescriptionIsAdmin( String search,
+                                                                          Integer pageNumber, Integer pageSize) {
 
-        Page<Event> eventsPage = eventRepository.findEventByDescriptionWithoutCityId(("%" + search + "%"),
+        Page<Event> eventsPage = eventRepository.findEventByDescriptionIsAdmin(("%" + search + "%"),
                 PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
                         Sort.by(Sort.Direction.DESC, "dateEnd")));
-        return new PageList<>(eventMapper.eventListToCustomEventResponseListFavorites(eventsPage.getContent(), cityId), eventsPage);
+        return new PageList<>(eventMapper.eventListToDetailEventResponse(eventsPage.getContent()), eventsPage);
 
     }
 

@@ -37,7 +37,7 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
             "where (e.description like ?1 or e.fullDescription like ?1)")
-    Page<Event> findEventByDescriptionWithoutCityId(String search, Pageable pageable);
+    Page<Event> findEventByDescriptionIsAdmin(String search, Pageable pageable);
 
     @Query(value = "SELECT e.* FROM event e " +
             "join saved_event se on e.id = se.event_id " +
