@@ -5,6 +5,7 @@ import com.exadel.sandbox.model.vendorinfo.Vendor;
 import com.exadel.sandbox.repository.tag.TagRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -25,6 +26,17 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                         "INNER JOIN tag t on c.id=t.category_id " +
                         sqlWhere + " ORDER BY t.name ASC ",  Tag.class)
                 .getResultList();
+    }
+
+    @Override
+    @Transactional
+    public boolean drop(Long id) {
+        return entityManager
+                .createNativeQuery("DELETE FROM tag WHERE id = ? AND " +
+                        "NOT exists(SELECT * FROM event_tag WHERE tag_id = ?)")
+                .setParameter(1, id)
+                .setParameter(2, id)
+                .executeUpdate() > 0;
     }
 
     private String getWhereCondition(List<Long>ids){

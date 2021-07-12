@@ -84,7 +84,7 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
     @Override
     public void update(Long vendorId, VendorUpdateRequest request) {
         var vendorFromDB = repository.findById(vendorId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Not found vendor by id ,k. %d", vendorId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Not found vendor by id %d", vendorId)));
         if(!vendorFromDB.getName().equalsIgnoreCase(request.getName())){
             checkVendorNameExisting(request.getName());
         }
