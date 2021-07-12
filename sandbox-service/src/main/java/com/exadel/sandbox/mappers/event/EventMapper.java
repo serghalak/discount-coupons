@@ -96,8 +96,8 @@ public class EventMapper {
     public List<CustomEventResponse> eventListToCustomEventResponseListByCountryId(List<Event> events, Long countryId) {
         return eventListToCustomEventResponseListId(locMapper::convertLocToCustomLocResponseByCountry, events, countryId);
     }
-    public List<CustomEventResponse> eventListToCustomEventResponseListFavorites(List<Event> events, Long countryId) {
-        return eventListToEventResponseListFavorites(events, countryId);
+    public List<CustomEventResponse> eventListToCustomEventResponseListFavorites(List<Event> events, Long cityId) {
+        return eventListToEventResponseListFavorites(events, cityId);
     }
 
     public List<CustomEventResponse> eventListToCustomEventResponseListId(BiFunction<Set<Location>, Long, CustomLocationResponse> biFunction,

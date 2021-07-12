@@ -7,9 +7,11 @@ import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.location.Location;
+import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.model.vendorinfo.Tag;
+import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
@@ -45,6 +47,7 @@ public class EventServiceImp implements EventService {
     private final CategoryRepository categoryRepository;
     private final VendorRepository vendorRepository;
     private final EventMapper eventMapper;
+    private final UserRepository userRepository;
 
     @Override
     public PageList<EventDetailsResponse> getAll(Integer pageNumber, Integer pageSize) {
@@ -71,13 +74,9 @@ public class EventServiceImp implements EventService {
     public PageList<CustomEventResponse> getAllEventsByDescription(Long userId, Long cityId, String search,
                                                                    Integer pageNumber, Integer pageSize) {
 
-        cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
-
-        Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
-                cityId, PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
-                        Sort.by(Sort.Direction.DESC, "dateEnd")));
-        return new PageList<>(eventMapper.
-                eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
+        return userRepository.isAdmin(userId) ?
+                getAllEventsByDescriptionWithoutCityId(userId, cityId, search, pageNumber, pageSize) :
+                getAllEventsByDescriptionWithCityId(userId, cityId, search, pageNumber, pageSize);
     }
 
     private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
@@ -367,6 +366,29 @@ public class EventServiceImp implements EventService {
         event = eventRepository.save(event);
 
         return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
+    }
+
+    public PageList<CustomEventResponse> getAllEventsByDescriptionWithCityId(Long userId, Long cityId, String search,
+                                                                             Integer pageNumber, Integer pageSize) {
+
+        cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
+
+        Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
+                cityId, PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
+                        Sort.by(Sort.Direction.DESC, "dateEnd")));
+        return new PageList<>(eventMapper.
+                eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
+    }
+
+    public PageList<CustomEventResponse> getAllEventsByDescriptionWithoutCityId(Long userId, Long cityId, String search,
+                                                                                Integer pageNumber, Integer pageSize) {
+        cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
+
+        Page<Event> eventsPage = eventRepository.findEventByDescriptionWithoutCityId(("%" + search + "%"),
+                PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
+                        Sort.by(Sort.Direction.DESC, "dateEnd")));
+        return new PageList<>(eventMapper.eventListToCustomEventResponseListFavorites(eventsPage.getContent(), cityId), eventsPage);
+
     }
 
     private int getPageNumber(Integer pageNumber) {

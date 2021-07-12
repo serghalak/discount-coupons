@@ -28,7 +28,4 @@ public interface UserSavedRepository extends JpaRepository<User, Long> {
     @Transactional
     void deleteFromUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
-    /* ToDo: need more details */
-//    List<Location> getAllEventsLocationsFromSaved(Long userId);
-
 }

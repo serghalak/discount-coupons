@@ -34,6 +34,11 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "where loc.city.id = ?2 AND (e.description like ?1 or e.fullDescription like ?1)")
     Page<Event> findEventByDescription(String search, Long cityId, Pageable pageable);
 
+    @Query("select distinct e from Event e " +
+            "join e.locations loc " +
+            "where (e.description like ?1 or e.fullDescription like ?1)")
+    Page<Event> findEventByDescriptionWithoutCityId(String search, Pageable pageable);
+
     @Query(value = "SELECT e.* FROM event e " +
             "join saved_event se on e.id = se.event_id " +
             "WHERE event_id=:eventId and user_id =:userId LIMIT 1", nativeQuery = true)
