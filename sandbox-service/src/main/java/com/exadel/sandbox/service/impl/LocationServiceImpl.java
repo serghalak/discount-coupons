@@ -103,8 +103,11 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location update(VendorLocationUpdateRequest request) {
-        var locationFromDB = findById(request.getId());
         var city = cityService.findById(request.getCityId());
+        if(request.getId() == null){
+            return locationRepository.save(getLocation(request, city));
+        }
+        var locationFromDB = findById(request.getId());
         var location = getLocation(request, city);
         location.setId(locationFromDB.getId());
         return locationRepository.save(location);

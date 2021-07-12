@@ -15,7 +15,7 @@ public interface EventService {
 
     PageList<CustomEventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize);
 
-    PageList<CustomEventResponse> getAllEventsByDescription(Long cityId, String search, Integer pageNumber, Integer pageSize);
+    PageList<CustomEventResponse> getAllEventsByDescription(Long userId, Long cityId, String search, Integer pageNumber, Integer pageSize);
 
     PageList<CustomEventResponse> getEventsByFilter(Long userId, EventFilterRequest eventFilterRequest, Integer pageNumber, Integer pageSize);
 
@@ -23,5 +23,7 @@ public interface EventService {
 
     boolean deleteEventById(Long eventId);
 
-    ResponseEntity<?> saveEvent(Long vendorId, EventRequest eventRequest);
+    ResponseEntity<?> createEvent(EventRequest eventRequest);
+
+    ResponseEntity<?> updateEvent(Long eventId, EventRequest eventRequest);
 }

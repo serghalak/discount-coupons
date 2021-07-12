@@ -65,17 +65,21 @@ public class EventServiceImp implements EventService {
     @Override
     public PageList<CustomEventResponse> getAllEventsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
         var city = cityRepository.findCityByUserId(userId);
-        return getEventResponsesByCity(city.getId(), getPageNumber(pageNumber), getPageSize(pageSize));
+        return getEventResponsesByCityAndStatus(city.getId(), Status.ACTIVE,
+                Sort.by(Sort.Direction.DESC, "dateEnd"), getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
     @Override
     public PageList<CustomEventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize) {
-        return getEventResponsesByCity(cityId, getPageNumber(pageNumber), getPageSize(pageSize));
+        return getEventResponsesByCityAndStatus(cityId, Status.ACTIVE,
+                Sort.by(Sort.Direction.DESC, "dateEnd"), getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
     @Override
-    public PageList<CustomEventResponse> getAllEventsByDescription(Long cityId, String search,
+    public PageList<CustomEventResponse> getAllEventsByDescription(Long userId, Long cityId, String search,
                                                                    Integer pageNumber, Integer pageSize) {
+
+        cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
 
         Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
                 cityId, PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
@@ -84,9 +88,10 @@ public class EventServiceImp implements EventService {
                 eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
     }
 
-    private PageList<CustomEventResponse> getEventResponsesByCity(Long cityId, Integer pageNumber, Integer pageSize) {
-        Page<Event> eventsPage = eventRepository.findEventByCityId(cityId,
-                PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "dateEnd")));
+    private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
+
+        Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatus(cityId, status,
+                PageRequest.of(pageNumber, pageSize, sort));
 
         return new PageList<>(eventMapper.
                 eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
@@ -96,7 +101,7 @@ public class EventServiceImp implements EventService {
     public EventDetailsResponse getEventById(Long eventId) {
         return Optional.ofNullable(eventRepository.findEventById(eventId))
                 .map(eventMapper::eventToEventDetailResponse)
-                .orElseThrow(() -> new EntityNotFoundException("entity with id " + eventId + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " not found"));
     }
 
     @Override
@@ -106,26 +111,22 @@ public class EventServiceImp implements EventService {
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
-        if (eventFilterRequest.getLocationId() == 0 &&
-                eventFilterRequest.getCategoriesIdSet().isEmpty() &&
-                eventFilterRequest.getTagsIdSet().isEmpty() &&
-                eventFilterRequest.getVendorsIdSet().isEmpty()) {
-            var city = cityRepository.findCityByUserId(userId);
-
-            return getEventResponsesByCity(city.getId(), pageNumber, pageSize);
-        }
-
         if (eventFilterRequest.getLocationId() == 0) {
             var city = cityRepository.findCityByUserId(userId);
             eventFilterRequest.setLocationId(city.getId());
             eventFilterRequest.setCity(true);
         }
 
+        if (eventFilterRequest.getCategoriesIdSet().isEmpty() &&
+                eventFilterRequest.getTagsIdSet().isEmpty() &&
+                eventFilterRequest.getVendorsIdSet().isEmpty()) {
+            return getCustomEventResponsePageListByLocationAndStatus(eventFilterRequest, pageNumber, pageSize, sort);
+        }
+
         if (!eventFilterRequest.getTagsIdSet().isEmpty() &&
                 eventFilterRequest.getVendorsIdSet().isEmpty()) {
 
             return getCustomEventResponsePageListByTags(eventFilterRequest, pageNumber, pageSize, sort);
-
         }
 
         if (!eventFilterRequest.getTagsIdSet().isEmpty() &&
@@ -155,6 +156,20 @@ public class EventServiceImp implements EventService {
             return getCustomEventResponsePageListByVendors(eventFilterRequest, pageNumber, pageSize, sort);
         }
         return null;
+    }
+
+    private PageList<CustomEventResponse> getCustomEventResponsePageListByLocationAndStatus(EventFilterRequest eventFilterRequest, Integer pageNumber, Integer pageSize, Sort sort) {
+        if (eventFilterRequest.isCity()) {
+
+            return getEventResponsesByCityAndStatus(eventFilterRequest.getLocationId(), eventFilterRequest.getStatus(), sort, pageNumber, pageSize);
+
+        } else {
+            Page<Event> eventsPage = eventRepository.findEventByCountryIdAndStatus(eventFilterRequest.getLocationId(), eventFilterRequest.getStatus(),
+                    PageRequest.of(pageNumber, pageSize, sort));
+
+            return new PageList<>(eventMapper.
+                    eventListToCustomEventResponseListByCountryId(eventsPage.getContent(), eventFilterRequest.getLocationId()), eventsPage);
+        }
     }
 
     private PageList<CustomEventResponse> getCustomEventResponsePageListByVendors
@@ -314,15 +329,29 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public ResponseEntity<?> saveEvent(Long vendorId, EventRequest eventRequest) {
+    public ResponseEntity<?> createEvent(EventRequest eventRequest) {
 
-        if (vendorId == null || vendorId <= 0) {
+        return getResponseEntity(null, eventRequest);
+    }
+
+    @Override
+    public ResponseEntity<?> updateEvent(Long eventId, EventRequest eventRequest) {
+
+        if (eventId == null || eventId <= 0) {
             return ResponseEntity.badRequest().build();
         }
 
+        if (!eventRepository.existsById(eventId)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return getResponseEntity(eventId, eventRequest);
+    }
+
+    private ResponseEntity<?> getResponseEntity(Long eventId, EventRequest eventRequest) {
         final Set<Location> locationsById = locationRepository.getLocationsById(eventRequest.getLocationsId());
         final Set<Tag> tagsById = tagRepository.getTagsById(eventRequest.getTagsId());
-        final var vendor = vendorRepository.getById(vendorId);
+        final var vendor = vendorRepository.getById(eventRequest.getVendorId());
 
         if (locationsById.isEmpty() || tagsById.isEmpty() || vendor == null) {
             return ResponseEntity.badRequest().build();
@@ -332,13 +361,16 @@ public class EventServiceImp implements EventService {
                 .filter(tag -> !tag.getCategory().getId().equals(eventRequest.getCategoryId()))
                 .collect(Collectors.toList());
 
-
         if (!tags.isEmpty()) {
             return ResponseEntity.badRequest().body("Tag's don't agree with the inputted category");
         }
 
         final var category = categoryRepository.getById(eventRequest.getCategoryId());
         var event = eventMapper.eventRequestToEvent(eventRequest, vendor, locationsById, category, tagsById);
+
+        if (eventId != null) {
+            event.setId(eventId);
+        }
 
         event = eventRepository.save(event);
 
@@ -347,7 +379,6 @@ public class EventServiceImp implements EventService {
         return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
     }
 
-
     private int getPageNumber(Integer pageNumber) {
         return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
     }
@@ -355,7 +386,6 @@ public class EventServiceImp implements EventService {
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
-
 
     private void createNotificationUsersByFavorite(Event event) {
 
@@ -394,4 +424,5 @@ public class EventServiceImp implements EventService {
         }
         return totalUserSet;
     }
+
 }

@@ -5,8 +5,10 @@ import com.exadel.sandbox.dto.request.vendor.VendorUpdateRequest;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
+import com.exadel.sandbox.model.vendorinfo.Vendor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface VendorDetailsService {
 
@@ -14,13 +16,15 @@ public interface VendorDetailsService {
 
     VendorDetailsResponse findByIdWithLocations(Long id);
 
-    List<VendorFilterResponse>findAllVendorByLocationFilter(Long id, boolean isCountry);
+    List<VendorFilterResponse> findAllVendorByLocationFilter(Long id, boolean isCountry);
 
-    List<VendorFilterResponse>findAllVendorByCategoryFilter(List<Long> ids);
+    List<VendorFilterResponse> findAllVendorByCategoryFilter(List<Long> ids);
 
-    List<VendorFilterResponse>findAllVendorFilter();
+    List<VendorFilterResponse> findAllVendorFilter();
 
     void create(VendorRequest request);
 
     void update(Long vendorId, VendorUpdateRequest request);
+
+    boolean remove(Long id);
 }
