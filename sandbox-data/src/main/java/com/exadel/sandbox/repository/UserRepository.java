@@ -3,7 +3,9 @@ package com.exadel.sandbox.repository;
 import com.exadel.sandbox.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.repository.query.Param;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -28,4 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "join u.subscriptions s " +
             "where s.subscriberId in :ids and s.subscriberType=:subscriberName")
     Set<User> findAllUsersByTagsSubscription(@Param("ids") Set<Long> ids,  @Param("subscriberName") String subscriberName);
+
+    @Query(value = "SELECT IF(role = 'ADMIN', 'TRUE', 'FALSE') FROM user WHERE user.id =?1", nativeQuery = true)
+    boolean isAdmin(long userId);
+
 }

@@ -7,4 +7,6 @@ import java.util.List;
 public interface TagRepositoryCustom {
 
     List<Tag>findAllByCategoryFilter(List<Long> ids);
+
+    boolean drop(Long id);
 }
