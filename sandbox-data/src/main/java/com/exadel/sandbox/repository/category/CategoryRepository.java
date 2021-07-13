@@ -1,5 +1,6 @@
 package com.exadel.sandbox.repository.category;
 
+import com.exadel.sandbox.model.notification.SubscriptionResult;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,4 +32,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
             "JOIN saved_event se on se.event_id=e.id " +
             "WHERE se.user_id = ?1", nativeQuery = true)
     Set<Category> getAllCategoriesFromSaved(Long userId);
+
+    @Query("select distinct new com.exadel.sandbox.model.notification.SubscriptionResult(c.id, c.name, false) " +
+            "from Category c  order by c.name")
+    Set<SubscriptionResult> findAllCategoryAsSubscriptionResult();
 }

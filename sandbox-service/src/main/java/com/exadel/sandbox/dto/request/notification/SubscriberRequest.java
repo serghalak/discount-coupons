@@ -1,6 +1,6 @@
 package com.exadel.sandbox.dto.request.notification;
 
-import com.exadel.sandbox.model.notification.Subscriber;
+import com.exadel.sandbox.model.notification.SubscriberEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubscriberRequest {
 
-    private Long id;
+    private Long subscriberId;
 
-    private Subscriber type;
+    private String subscriberType;
 
-    boolean isSubscribed;
+    private String subscriberName;
+
+    private boolean isSubscribed;
 
 }

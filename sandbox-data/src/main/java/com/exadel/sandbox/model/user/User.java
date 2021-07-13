@@ -2,7 +2,9 @@ package com.exadel.sandbox.model.user;
 
 import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
+import com.exadel.sandbox.model.notification.Subscription;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.model.vendorinfo.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -56,5 +58,8 @@ public class User extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     @JsonIgnore
     private Set<Event> usersOrder = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Subscription> subscriptions = new HashSet<>();
 
 }

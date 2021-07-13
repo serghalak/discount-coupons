@@ -74,7 +74,7 @@ public class FilterServiceImpl implements FilterService {
 
     private List<TagFilterResponse> getAllTagsByCategoryFilter(List<Long> ids) {
 
-        if (ids.isEmpty() || ids.size() == 0) {
+        if (ids.isEmpty()) {
             return Collections.emptyList();
         } else {
             return tagService.findAllTagsByCategoryFilter(ids);

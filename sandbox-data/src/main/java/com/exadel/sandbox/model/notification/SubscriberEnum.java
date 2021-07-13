@@ -1,5 +1,5 @@
 package com.exadel.sandbox.model.notification;
 
-public enum Subscriber {
+public enum SubscriberEnum {
     VENDOR, CATEGORY, TAG
 }

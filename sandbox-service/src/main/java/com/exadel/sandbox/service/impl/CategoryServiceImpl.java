@@ -40,8 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final CategoryShortMapper categoryShortMapper;
-    private final EventService eventService;
-    private final TagService tagService;
+
 
     @Override
     @Transactional
@@ -50,7 +49,8 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         if (categoryOptional.isPresent()) {
             Set<Event> events = categoryOptional.get().getEvents();
-            if (events.isEmpty() || events.size() == 0) {
+
+            if (events.isEmpty()) {
                 categoryRepository.deleteById(categoryId);
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse updateCategory(/*Long categoryId,*/ CategoryRequest categoryRequest) {
+    public CategoryResponse updateCategory(CategoryRequest categoryRequest) {
 
         if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
