@@ -5,11 +5,11 @@ import com.exadel.sandbox.dto.request.EventFilterRequest;
 import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
-import com.exadel.sandbox.mail.MailUtil;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.location.Location;
-import com.exadel.sandbox.model.user.User;
-import com.exadel.sandbox.model.vendorinfo.*;
+import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.model.vendorinfo.Status;
+import com.exadel.sandbox.model.vendorinfo.Tag;
 import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
@@ -23,13 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +48,7 @@ public class EventServiceImp implements EventService {
     private final VendorRepository vendorRepository;
     private final EventMapper eventMapper;
     private final UserService userService;
-    private final MailUtil mailUtil;
+
 
     @Override
     public PageList<EventDetailsResponse> getAll(Integer pageNumber, Integer pageSize) {
@@ -374,8 +370,6 @@ public class EventServiceImp implements EventService {
 
         event = eventRepository.save(event);
 
-        createNotificationUsersByFavorite(event);
-
         return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
     }
 
@@ -385,44 +379,6 @@ public class EventServiceImp implements EventService {
 
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
-    }
-
-    private void createNotificationUsersByFavorite(Event event) {
-
-        Category category = event.getCategory();
-        Set<Tag> tags = category.getTags();
-        Vendor vendor = event.getVendor();
-
-        Set<User> allUsersByCategoryFavorite = userService.findAllUsersByCategoryFavorite(category.getId());
-        Set<User> allUsersByVendorFavorite = userService.findAllUsersByVendorFavorite(vendor.getId());
-        Set<User> allUsersByTagsFavorite = userService.findAllUsersByTagsFavorite(getTagIds(tags));
-
-        Set<User> totalSetOfUsers = unionSetsOfUsers(allUsersByCategoryFavorite, allUsersByVendorFavorite, allUsersByTagsFavorite);
-        for(int i=0;i<10;i++)
-            if(i==5){
-                try {
-                    throw new MessagingException("email 5 not sent");
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                }
-            }else{
-        totalSetOfUsers.stream()
-                .forEach(user -> mailUtil.sendFavoriteMessage(user.getEmail(), String.valueOf(event.getId())));
-            }
-    }
-
-    private Set<Long> getTagIds(Set<Tag> tags) {
-        return tags.stream()
-                .map(Tag::getId)
-                .collect(Collectors.toSet());
-    }
-
-    private Set<User> unionSetsOfUsers(Set<User>... userSets) {
-        Set<User> totalUserSet = new HashSet<>();
-        for (Set<User> userSet : userSets) {
-            totalUserSet.addAll(userSet);
-        }
-        return totalUserSet;
     }
 
 }

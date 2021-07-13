@@ -17,4 +17,6 @@ public interface SubscriberService {
     List<SubscriberResponse> getAllCategorySubscriber(Long userId, SubscriberEnum subscriberType);
 
     List<SubscriberResponse> getAllTagSubscriber(Long userId, SubscriberEnum subscriberType);
+
+    boolean createEmailNotificationUsersBySubscription(Long eventId);
 }

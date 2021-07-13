@@ -15,9 +15,9 @@ public interface UserService {
 
     UserResponse findByName(final String name);
 
-    Set<User> findAllUsersByVendorFavorite(Long vendorId);
+    Set<User> findAllUsersByVendorSubscription(Long vendorId);
 
-    Set<User> findAllUsersByCategoryFavorite(Long categoryId);
+    Set<User> findAllUsersByCategorySubscription(Long categoryId);
 
-    Set<User> findAllUsersByTagsFavorite(Set<Long>tagIds);
+    Set<User> findAllUsersByTagsSubscription(Set<Long>tagIds);
 }

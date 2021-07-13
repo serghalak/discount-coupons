@@ -66,4 +66,11 @@ public class SubscriberController {
         return subscriberService.getAllTagSubscriber(userId, SubscriberEnum.TAG);
     }
 
+    @GetMapping( path = {"user/subscription/publish/{eventId}"})
+    public boolean publishedSubscribers(@PathVariable(value = "eventId", required = true) Long eventId) {
+
+        return subscriberService.createEmailNotificationUsersBySubscription(eventId);
+
+    }
+
 }
