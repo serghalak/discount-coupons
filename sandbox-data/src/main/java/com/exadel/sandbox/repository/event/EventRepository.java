@@ -6,28 +6,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.Set;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long>, EventRepositoryCustom {
+public interface EventRepository extends JpaRepository<Event, Long>, EventRepositoryCustom, JpaSpecificationExecutor<Event> {
+
+    /*TODO To determine what method are the best*/
+//    Page<Event> findDistinctByLocationsCityIdAndStatus(Long cityId, Status status, Pageable pageable);
 
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
             "where loc.city.id = ?1 " +
             "and e.status = ?2")
     Page<Event> findEventByCityIdAndStatus(Long cityId, Status status, Pageable pageable);
-
-    @Query("select distinct e from Event e " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "where city.country.id = ?1 " +
-            "and e.status = ?2")
-    Page<Event> findEventByCountryIdAndStatus(Long countryId, Status status, PageRequest of);
 
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
@@ -54,102 +50,5 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
     Page<Event> getAllEventsFromUserSaved(Long userId, PageRequest of);
 
     Event findEventById(Long id);
-
-    @Query("select distinct e from Event e " +
-            "join e.tags tag " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "join city.country country " +
-            "where (tag.id in (?2)) " +
-            "and country.id = ?1 " +
-            "and e.status = ?3")
-    Page<Event> findByTagsByCountry(Long locationId, Set<Long> tagsIsSet, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.tags tag " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "where (tag.id in (?2)) " +
-            "and city.id = ?1 " +
-            "and e.status =?3")
-    Page<Event> findByTagsByCity(Long locationId, Set<Long> tagsIs, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.tags tag " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "join city.country country " +
-            "where (tag.id in (?3)) " +
-            "and country.id = ?1 " +
-            "and e.vendor.id in (?2) " +
-            "and e.status =?4")
-    Page<Event> findByTagsByVendorsByCountry(Long locationId, Set<Long> vendorsId, Set<Long> tagsIs, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.tags tag " +
-            "join e.locations loc " +
-            "where (tag.id in (?3)) " +
-            "and loc.city.id = ?1 " +
-            "and e.vendor.id in (?2) " +
-            "and e.status =?4")
-    Page<Event> findByTagsByVendorsByCity(Long locationId, Set<Long> vendorsId, Set<Long> tagsIs, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.category cat " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "join city.country country " +
-            "where (cat.id in (?2)) " +
-            "and country.id = ?1 " +
-            "and e.status =?3")
-    Page<Event> findByCategoryByCountry(Long locationId, Set<Long> categoriesId, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.category cat " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "where (cat.id in (?2)) " +
-            "and city.id = ?1 " +
-            "and e.status =?3")
-    Page<Event> findByCategoryByCity(Long locationId, Set<Long> categoriesId, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.category cat " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "where (cat.id in (?3)) " +
-            "and city.id = ?1 " +
-            "and e.vendor.id in (?2) " +
-            "and e.status =?3")
-    Page<Event> findByCategoryByVendorsByCity(Long locationId, Set<Long> vendorsId, Set<Long> categoriesId, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.category cat " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "join city.country country " +
-            "where (cat.id in (?3)) " +
-            "and country.id = ?1 " +
-            "and e.vendor.id in (?2) " +
-            "and e.status =?3")
-    Page<Event> findByCategoryByByVendorsCountry(Long locationId, Set<Long> vendorsId, Set<Long> categoriesId, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "where e.vendor.id in (?2) " +
-            "and city.id = ?1 " +
-            "and e.status =?3")
-    Page<Event> findByVendorsByCity(Long locationId, Set<Long> vendorsId, Status status, PageRequest of);
-
-    @Query("select distinct e from Event e " +
-            "join e.category cat " +
-            "join e.locations loc " +
-            "join loc.city city " +
-            "where e.vendor.id in (?2) " +
-            "and city.country.id = ?1 " +
-            "and e.status =?3")
-    Page<Event> findByByVendorsCountry(Long locationId, Set<Long> vendorsId, Status status, PageRequest of);
-
 
 }
