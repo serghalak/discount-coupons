@@ -61,11 +61,6 @@ public class OrderServiceImpl implements OrderService {
                 PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
                         Sort.by(Sort.Direction.DESC, "dateEnd")));
 
-        if (eventsFromOrder.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Not Found. Your order list is empty");
-        }
-
         return new PageList<>(
                 eventMapper.eventToEventResponseFoOrder(eventsFromOrder.getContent()),
                 eventsFromOrder);
