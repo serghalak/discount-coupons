@@ -1,13 +1,26 @@
 package com.exadel.sandbox.model.vendorinfo;
 
 import com.exadel.sandbox.model.BaseEntity;
-import com.exadel.sandbox.model.EventStatistic;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -112,8 +125,12 @@ public class Event extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "statistic_id", referencedColumnName = "id")
-    private EventStatistic eventStatistic;
-
+    public Event(Long id, String description, LocalDateTime dateEnd, LocalDateTime dateOfCreation, Set<Location> locations, Vendor vendor) {
+        this.id = id;
+        this.description = description;
+        this.dateEnd = dateEnd;
+        this.dateOfCreation = dateOfCreation;
+        this.locations = locations;
+        this.vendor = vendor;
+    }
 }

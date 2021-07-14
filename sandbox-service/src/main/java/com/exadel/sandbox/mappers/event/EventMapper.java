@@ -14,6 +14,7 @@ import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Tag;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
+import com.exadel.sandbox.repository.event.EventProjectionForOrders;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -134,6 +135,19 @@ public class EventMapper {
                         .vendorShortResponse(vendorShortMapper.vendorToVendorShortResponse(event.getVendor()))
                         .dateEnd(event.getDateEnd())
                         .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<EventResponseFoOrders> eventToEventResponseFoOrderWithDate(List<EventProjectionForOrders> events) {
+        return events.stream()
+                .map(event -> EventResponseFoOrders.builder()
+                        .id(event.getE().getId())
+                        .gettingDate(event.getDateEvent())
+                        .description(event.getE().getDescription())
+                        .vendorShortResponse(vendorShortMapper.vendorToVendorShortResponse(event.getE().getVendor()))
+                        .dateEnd(event.getE().getDateEnd())
+                        .locations(locMapper.setLocationToListShortLocation(event.getE().getLocations()))
                         .build())
                 .collect(Collectors.toList());
     }

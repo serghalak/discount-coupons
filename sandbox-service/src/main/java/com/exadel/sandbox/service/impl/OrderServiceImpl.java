@@ -6,6 +6,7 @@ import com.exadel.sandbox.dto.response.event.EventResponseFoOrders;
 import com.exadel.sandbox.mail.MailUtil;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.repository.event.EventProjectionForOrders;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.user.UserOrderRepository;
 import com.exadel.sandbox.service.OrderService;
@@ -60,7 +61,6 @@ public class OrderServiceImpl implements OrderService {
         final Page<Event> eventsFromOrder = userOrderRepository.getAllEventsFromUserOrder(userId,
                 PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
                         Sort.by(Sort.Direction.DESC, "dateEnd")));
-
         return new PageList<>(
                 eventMapper.eventToEventResponseFoOrder(eventsFromOrder.getContent()),
                 eventsFromOrder);

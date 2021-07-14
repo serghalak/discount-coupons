@@ -13,7 +13,7 @@ public interface CategoryService {
 
     void deleteCategoryById(Long categoryId);
 
-    CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest);
+    CategoryResponse updateCategory(/*Long categoryId,*/ CategoryRequest categoryRequest);
 
     PageList<CategoryResponse> listCategoriesByPartOfName(String categoryName, Integer pageNumber, Integer pageSize);
 

@@ -40,18 +40,17 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final CategoryShortMapper categoryShortMapper;
-    private final EventService eventService;
-    private final TagService tagService;
+
 
     @Override
     @Transactional
     public void deleteCategoryById(Long categoryId) {
-        log.debug(">>>>>>>>delete category id " + categoryId);
 
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         if (categoryOptional.isPresent()) {
             Set<Event> events = categoryOptional.get().getEvents();
-            if (events.isEmpty() || events.size() == 0) {
+
+            if (events.isEmpty()) {
                 categoryRepository.deleteById(categoryId);
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
@@ -64,20 +63,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest) {
-        log.debug(">>>>>update category with id: " + categoryId);
+    public CategoryResponse updateCategory(CategoryRequest categoryRequest) {
 
         if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
                     , "Category name cannot be empty");
         }
 
-        if (categoryId != categoryRequest.getId()) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    , "Category name cannot be empty");
-        }
-
-        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryRequest.getId());
 
         if (categoryOptional.isPresent()) {
             Category category = categoryMapper.categoryRequestToCategory(categoryRequest);
@@ -88,13 +81,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. ProductId: "
-                    + categoryId);
+                    + categoryRequest.getId());
         }
     }
 
     @Override
     public PageList<CategoryResponse> listCategoriesByPartOfName(String categoryName, Integer pageNumber, Integer pageSize) {
-        log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
 
         categoryName = categoryName.isEmpty() ? "" : categoryName;
 
@@ -111,12 +103,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse findCategoryById(Long categoryId) {
-        log.debug(">>>>>>CategoryService find by Id: " + categoryId);
 
         Optional<Category> category = categoryRepository.findById(categoryId);
 
         if (category.isPresent()) {
-            log.debug(">>>>>Category is found: " + categoryId);
             return categoryMapper.categoryToCategoryResponse(category.get());
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Category");
@@ -125,7 +115,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public PageList<CategoryResponse> listCategories(Integer pageNumber, Integer pageSize) {
-        log.debug(">>>>>>>>>>>>>ListCategory ....");
 
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
