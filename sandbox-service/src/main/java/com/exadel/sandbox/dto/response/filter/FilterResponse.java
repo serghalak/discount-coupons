@@ -12,9 +12,11 @@ import java.util.List;
 public class FilterResponse {
 
     private List<LocationFilterResponse> locations;
-    private List<CategoryFilterResponse> categories;
-    private List<TagFilterResponse> tags;
-    private List<VendorFilterResponse> vendors;
 
+    private List<CategoryFilterResponse> categories;
+
+    private List<TagFilterResponse> tags;
+
+    private List<VendorFilterResponse> vendors;
 
 }

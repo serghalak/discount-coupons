@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public interface UserOrderRepository extends JpaRepository<User, Long> {
 
@@ -33,4 +33,5 @@ public interface UserOrderRepository extends JpaRepository<User, Long> {
             "WHERE uo.id =?1")
     @Transactional
     Page<Event> getAllEventsFromUserOrder(Long userId, PageRequest of);
+
 }

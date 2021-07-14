@@ -30,12 +30,11 @@ public class CategoryController {
         categoryService.deleteCategoryById(categoryId);
     }
 
-    @PutMapping(path = {"category/{categoryId}"}, produces = {"application/json"})
-    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("categoryId") Long categoryId,
-                                                           @Valid @RequestBody CategoryRequest categoryRequest) {
+    @PutMapping(path = {"category"}, produces = {"application/json"})
+    public ResponseEntity<CategoryResponse> updateCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
 
         return new ResponseEntity<>(
-                categoryService.updateCategory(categoryId, categoryRequest)
+                categoryService.updateCategory(categoryRequest)
                 , HttpStatus.OK);
     }
 
