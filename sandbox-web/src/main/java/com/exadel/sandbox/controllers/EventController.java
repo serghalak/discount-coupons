@@ -8,6 +8,7 @@ import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.EventService;
+import com.exadel.sandbox.service.impl.ViewedEventService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class EventController {
 
     private final EventService eventService;
+    private final ViewedEventService viewedEventService;
     private final JwtUtil jwtUtil;
 
     @GetMapping("/")
@@ -60,8 +62,12 @@ public class EventController {
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<?> getEventById(@PathVariable long eventId) {
+    public ResponseEntity<?> getEventById(@RequestHeader("Authorization") AuthenticationResponse authResponse,
+                                          @PathVariable long eventId) {
         var event = eventService.getEventById(eventId);
+        viewedEventService.saveEventToViewed(jwtUtil.extractUserIdFromAuthResponse(authResponse),
+                eventId);
+
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
