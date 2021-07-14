@@ -33,5 +33,4 @@ public interface UserOrderRepository extends JpaRepository<User, Long> {
             "WHERE uo.id =?1")
     @Transactional
     Page<Event> getAllEventsFromUserOrder(Long userId, PageRequest of);
-
 }

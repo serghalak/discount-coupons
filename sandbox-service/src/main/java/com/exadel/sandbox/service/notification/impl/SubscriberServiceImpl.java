@@ -10,14 +10,10 @@ import com.exadel.sandbox.model.notification.SubscriberEnum;
 import com.exadel.sandbox.model.notification.Subscription;
 import com.exadel.sandbox.model.notification.SubscriptionResult;
 import com.exadel.sandbox.model.user.User;
-import com.exadel.sandbox.model.vendorinfo.Category;
-import com.exadel.sandbox.model.vendorinfo.Event;
-import com.exadel.sandbox.model.vendorinfo.Tag;
-import com.exadel.sandbox.model.vendorinfo.Vendor;
-import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.repository.notification.SubscriberRepository;
 import com.exadel.sandbox.repository.tag.TagRepository;
+import com.exadel.sandbox.repository.user.UserRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.EventService;
 import com.exadel.sandbox.service.UserService;
@@ -25,7 +21,6 @@ import com.exadel.sandbox.service.notification.SubscriberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,20 +96,20 @@ public class SubscriberServiceImpl implements SubscriberService {
                 .map(suscriberMapper::subscriptionToSubscriberResponse)
                 .collect(Collectors.toList());
 
-        Set<SubscriptionResult> allAsSubscriptionResult=null;
+        Set<SubscriptionResult> allAsSubscriptionResult = null;
 
-        switch (subscriberType){
+        switch (subscriberType) {
             case VENDOR:
-                allAsSubscriptionResult=vendorRepository.findAllVendorAsSubscriptionResult();
+                allAsSubscriptionResult = vendorRepository.findAllVendorAsSubscriptionResult();
                 break;
             case CATEGORY:
-                allAsSubscriptionResult=categoryRepository.findAllCategoryAsSubscriptionResult();
+                allAsSubscriptionResult = categoryRepository.findAllCategoryAsSubscriptionResult();
                 break;
             case TAG:
-                allAsSubscriptionResult=tagRepository.findAllTagAsSubscriptionResult();
+                allAsSubscriptionResult = tagRepository.findAllTagAsSubscriptionResult();
                 break;
             default:
-                allAsSubscriptionResult=null;
+                allAsSubscriptionResult = null;
                 break;
         }
 
@@ -134,7 +129,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
         Long categoryId = event.getCategoryId();
         Long vendorId = event.getVendorId();
-        Set<Long> tags =getTagIds(event.getTags());
+        Set<Long> tags = getTagIds(event.getTags());
 
         Set<User> allUsersByCategoryFavorite = userService.findAllUsersByCategorySubscription(categoryId);
         Set<User> allUsersByVendorFavorite = userService.findAllUsersByVendorSubscription(vendorId);

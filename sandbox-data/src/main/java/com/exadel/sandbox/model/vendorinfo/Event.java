@@ -18,9 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"category", "locations", "userSavedEvents", "userOrders", "userFeedbacks", "tags"})
+@ToString(exclude = {"category", "locations", "userSavedEvents", "userOrders", "viewedUsersEvents", "userFeedbacks", "tags"})
 @EqualsAndHashCode(callSuper = false, exclude = {"category", "locations", "userSavedEvents", "userOrders",
-        "userFeedbacks", "tags"})
+        "viewedUsersEvents", "userFeedbacks", "tags"})
 public class Event extends BaseEntity {
 
     @Column(name = "name")
@@ -89,6 +89,13 @@ public class Event extends BaseEntity {
     private Set<User> userOrders = new HashSet<>();
 
     @ManyToMany
+    @JoinTable(name = "viewed_event",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
+    private Set<User> viewedUsersEvents = new HashSet<>();
+
+    @ManyToMany
     @JoinTable(name = "feedback",
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
@@ -111,4 +118,12 @@ public class Event extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
+    public Event(Long id, String description, LocalDateTime dateEnd, LocalDateTime dateOfCreation, Set<Location> locations, Vendor vendor) {
+        this.id = id;
+        this.description = description;
+        this.dateEnd = dateEnd;
+        this.dateOfCreation = dateOfCreation;
+        this.locations = locations;
+        this.vendor = vendor;
+    }
 }

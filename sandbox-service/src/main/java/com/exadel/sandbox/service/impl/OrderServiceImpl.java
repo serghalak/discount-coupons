@@ -1,13 +1,13 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
-import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventResponseFoOrders;
 import com.exadel.sandbox.mail.MailUtil;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.user.UserOrderRepository;
+import com.exadel.sandbox.repository.user.UserRepository;
 import com.exadel.sandbox.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @AllArgsConstructor
@@ -26,19 +26,23 @@ public class OrderServiceImpl implements OrderService {
 
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
     private static final Integer DEFAULT_PAGE_SIZE = 10;
-    private static final String DEFAULT_FIELD_SORT = "name";
 
     private final EventRepository eventRepository;
     private final UserOrderRepository userOrderRepository;
+    private final UserRepository userRepository;
+
     private final EventMapper eventMapper;
     private final MailUtil mailUtil;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm a, dd-MM-yyyy");
 
-    /*ToDo:  Implement verification by "limitation" and remove PRIMARY*/
     @Override
     public String saveEventToOrder(Long userId, Long eventId, String email) {
         var event = verifyEventId(eventId);
         updateLimitation(event);
-        mailUtil.sendSimpleMessage(email);
+        mailUtil.sendSimpleMessage(email,
+                userRepository.getUsername(userId),
+                event.getVendor().getName(),
+                formatter.format(event.getDateEnd()));
         userOrderRepository.insertIntoUserOrder(eventId, userId, LocalDateTime.now());
         return "Event successfully saved to User Order ";
     }
@@ -46,9 +50,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String removeEventFromOrder(Long eventId, Long userId) {
         var exist = eventRepository.getOneEventsFromUserOrder(eventId, userId);
-         if (exist==null)
-                throw  new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Not Found. EventId: " + eventId + " in User Order");
+        if (exist == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Not Found. EventId: " + eventId + " in User Order");
 
         userOrderRepository.deleteFromUserOrder(eventId, userId);
         return "Event successfully removed from User Order ";
@@ -60,7 +64,6 @@ public class OrderServiceImpl implements OrderService {
         final Page<Event> eventsFromOrder = userOrderRepository.getAllEventsFromUserOrder(userId,
                 PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
                         Sort.by(Sort.Direction.DESC, "dateEnd")));
-
         return new PageList<>(
                 eventMapper.eventToEventResponseFoOrder(eventsFromOrder.getContent()),
                 eventsFromOrder);

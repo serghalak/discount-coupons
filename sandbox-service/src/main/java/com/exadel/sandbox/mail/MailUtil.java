@@ -12,14 +12,22 @@ public class MailUtil {
 
     private static final String URL_EVENT = "https://exadel-coupons.web.app/deal/";
 
+    private static final String MESSAGE = "Dear %s,\n" +
+            "here is the promo code you ordered\n\n" +
+            "EXDLPROMO21\n\n" +
+            "Make sure to visit %s and use it before %s.\n\n" +
+            "Sincerely yours, Exadel Coupons Team.\n\n\n" +
+            "© Exadel Inc. All rights reserved. All trademarks are property of their respective owners in the US and other countries.";
+
     private final JavaMailSender emailSender;
 
-    public void sendSimpleMessage(String mailTo) {
+    @Async
+    public void sendSimpleMessage(String mailTo, String userName, String vendorName, String endDate) {
         var message = new SimpleMailMessage();
         message.setFrom("exadelteam2021@gmail.com");
         message.setTo(mailTo);
-        message.setSubject("subject");
-        message.setText("Promokod: Exadel");
+        message.setSubject("Promokod");
+        message.setText(setParameterToMailText(userName, vendorName, endDate));
         emailSender.send(message);
     }
 
@@ -33,5 +41,9 @@ public class MailUtil {
         message.setSubject("your favorite event is started");
         message.setText("Click on link to see a new exadel event " + URL_EVENT + linkId);
         emailSender.send(message);
+    }
+
+    private String setParameterToMailText(String userName, String vendorName, String endDate) {
+        return String.format(MESSAGE, userName, vendorName, endDate);
     }
 }
