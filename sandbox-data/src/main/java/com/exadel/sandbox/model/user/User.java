@@ -4,7 +4,6 @@ import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.notification.Subscription;
 import com.exadel.sandbox.model.vendorinfo.Event;
-import com.exadel.sandbox.model.vendorinfo.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -18,8 +17,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"location", "savedEvents", "usersOrder"})
-@EqualsAndHashCode(callSuper = false, exclude = {"location", "savedEvents", "usersOrder"})
+@ToString(exclude = {"location", "savedEvents", "usersOrder", "viewedEvents"})
+@EqualsAndHashCode(callSuper = false, exclude = {"location", "savedEvents", "usersOrder", "viewedEvents"})
 public class User extends BaseEntity {
 
     @Column(name = "username", unique = true)
@@ -61,5 +60,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private Set<Subscription> subscriptions = new HashSet<>();
+
+    @ManyToMany(mappedBy = "viewedUsersEvents")
+    @JsonIgnore
+    private Set<Event> viewedEvents = new HashSet<>();
 
 }
