@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,14 +57,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageList<EventResponseFoOrders> getAllFromOrder(Long userId,
-                                                           Integer pageNumber, Integer pageSize) {
-        final Page<Event> eventsFromOrder = userOrderRepository.getAllEventsFromUserOrder(userId,
-                PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
-                        Sort.by(Sort.Direction.DESC, "dateEnd")));
-        return new PageList<>(
-                eventMapper.eventToEventResponseFoOrder(eventsFromOrder.getContent()),
-                eventsFromOrder);
+    public List<EventResponseFoOrders> getAllFromOrder(Long userId) {
+               return eventMapper.eventToEventResponseFoOrder(userOrderRepository.getAllEventsFromUserOrder(userId));
+
     }
 
     private Event verifyEventId(Long eventId) {

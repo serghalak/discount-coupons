@@ -2,7 +2,6 @@ package com.exadel.sandbox.repository.user;
 
 import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.model.vendorinfo.Event;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 public interface UserOrderRepository extends JpaRepository<User, Long> {
 
@@ -32,5 +31,5 @@ public interface UserOrderRepository extends JpaRepository<User, Long> {
             " join  e.userOrders uo  " +
             "WHERE uo.id =?1")
     @Transactional
-    Page<Event> getAllEventsFromUserOrder(Long userId, PageRequest of);
+    List<Event> getAllEventsFromUserOrder(Long userId);
 }
