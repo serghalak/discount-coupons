@@ -4,23 +4,9 @@ import com.exadel.sandbox.model.BaseEntity;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -32,9 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"category", "locations", "userSavedEvents", "userOrders", "userFeedbacks", "tags"})
+@ToString(exclude = {"category", "locations", "userSavedEvents", "userOrders", "viewedUsersEvents", "userFeedbacks", "tags"})
 @EqualsAndHashCode(callSuper = false, exclude = {"category", "locations", "userSavedEvents", "userOrders",
-        "userFeedbacks", "tags"})
+        "viewedUsersEvents", "userFeedbacks", "tags"})
 public class Event extends BaseEntity {
 
     @Column(name = "name")
@@ -101,6 +87,13 @@ public class Event extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> userOrders = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "viewed_event",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
+    private Set<User> viewedUsersEvents = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "feedback",
