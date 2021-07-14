@@ -61,12 +61,6 @@ public class OrderServiceImpl implements OrderService {
         final Page<Event> eventsFromOrder = userOrderRepository.getAllEventsFromUserOrder(userId,
                 PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
                         Sort.by(Sort.Direction.DESC, "dateEnd")));
-        final Page<EventProjectionForOrders> eventsFromOrder2 = userOrderRepository.getAllEventsFromUserOrderWithDate(userId,PageRequest.of(getPageNumber(pageNumber),
-                getPageSize(pageSize)));
-        System.out.println(eventsFromOrder2.getContent().get(1).getE());
-
-        System.out.println( eventMapper.eventToEventResponseFoOrderWithDate(eventsFromOrder2.getContent()));
-
         return new PageList<>(
                 eventMapper.eventToEventResponseFoOrder(eventsFromOrder.getContent()),
                 eventsFromOrder);
