@@ -55,6 +55,11 @@ public class TagServiceImpl implements TagService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean remove(Long id) {
+        return repository.drop(id);
+    }
+
     private int getPageNumber(Integer pageNumber) {
         return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
     }
