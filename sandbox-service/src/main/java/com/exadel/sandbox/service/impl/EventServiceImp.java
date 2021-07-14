@@ -19,6 +19,7 @@ import com.exadel.sandbox.repository.location_repository.LocationRepository;
 import com.exadel.sandbox.repository.tag.TagRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.EventService;
+import com.exadel.sandbox.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +41,7 @@ public class EventServiceImp implements EventService {
     private static final Integer DEFAULT_PAGE_SIZE = 10;
     private static final String DEFAULT_FIELD_SORT = "name";
 
+
     private final EventRepository eventRepository;
     private final CityRepository cityRepository;
     private final LocationRepository locationRepository;
@@ -47,8 +49,12 @@ public class EventServiceImp implements EventService {
     private final CategoryRepository categoryRepository;
     private final VendorRepository vendorRepository;
     private final EventMapper eventMapper;
+
+    private final UserService userService;
+
     private final UserRepository userRepository;
     private final SpecificationBuilder specificationBuilder;
+
 
 
     @Override

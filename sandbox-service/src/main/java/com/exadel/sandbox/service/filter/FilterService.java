@@ -6,4 +6,5 @@ import com.exadel.sandbox.dto.response.filter.FilterResponse;
 public interface FilterService {
 
     FilterResponse getFilterResponse(FilterRequest filterRequest, Long userId);
+
 }

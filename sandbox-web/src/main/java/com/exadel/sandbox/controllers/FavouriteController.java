@@ -67,7 +67,7 @@ public class FavouriteController {
             @RequestHeader("Authorization") AuthenticationResponse authResponse,
             @RequestParam(name = "eventId") Long eventId) {
 
-        return ResponseEntity.ok().body( favouriteService.removeEventFromSaved(
+        return ResponseEntity.ok().body(favouriteService.removeEventFromSaved(
                 jwtUtil.extractUserIdFromAuthResponse(authResponse),
                 eventId));
     }

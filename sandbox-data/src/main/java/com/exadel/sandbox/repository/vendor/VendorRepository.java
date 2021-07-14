@@ -1,7 +1,11 @@
 package com.exadel.sandbox.repository.vendor;
 
+import com.exadel.sandbox.model.notification.SubscriptionResult;
+import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -36,4 +40,8 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRep
             "JOIN saved_event se on se.event_id=e.id " +
             "WHERE se.user_id = ?1", nativeQuery = true)
     Set<Vendor> getAllVendorsFromSaved(Long userId);
+
+    @Query("select distinct new com.exadel.sandbox.model.notification.SubscriptionResult(v.id, v.name, false) " +
+            "from Vendor v  order by v.name")
+    Set<SubscriptionResult> findAllVendorAsSubscriptionResult();
 }

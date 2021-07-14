@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -42,7 +41,7 @@ public class FilterServiceImpl implements FilterService {
         List<LocationFilterResponse> allLocationFilter = locationService.findAllLocationFilter();
         allLocationFilter.stream()
                 .filter(locationFilterResponse -> locationFilterResponse.isCountry() == false &&
-                        locationFilterResponse.getId() == cityByUserId.getId())
+                        locationFilterResponse.getId().equals(cityByUserId.getId()))
                 .forEach(locationFilterResponse -> locationFilterResponse.setChecked(true));
 
         List<CategoryFilterResponse> allCategoriesFilter = categoryService.findAllCategoryByLocationFilter(cityByUserId.getId(), false);
@@ -75,14 +74,14 @@ public class FilterServiceImpl implements FilterService {
 
     private List<TagFilterResponse> getAllTagsByCategoryFilter(List<Long> ids) {
 
-        if (ids.isEmpty() || ids.size() == 0) {
+        if (ids.isEmpty()) {
             return Collections.emptyList();
         } else {
             return tagService.findAllTagsByCategoryFilter(ids);
         }
     }
 
-   private List<CategoryFilterResponse> getAllCategiriesByLocationFilter(long locationId, boolean isCountry) {
+    private List<CategoryFilterResponse> getAllCategiriesByLocationFilter(long locationId, boolean isCountry) {
         return categoryService.findAllCategoryByLocationFilter(locationId, isCountry);
     }
 
