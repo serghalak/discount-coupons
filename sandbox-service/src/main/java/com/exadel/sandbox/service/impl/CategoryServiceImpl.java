@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -53,12 +54,10 @@ public class CategoryServiceImpl implements CategoryService {
             if (events.isEmpty()) {
                 categoryRepository.deleteById(categoryId);
             } else {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                        "You cannot delete category. Category is uses");
+                throw new IllegalArgumentException("You cannot delete category. Category is uses");
             }
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    "Category is not exists");
+            throw new EntityNotFoundException("Category is not exists");
         }
     }
 
@@ -66,8 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse updateCategory(CategoryRequest categoryRequest) {
 
         if (categoryRequest.getName() == null || categoryRequest.getName().equals("")) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE
-                    , "Category name cannot be empty");
+            throw new IllegalArgumentException("Category name cannot be empty");
         }
 
         Optional<Category> categoryOptional = categoryRepository.findById(categoryRequest.getId());
@@ -80,8 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
             return categoryMapper.categoryToCategoryResponse(savedCategory);
 
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found. ProductId: "
-                    + categoryRequest.getId());
+            throw new EntityNotFoundException("Not Found. ProductId: " + categoryRequest.getId());
         }
     }
 
@@ -109,7 +106,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (category.isPresent()) {
             return categoryMapper.categoryToCategoryResponse(category.get());
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Category");
+            throw new EntityNotFoundException("Not Found Category");
         }
     }
 
@@ -134,12 +131,11 @@ public class CategoryServiceImpl implements CategoryService {
         String categoryName = categoryRequest.getName();
 
         if (categoryName == null || categoryName.equals("")) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    "The category cannot be empty");
+            throw new IllegalArgumentException("The category cannot be empty");
         }
 
         if (isCategoryNameExists(categoryName)) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The category: "
+            throw new IllegalArgumentException("The category: "
                     + categoryName + " is already exists");
         }
 
