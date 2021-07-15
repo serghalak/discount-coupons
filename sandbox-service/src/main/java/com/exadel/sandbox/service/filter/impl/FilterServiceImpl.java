@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class FilterServiceImpl implements FilterService {
 
+    private static final String LOCATION = "location";
+    private static final String CATEGORIES = "categories";
+
     private CategoryService categoryService;
     private VendorDetailsService vendorService;
     private LocationService locationService;
@@ -25,16 +28,16 @@ public class FilterServiceImpl implements FilterService {
     public FilterResponse getFilterResponse(FilterRequest filterRequest, Long userId) {
 
         switch (filterRequest.getMain()) {
-            case "location":
+            case LOCATION:
                 return getFilterResponseMainLocation(filterRequest);
-            case "categories":
+            case CATEGORIES:
                 return getFilterResponseMainCategories(filterRequest);
             default:
-                return getFilterResponseAll(filterRequest, userId);
+                return getFilterResponseAll(userId);
         }
     }
 
-    private FilterResponse getFilterResponseAll(FilterRequest filterRequest, Long userId) {
+    private FilterResponse getFilterResponseAll(Long userId) {
 
         CityResponse cityByUserId = cityService.findCityByUserId(userId);
 

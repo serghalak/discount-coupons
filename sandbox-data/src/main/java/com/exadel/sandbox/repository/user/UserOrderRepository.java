@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,4 +33,5 @@ public interface UserOrderRepository extends JpaRepository<User, Long> {
             "WHERE uo.id =?1")
     @Transactional
     List<Event> getAllEventsFromUserOrder(Long userId);
+
 }
