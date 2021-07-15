@@ -2,6 +2,7 @@ package com.exadel.sandbox.repository.user;
 
 import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.repository.statistics.OrderStatisticsProjection;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -34,4 +35,10 @@ public interface UserOrderRepository extends JpaRepository<User, Long> {
     @Transactional
     List<Event> getAllEventsFromUserOrder(Long userId);
 
+    @Query(value = "SELECT  e.id as eventid, e.description as eventdescription, v.name as vendorname\n" +
+            "FROM user_order uo\n" +
+            "     join event e on uo.event_id = e.id\n" +
+            "     join vendor v on e.vendor_id = v.id\n" +
+            "      where uo.date_event between ?1  and  ?2", nativeQuery = true)
+    List<OrderStatisticsProjection> getAllEventsFromUserOrderForPeriod(LocalDate dateBegin, LocalDate dateEnd);
 }
