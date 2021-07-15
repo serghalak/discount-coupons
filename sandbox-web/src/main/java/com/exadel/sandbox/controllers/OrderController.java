@@ -49,11 +49,9 @@ public class OrderController {
 
     @GetMapping(path = "/allEvents/fromUserOrder")
     public ResponseEntity<?> getAllEventsFromUserOrder(
-            @RequestHeader("Authorization") AuthenticationResponse authResponse,
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
+            @RequestHeader("Authorization") AuthenticationResponse authResponse) {
         return ResponseEntity.ok()
                 .body(orderService.getAllFromOrder(
-                        jwtUtil.extractUserIdFromAuthResponse(authResponse), pageNumber, pageSize));
+                        jwtUtil.extractUserIdFromAuthResponse(authResponse)));
     }
 }

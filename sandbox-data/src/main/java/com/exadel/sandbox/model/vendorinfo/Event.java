@@ -117,13 +117,4 @@ public class Event extends BaseEntity {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
-
-    public Event(Long id, String description, LocalDateTime dateEnd, LocalDateTime dateOfCreation, Set<Location> locations, Vendor vendor) {
-        this.id = id;
-        this.description = description;
-        this.dateEnd = dateEnd;
-        this.dateOfCreation = dateOfCreation;
-        this.locations = locations;
-        this.vendor = vendor;
-    }
 }

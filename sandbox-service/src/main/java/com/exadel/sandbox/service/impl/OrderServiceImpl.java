@@ -1,6 +1,5 @@
 package com.exadel.sandbox.service.impl;
 
-import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.response.event.EventResponseFoOrders;
 import com.exadel.sandbox.mail.MailUtil;
 import com.exadel.sandbox.mappers.event.EventMapper;
@@ -10,15 +9,13 @@ import com.exadel.sandbox.repository.user.UserOrderRepository;
 import com.exadel.sandbox.repository.user.UserRepository;
 import com.exadel.sandbox.service.OrderService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -59,14 +56,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageList<EventResponseFoOrders> getAllFromOrder(Long userId,
-                                                           Integer pageNumber, Integer pageSize) {
-        final Page<Event> eventsFromOrder = userOrderRepository.getAllEventsFromUserOrder(userId,
-                PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
-                        Sort.by(Sort.Direction.DESC, "dateEnd")));
-        return new PageList<>(
-                eventMapper.eventToEventResponseFoOrder(eventsFromOrder.getContent()),
-                eventsFromOrder);
+    public List<EventResponseFoOrders> getAllFromOrder(Long userId) {
+               return eventMapper.eventToEventResponseFoOrder(userOrderRepository.getAllEventsFromUserOrder(userId));
+
     }
 
     private Event verifyEventId(Long eventId) {
