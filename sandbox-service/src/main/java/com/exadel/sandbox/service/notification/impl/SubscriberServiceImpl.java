@@ -17,10 +17,12 @@ import com.exadel.sandbox.repository.user.UserRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.EventService;
 import com.exadel.sandbox.service.UserService;
+import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import com.exadel.sandbox.service.notification.SubscriberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +50,14 @@ public class SubscriberServiceImpl implements SubscriberService {
 
         if (subscriberRequest.isSubscribed()) {
             subscription.setUser(user);
-            Subscription save = subscriberRepository.save(subscription);
+            Subscription save=null;
+
+            try {
+                save = subscriberRepository.save(subscription);
+            }catch (Exception ex){
+                throw new DuplicateNameException("You have duplicate: " + subscription.getSubscriberType() + ": " + subscription.getSubscriberName());
+            }
+
             if (save != null) {
                 return true;
             }

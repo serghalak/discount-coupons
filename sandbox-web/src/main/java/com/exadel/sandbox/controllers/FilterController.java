@@ -24,7 +24,6 @@ public class FilterController {
             path = {"filtering"})
     public FilterResponse getFilterList(@RequestBody FilterRequest filterRequest,
                                         @RequestHeader("Authorization") AuthenticationResponse authenticationResponse){
-        log.debug(">>>>>filtering "+ filterRequest);
 
         Long userId = jwtUtil.extractUserIdFromAuthResponse(authenticationResponse);
 
