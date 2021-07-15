@@ -26,4 +26,6 @@ public interface EventService {
     ResponseEntity<?> createEvent(EventRequest eventRequest);
 
     ResponseEntity<?> updateEvent(Long eventId, EventRequest eventRequest);
+
+    PageList<EventDetailsResponse> getAllEventsByDescriptionForAdmin(String search, Integer pageNumber, Integer pageSize);
 }
