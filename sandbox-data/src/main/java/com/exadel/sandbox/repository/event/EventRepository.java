@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, EventRepositoryCustom, JpaSpecificationExecutor<Event> {
@@ -51,4 +52,9 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
 
     Event findEventById(Long id);
 
+    @Query("select distinct e from Event e " +
+            "join e.locations loc " +
+            "where loc.city.id = ?1 " +
+            "and e.status in ?2")
+    Page<Event> findEventByCityIdAndStatuses(Long cityId, List<Status> statuses, PageRequest of);
 }

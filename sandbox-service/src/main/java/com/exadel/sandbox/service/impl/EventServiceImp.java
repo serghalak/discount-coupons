@@ -66,13 +66,13 @@ public class EventServiceImp implements EventService {
     @Override
     public PageList<CustomEventResponse> getAllEventsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
         var city = cityRepository.findCityByUserId(userId);
-        return getEventResponsesByCityAndStatus(city.getId(), Status.ACTIVE,
+        return getEventResponsesByCityAndStatus(city.getId(), List.of(Status.ACTIVE, Status.PERPETUAL),
                 Sort.by(Sort.Direction.DESC, "dateEnd"), getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
     @Override
     public PageList<CustomEventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize) {
-        return getEventResponsesByCityAndStatus(cityId, Status.ACTIVE,
+        return getEventResponsesByCityAndStatus(cityId, List.of(Status.ACTIVE, Status.PERPETUAL),
                 Sort.by(Sort.Direction.DESC, "dateEnd"), getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
@@ -88,9 +88,13 @@ public class EventServiceImp implements EventService {
         return getAllEventsByDescriptionIsAdmin(search, pageNumber, pageSize);
     }
 
-    private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
+    private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, List<Status> statuses, Sort sort, Integer pageNumber, Integer pageSize) {
 
-        Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatus(cityId, status,
+//        Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatus(cityId, status,
+//                PageRequest.of(pageNumber, pageSize, sort));
+
+        Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatuses(cityId,
+                statuses,
                 PageRequest.of(pageNumber, pageSize, sort));
 
         return new PageList<>(eventMapper.
@@ -141,17 +145,26 @@ public class EventServiceImp implements EventService {
     private Sort getSorting(Status status) {
 
         switch (status) {
-            case NEW:
-                return Sort.by(Sort.Direction.DESC, "dateOfCreation");
             case COMING_SOON:
                 return Sort.by(Sort.Direction.ASC, "dateBegin");
-            case ACTIVE:
-                return Sort.by(Sort.Direction.DESC, "dateEnd");
             case EXPIRED:
                 return Sort.by(Sort.Direction.DESC, "name");
             default:
-                return Sort.by(Sort.Direction.DESC, "name");
+                return Sort.by(Sort.Direction.DESC, "dateEnd");
         }
+
+//        switch (status) {
+//            case NEW:
+//                return Sort.by(Sort.Direction.DESC, "dateOfCreation");
+//            case COMING_SOON:
+//                return Sort.by(Sort.Direction.ASC, "dateBegin");
+//            case ACTIVE:
+//                return Sort.by(Sort.Direction.DESC, "dateEnd");
+//            case EXPIRED:
+//                return Sort.by(Sort.Direction.DESC, "name");
+//            default:
+//                return Sort.by(Sort.Direction.DESC, "name");
+//        }
     }
 
     @Override
