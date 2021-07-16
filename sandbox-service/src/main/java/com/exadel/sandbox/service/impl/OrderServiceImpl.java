@@ -21,9 +21,6 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    private static final Integer DEFAULT_PAGE_NUMBER = 0;
-    private static final Integer DEFAULT_PAGE_SIZE = 10;
-
     private final EventRepository eventRepository;
     private final UserOrderRepository userOrderRepository;
     private final UserRepository userRepository;
@@ -35,7 +32,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String saveEventToOrder(Long userId, Long eventId, String email) {
         var event = verifyEventId(eventId);
-        updateLimitation(event);
         mailUtil.sendSimpleMessage(email,
                 userRepository.getUsername(userId),
                 event.getVendor().getName(),
@@ -72,20 +68,4 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    private void updateLimitation(Event event) {
-        int limitation = event.getLimitation();
-        if (limitation <= 0) {
-            throw new IllegalArgumentException("Limitation less then zero");
-        }
-        event.setLimitation(--limitation);
-        eventRepository.save(event);
-    }
-
-    private int getPageNumber(Integer pageNumber) {
-        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
-    }
-
-    private int getPageSize(Integer pageSize) {
-        return pageSize == null || pageSize < 0 ? DEFAULT_PAGE_SIZE : pageSize;
-    }
 }
