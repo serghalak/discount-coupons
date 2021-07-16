@@ -84,6 +84,15 @@ public class EventController {
                 cityId, search, pageNumber, pageSize), HttpStatus.OK);
     }
 
+    @GetMapping("/by_description_for_admin")
+    public ResponseEntity<?> getAllEventsByDescriptionForAdmin(
+            @RequestParam(name = "search", required = false) String search,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize
+    ) {
+        return new ResponseEntity<>(eventService.getAllEventsByDescriptionForAdmin(search, pageNumber, pageSize), HttpStatus.OK);
+    }
+
     @GetMapping("/events")
     public PageList<EventDetailsResponse> getAllEvents(
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,

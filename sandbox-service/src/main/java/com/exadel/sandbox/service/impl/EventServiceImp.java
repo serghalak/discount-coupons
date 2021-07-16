@@ -55,8 +55,6 @@ public class EventServiceImp implements EventService {
     private final UserRepository userRepository;
     private final SpecificationBuilder specificationBuilder;
 
-
-
     @Override
     public PageList<EventDetailsResponse> getAll(Integer pageNumber, Integer pageSize) {
         final Page<Event> eventsPage = eventRepository.findAll(PageRequest.of(getPageNumber(pageNumber),
@@ -80,11 +78,14 @@ public class EventServiceImp implements EventService {
 
     @Override
     public PageList<?> getAllEventsByDescription(Long userId, Long cityId, String search,
-                                                                   Integer pageNumber, Integer pageSize) {
+                                                 Integer pageNumber, Integer pageSize) {
 
-        return userRepository.isAdmin(userId) ?
-                getAllEventsByDescriptionIsAdmin(search, pageNumber, pageSize) :
-                getAllEventsByDescriptionNotAdmin(userId, cityId, search, pageNumber, pageSize);
+        return getAllEventsByDescriptionNotAdmin(userId, cityId, search, pageNumber, pageSize);
+    }
+
+    @Override
+    public PageList<EventDetailsResponse> getAllEventsByDescriptionForAdmin(String search, Integer pageNumber, Integer pageSize) {
+        return getAllEventsByDescriptionIsAdmin(search, pageNumber, pageSize);
     }
 
     private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
@@ -220,7 +221,7 @@ public class EventServiceImp implements EventService {
     }
 
     public PageList<CustomEventResponse> getAllEventsByDescriptionNotAdmin(Long userId, Long cityId, String search,
-                                                                             Integer pageNumber, Integer pageSize) {
+                                                                           Integer pageNumber, Integer pageSize) {
 
         cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
 
@@ -231,8 +232,8 @@ public class EventServiceImp implements EventService {
                 eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
     }
 
-    public PageList<EventDetailsResponse> getAllEventsByDescriptionIsAdmin( String search,
-                                                                          Integer pageNumber, Integer pageSize) {
+    public PageList<EventDetailsResponse> getAllEventsByDescriptionIsAdmin(String search,
+                                                                           Integer pageNumber, Integer pageSize) {
 
         Page<Event> eventsPage = eventRepository.findEventByDescriptionIsAdmin(("%" + search + "%"),
                 PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
