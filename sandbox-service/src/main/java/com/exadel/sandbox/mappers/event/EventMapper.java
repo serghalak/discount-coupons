@@ -62,6 +62,7 @@ public class EventMapper {
         return EventDetailsResponse.builder()
                 .id(event.getId())
                 .description(event.getDescription())
+                .fullDescription(event.getFullDescription())
                 .vendorName(event.getVendor().getName())
                 .vendorId(event.getVendor().getId())
                 .categoryName(event.getCategory().getName())
@@ -70,7 +71,6 @@ public class EventMapper {
                 .dateEnd(event.getDateEnd())
                 .tags(tagMapper.setTagToSetTagResponse(event.getTags()))
                 .locations(locMapper.setLocationToSetLocationResponse(event.getLocations()))
-                .fullDescription(event.getDescription())
                 .build();
     }
 
