@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
@@ -15,6 +18,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class CategoryRequest extends BaseEntity {
 
+    @NotBlank(message = "Name is mandatory")
     private String name;
 
     private String description;

@@ -4,6 +4,7 @@ import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -23,6 +24,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> illegalArgumentExceptionHandler(HttpServletRequest request, IllegalArgumentException exception) {
         return getResponse(request, HttpStatus.BAD_REQUEST, exception);
+    }
+
+    /*400*/
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> methodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException exception) {
+
+        String errorMessage=exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+
+        return getResponse(request, HttpStatus.BAD_REQUEST, errorMessage);
+
     }
 
     /*403*/
@@ -48,9 +60,20 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<?> getResponse(HttpServletRequest request, HttpStatus httpStatus, Exception exception) {
         log.error("Exception raised = {} :: URL = {}", exception.getMessage(), request.getRequestURL());
+
         Map<String, Object> response = new HashMap<>();
         response.put("code", httpStatus.value() + " / " + httpStatus.getReasonPhrase());
         response.put("message", exception.getMessage());
+        response.put("path", request.getRequestURI());
+        return new ResponseEntity<>(response, httpStatus);
+    }
+
+    private ResponseEntity<?> getResponse(HttpServletRequest request, HttpStatus httpStatus, String message) {
+        log.error("Exception raised = {} :: URL = {}", message, request.getRequestURL());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", httpStatus.value() + " / " + httpStatus.getReasonPhrase());
+        response.put("message", message);
         response.put("path", request.getRequestURI());
         return new ResponseEntity<>(response, httpStatus);
     }
