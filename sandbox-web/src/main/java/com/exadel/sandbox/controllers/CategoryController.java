@@ -66,7 +66,7 @@ public class CategoryController {
             consumes = {"application/json"},
             path = {"category", "category/"})
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
-
+        log.debug(String.valueOf("Category name length: " + categoryRequest.getName().length()));
         return new ResponseEntity<>(categoryService.saveCategory(categoryRequest), HttpStatus.OK);
 
     }

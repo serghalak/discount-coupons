@@ -20,14 +20,20 @@ import com.exadel.sandbox.service.UserService;
 import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import com.exadel.sandbox.service.notification.SubscriberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SubscriberServiceImpl implements SubscriberService {
