@@ -73,13 +73,12 @@ public class StatisticsController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(new MediaType("application", "force-download"));
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ProductTemplate.xls");
-            new ResponseEntity<>(
+            return new ResponseEntity<>(
                     new ByteArrayResource(report.export(localDateBegin, localDateEnd).toByteArray()),
                     headers, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return null;
     }
 
 }
