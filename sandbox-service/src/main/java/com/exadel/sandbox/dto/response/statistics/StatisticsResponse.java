@@ -1,6 +1,11 @@
 package com.exadel.sandbox.dto.response.statistics;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
@@ -8,7 +13,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class ViewedStatisticResponse {
+public class StatisticsResponse {
 
     private long eventId;
 
