@@ -105,6 +105,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     private int checkSizeAndNumber(int size, int number) {
+        if (number == 100) {
+            return size;
+        }
         return size <= number ? size : number;
     }
 

@@ -72,7 +72,7 @@ public class StatisticsController {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(new MediaType("application", "force-download"));
-            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ProductTemplate.xls");
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=Statistics_from_%s_to_%s.xls", dateBegin, dateEnd));
             return new ResponseEntity<>(
                     new ByteArrayResource(report.export(localDateBegin, localDateEnd).toByteArray()),
                     headers, HttpStatus.CREATED);

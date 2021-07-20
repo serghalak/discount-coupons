@@ -6,6 +6,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,14 +43,17 @@ public class StatisticsReportToExcel {
               Row row = sheet.createRow(rowNum);
             row.createCell(0).setCellValue("Event Id");
             row.createCell(1).setCellValue("Event description");
-            row.createCell(2).setCellValue("Vendor");
+            row.createCell(2).setCellValue("Vendor           ");
             row.createCell(3).setCellValue("Total count");
+            sheet.autoSizeColumn(0);
+            sheet.autoSizeColumn(1);
+            sheet.autoSizeColumn(2);
+            sheet.autoSizeColumn(3);
         }
 
         for (int i = 0; i < numberOfSheets; i++) {
             sheet = workbook.getSheet(sheetNames[i]);
             List<StatisticsResponse> list = data.get(i);
-            System.out.println(list.toString());
             for (int j = 0; j < list.size(); j++) {
                 Row row = sheet.createRow(j + 1);
                 row.createCell(0).setCellValue(list.get(j).getEventId());
