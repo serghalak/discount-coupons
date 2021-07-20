@@ -66,13 +66,13 @@ public class EventServiceImp implements EventService {
     @Override
     public PageList<CustomEventResponse> getAllEventsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
         var city = cityRepository.findCityByUserId(userId);
-        return getEventResponsesByCityAndStatus(city.getId(), Status.ACTIVE,
+        return getEventResponsesByCityAndStatus(city.getId(), List.of(Status.ACTIVE, Status.PERPETUAL),
                 Sort.by(Sort.Direction.DESC, "dateEnd"), getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
     @Override
     public PageList<CustomEventResponse> getAllEventsByCityId(Long cityId, Integer pageNumber, Integer pageSize) {
-        return getEventResponsesByCityAndStatus(cityId, Status.ACTIVE,
+        return getEventResponsesByCityAndStatus(cityId, List.of(Status.ACTIVE, Status.PERPETUAL),
                 Sort.by(Sort.Direction.DESC, "dateEnd"), getPageNumber(pageNumber), getPageSize(pageSize));
     }
 
@@ -88,9 +88,10 @@ public class EventServiceImp implements EventService {
         return getAllEventsByDescriptionIsAdmin(search, pageNumber, pageSize);
     }
 
-    private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, Status status, Sort sort, Integer pageNumber, Integer pageSize) {
+    private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, List<Status> statuses, Sort sort, Integer pageNumber, Integer pageSize) {
 
-        Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatus(cityId, status,
+        Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatuses(cityId,
+                statuses,
                 PageRequest.of(pageNumber, pageSize, sort));
 
         return new PageList<>(eventMapper.
@@ -109,7 +110,7 @@ public class EventServiceImp implements EventService {
                                                            Integer pageNumber, Integer pageSize) {
 
 
-        var sort = getSorting(eventFilterRequest.getStatus());
+        var sort = getSorting(eventFilterRequest.getStatus(), eventFilterRequest.getSortingType());
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
@@ -120,7 +121,7 @@ public class EventServiceImp implements EventService {
         }
 
         final Page<Event> aNew = specificationBuilder.getEventsByParameters(
-                eventFilterRequest.getStatus(),
+                List.of(eventFilterRequest.getStatus()),
                 eventFilterRequest.getLocationId(),
                 eventFilterRequest.isCity(),
                 eventFilterRequest.getCategoriesIdSet(),
@@ -135,22 +136,28 @@ public class EventServiceImp implements EventService {
                 new PageList<>(
                         eventMapper.eventListToCustomEventResponseListByCountryId(aNew.getContent(),
                                 eventFilterRequest.getLocationId()), aNew);
-
     }
 
-    private Sort getSorting(Status status) {
+    private Sort getSorting(Status status, EventFilterRequest.SortingType sortingType) {
 
         switch (status) {
-            case NEW:
-                return Sort.by(Sort.Direction.DESC, "dateOfCreation");
             case COMING_SOON:
                 return Sort.by(Sort.Direction.ASC, "dateBegin");
-            case ACTIVE:
-                return Sort.by(Sort.Direction.DESC, "dateEnd");
             case EXPIRED:
                 return Sort.by(Sort.Direction.DESC, "name");
             default:
-                return Sort.by(Sort.Direction.DESC, "name");
+                return getSortBySortingType(sortingType);
+        }
+    }
+
+    private Sort getSortBySortingType(EventFilterRequest.SortingType sortingType) {
+        switch (sortingType) {
+            case HOTEST:
+                return Sort.by(Sort.Direction.ASC, "dateEnd");
+            case NEWEST:
+                return Sort.by(Sort.Direction.DESC, "dateBegin");
+            default:
+                return Sort.by(Sort.Direction.DESC, "viewedUsersEvents");
         }
     }
 

@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,10 +28,16 @@ public interface UserSavedRepository extends JpaRepository<User, Long> {
     void deleteFromUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
     @Query(value = "SELECT  e.id as eventId, e.description as eventDescription,v.name as vendorName\n" +
+            "FROM viewed_event ve \n" +
+            "    join event e on ve.event_id = e.id\n" +
+            "    join vendor v on e.vendor_id = v.id\n" +
+            "    where ve.saved_date between ?1  and  ?2", nativeQuery = true)
+    List<SavedStatisticProjection> getAllEventsFromViewedForPeriod(LocalDate dateBegin, LocalDate dateEnd);
+
+    @Query(value = "SELECT  e.id as eventId, e.description as eventDescription,v.name as vendorName\n" +
             "FROM saved_event si\n" +
             "    join event e on si.event_id = e.id\n" +
             "    join vendor v on e.vendor_id = v.id\n" +
             "    where si.saved_date between ?1  and  ?2", nativeQuery = true)
     List<SavedStatisticProjection> getAllEventsFromUserSavedForPeriod(LocalDate dateBegin, LocalDate dateEnd);
-
 }
