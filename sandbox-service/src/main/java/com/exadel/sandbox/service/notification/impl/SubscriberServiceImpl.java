@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -164,10 +165,10 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     private Set<User> unionSetsOfUsers(Set<User>... userSets) {
-        Set<User> totalUserSet = new HashSet<>();
-        for (Set<User> userSet : userSets) {
-            totalUserSet.addAll(userSet);
-        }
-        return totalUserSet;
+
+        return Stream.of(userSets)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
+
     }
 }

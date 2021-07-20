@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> illegalArgumentExceptionHandler(HttpServletRequest request, IllegalArgumentException exception) {
-        return getResponse(request, HttpStatus.BAD_REQUEST, exception);
+        return getResponse(request, HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     /*400*/
@@ -40,54 +40,36 @@ public class GlobalExceptionHandler {
 
     }
 
-    /*400*/
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseEntity handle(ConstraintViolationException constraintViolationException) {
-        Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
-        String errorMessage = "";
-        if (!violations.isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            violations.forEach(violation -> builder.append(" " + violation.getMessage()));
-            errorMessage = builder.toString();
-        } else {
-            errorMessage = "ConstraintViolationException occured.";
-        }
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-    }
-
-
-
     /*403*/
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public ResponseEntity<?> accessDeniedExceptionHandler(HttpServletRequest request, AccessDeniedException exception) {
-        return getResponse(request, HttpStatus.FORBIDDEN, exception);
+        return getResponse(request, HttpStatus.FORBIDDEN, exception.getMessage());
     }
 
     /*404*/
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<?> entityNotFoundExceptionHandler(HttpServletRequest request, EntityNotFoundException exception) {
-        return getResponse(request, HttpStatus.NOT_FOUND, exception);
+        return getResponse(request, HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     /*409*/
     @ExceptionHandler(DuplicateNameException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public ResponseEntity<?> duplicateNameExceptionHandler(HttpServletRequest request, DuplicateNameException exception) {
-        return getResponse(request, HttpStatus.CONFLICT, exception);
+        return getResponse(request, HttpStatus.CONFLICT, exception.getMessage());
     }
 
-    private ResponseEntity<?> getResponse(HttpServletRequest request, HttpStatus httpStatus, Exception exception) {
-        log.error("Exception raised = {} :: URL = {}", exception.getMessage(), request.getRequestURL());
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("code", httpStatus.value() + " / " + httpStatus.getReasonPhrase());
-        response.put("message", exception.getMessage());
-        response.put("path", request.getRequestURI());
-        return new ResponseEntity<>(response, httpStatus);
-    }
+//    private ResponseEntity<?> getResponse(HttpServletRequest request, HttpStatus httpStatus, Exception exception) {
+//        log.error("Exception raised = {} :: URL = {}", exception.getMessage(), request.getRequestURL());
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("code", httpStatus.value() + " / " + httpStatus.getReasonPhrase());
+//        response.put("message", exception.getMessage());
+//        response.put("path", request.getRequestURI());
+//        return new ResponseEntity<>(response, httpStatus);
+//    }
 
     private ResponseEntity<?> getResponse(HttpServletRequest request, HttpStatus httpStatus, String message) {
         log.error("Exception raised = {} :: URL = {}", message, request.getRequestURL());
