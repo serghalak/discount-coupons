@@ -45,21 +45,22 @@ public class EventController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = {"application/json"}, path = "/by_filter")
-    public ResponseEntity<?> getAllEventsByFilter(
-            @RequestHeader("Authorization") AuthenticationResponse authResponse,
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize,
-            @RequestBody EventFilterRequest eventFilterRequest
-    ) {
-        final PageList<CustomEventResponse> events = eventService.getEventsByFilter(
-                jwtUtil.extractUserIdFromAuthResponse(authResponse),
-                eventFilterRequest,
-                pageNumber,
-                pageSize);
+//    @GetMapping(consumes = {"application/json"}, path = "/by_filter")
+@PostMapping(consumes = {"application/json"}, path = "/by_filter")
+public ResponseEntity<?> getAllEventsByFilter(
+        @RequestHeader("Authorization") AuthenticationResponse authResponse,
+        @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+        @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize,
+        @RequestBody EventFilterRequest eventFilterRequest
+) {
+    final PageList<CustomEventResponse> events = eventService.getEventsByFilter(
+            jwtUtil.extractUserIdFromAuthResponse(authResponse),
+            eventFilterRequest,
+            pageNumber,
+            pageSize);
 
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
+    return new ResponseEntity<>(events, HttpStatus.OK);
+}
 
     @GetMapping("/{eventId}")
     public ResponseEntity<?> getEventById(@RequestHeader("Authorization") AuthenticationResponse authResponse,

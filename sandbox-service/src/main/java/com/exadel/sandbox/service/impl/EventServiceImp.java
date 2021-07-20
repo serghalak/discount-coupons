@@ -90,9 +90,6 @@ public class EventServiceImp implements EventService {
 
     private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, List<Status> statuses, Sort sort, Integer pageNumber, Integer pageSize) {
 
-//        Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatus(cityId, status,
-//                PageRequest.of(pageNumber, pageSize, sort));
-
         Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatuses(cityId,
                 statuses,
                 PageRequest.of(pageNumber, pageSize, sort));
@@ -113,7 +110,7 @@ public class EventServiceImp implements EventService {
                                                            Integer pageNumber, Integer pageSize) {
 
 
-        var sort = getSorting(eventFilterRequest.getStatus());
+        var sort = getSorting(eventFilterRequest.getStatus(), eventFilterRequest.getSortingType());
         pageNumber = getPageNumber(pageNumber);
         pageSize = getPageSize(pageSize);
 
@@ -124,7 +121,7 @@ public class EventServiceImp implements EventService {
         }
 
         final Page<Event> aNew = specificationBuilder.getEventsByParameters(
-                eventFilterRequest.getStatus(),
+                List.of(eventFilterRequest.getStatus()),
                 eventFilterRequest.getLocationId(),
                 eventFilterRequest.isCity(),
                 eventFilterRequest.getCategoriesIdSet(),
@@ -142,7 +139,12 @@ public class EventServiceImp implements EventService {
 
     }
 
-    private Sort getSorting(Status status) {
+    private List<Status> getStatuses(Status status) {
+        return status.equals(Status.ACTIVE) ?
+                List.of(Status.ACTIVE, Status.PERPETUAL) : List.of(status);
+    }
+
+    private Sort getSorting(Status status, EventFilterRequest.SortingType sortingType) {
 
         switch (status) {
             case COMING_SOON:
@@ -150,21 +152,20 @@ public class EventServiceImp implements EventService {
             case EXPIRED:
                 return Sort.by(Sort.Direction.DESC, "name");
             default:
-                return Sort.by(Sort.Direction.DESC, "dateEnd");
+                return getSortBySortingType(sortingType);
+        }
+    }
+
+    private Sort getSortBySortingType(EventFilterRequest.SortingType sortingType) {
+        switch (sortingType) {
+            case HOTEST:
+                return Sort.by(Sort.Direction.ASC, "dateEnd");
+            case NEWEST:
+                return Sort.by(Sort.Direction.DESC, "dateBegin");
+            default:
+                return Sort.by(Sort.Direction.DESC, "userSavedEvents");
         }
 
-//        switch (status) {
-//            case NEW:
-//                return Sort.by(Sort.Direction.DESC, "dateOfCreation");
-//            case COMING_SOON:
-//                return Sort.by(Sort.Direction.ASC, "dateBegin");
-//            case ACTIVE:
-//                return Sort.by(Sort.Direction.DESC, "dateEnd");
-//            case EXPIRED:
-//                return Sort.by(Sort.Direction.DESC, "name");
-//            default:
-//                return Sort.by(Sort.Direction.DESC, "name");
-//        }
     }
 
     @Override
