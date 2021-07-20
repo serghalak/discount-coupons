@@ -1,12 +1,17 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.request.category.CategoryRequest;
+import com.exadel.sandbox.dto.request.event.EventRequest;
+import com.exadel.sandbox.dto.request.tag.TagRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.mappers.category.CategoryMapper;
 import com.exadel.sandbox.mappers.category.CategoryShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.model.vendorinfo.Tag;
 import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
+import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,11 +20,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
@@ -38,6 +44,9 @@ class CategoryServiceImplTest {
     @Mock
     private CategoryShortMapper categoryShortMapper;
 
+    @Mock
+    private CategoryRequest categoryRequest;
+
     private Category category;
 
     @BeforeEach
@@ -49,60 +58,129 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void deleteExistsCategoryByIdAndEmptyEvent() {
+    void shouldDeleteExistsCategoryByIdAndEmptyEvent() {
 
         when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(category));
 
-        assertDoesNotThrow(
-                () -> {
-                    categoryService.deleteCategoryById(1L);
-                });
+        categoryService.deleteCategoryById(1L);
+
+        verify(categoryRepository, times(1)).deleteById(1L);
+
     }
 
     @Test
-    void deleteNoExistsCategoryById() {
+    void shouldThrowExceptionDuringDeleteNoExistsCategoryById() {
 
         when(categoryRepository.findById(2L)).thenReturn(java.util.Optional.ofNullable(null));
 
-        RuntimeException exception = assertThrows(ResponseStatusException.class,
+        RuntimeException exception = assertThrows(EntityNotFoundException.class,
                 () -> {
                     categoryService.deleteCategoryById(2L);
                 });
     }
 
     @Test
-    void deleteExistsCategoryByIdAndExistsEvent() {
+    void shouldThrowExceptionDuringDeleteExistsCategoryByIdAndExistsEvent() {
 
         when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(category));
 
         Event event = new Event();
         category.setEvents(new HashSet<Event>(Arrays.asList(event)));
 
-        RuntimeException exception = assertThrows(ResponseStatusException.class,
+        RuntimeException exception = assertThrows(IllegalArgumentException.class,
                 () -> {
                     categoryService.deleteCategoryById(1L);
                 });
     }
 
     @Test
-    void updateCategory() {
+    void shouldThrowExceptionDuringUpdateCategoryIfNameIsNull() {
+        when(categoryRequest.getName()).thenReturn(null);
+
+        RuntimeException exception = assertThrows(IllegalArgumentException.class,
+                () -> {
+                    categoryService.updateCategory(categoryRequest);
+                });
+    }
+
+    @Test
+    void shouldThrowExceptionDuringUpdateCategoryIfNameIsEmpty() {
+        when(categoryRequest.getName()).thenReturn("");
+
+        RuntimeException exception = assertThrows(IllegalArgumentException.class,
+                () -> {
+                    categoryService.updateCategory(categoryRequest);
+                });
+    }
+
+    @Test
+    void shouldThrowExceptionDuringUpdateCategoryIfCategoryIsNotPresent() {
+
+        when(categoryRequest.getName()).thenReturn("name");
+        when(categoryRequest.getId()).thenReturn(1L);
+        when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(null));
+
+        RuntimeException exception = assertThrows(EntityNotFoundException.class,
+                () -> {
+                    categoryService.updateCategory(categoryRequest);
+                });
+    }
+
+    @Test
+    void shouldSaveCategoryOneTimeDuringUpdateCategoryIfCategoryIsPresent() {
+
+        category.setTags(new HashSet<Tag>(Arrays.asList(new Tag())));
+
+        CategoryRequest categoryRequest =new CategoryRequest();
+        categoryRequest.setId(1L);
+        categoryRequest.setName("name");
+
+        when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(category));
+        when(categoryMapper.categoryRequestToCategory(categoryRequest)).thenReturn(category);
+        categoryService.updateCategory(categoryRequest);
+        verify(categoryRepository, times(1)).save(category);
     }
 
     @Test
     void listCategoriesByPartOfName() {
+//        String categoryName;
+//
+//        categoryService.listCategoriesByPartOfName(null, null, null);
+//        assertEquals("", categoryName);
+
+
     }
 
     @Test
-    void findCategoryById() {
+    void shouldThrowExceptionIfCategoryIsNotPresentCategoryById() {
 
-        when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(category));
+        when(categoryRepository.findById(2L)).thenReturn(java.util.Optional.ofNullable(null));
 
-        assertDoesNotThrow(
+        RuntimeException exception = assertThrows(EntityNotFoundException.class,
                 () -> {
-                    categoryService.findCategoryById(1L);
+                    categoryService.findCategoryById(2L);
                 });
     }
 
+    @Test
+    void shouldReturnCategoryResponseIfCategoryIsPresentCategoryById() {
+        CategoryResponse categoryResponse =new CategoryResponse();
+        categoryResponse.setId(1L);
+        categoryResponse.setName("name");
+
+        category.setTags(new HashSet<Tag>(Arrays.asList(new Tag())));
+
+        when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(category));
+        when(categoryMapper.categoryToCategoryResponse(category)).thenReturn(categoryResponse);
+
+        CategoryResponse categoryById = categoryService.findCategoryById(1L);
+        CategoryResponse categoryExpected=new CategoryResponse();
+        categoryExpected.setId(1L);
+        categoryExpected.setName("name");
+        assertEquals(categoryExpected.getName(), categoryById.getName());
+        assertEquals(categoryExpected.getId(), categoryById.getId());
+
+    }
     @Test
     void findCategoryByIdCheckReturnType() {
 
@@ -120,11 +198,64 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void saveCategory() {
+    void shouldThrowExceptionDuringSaveCategoryIfNameIsEmpty() {
+        when(categoryRequest.getName()).thenReturn("");
+
+        RuntimeException exception = assertThrows(IllegalArgumentException.class,
+                () -> {
+                    categoryService.saveCategory(categoryRequest);
+                });
     }
 
     @Test
-    void isCategoryNameExists() {
+    void shouldThrowExceptionDuringSaveCategoryIfNameIsNull() {
+        when(categoryRequest.getName()).thenReturn(null);
+
+        RuntimeException exception = assertThrows(IllegalArgumentException.class,
+                () -> {
+                    categoryService.saveCategory(categoryRequest);
+                });
+    }
+    @Test
+    void shouldThrowExceptionDuringSaveCategoryIfNameIsExist() {
+        CategoryRequest categoryRequest =new CategoryRequest();
+        categoryRequest.setName("name");
+
+        when(categoryRepository.findByName("name")).thenReturn(category);
+
+        RuntimeException exception = assertThrows(DuplicateNameException.class,
+                () -> {
+                    categoryService.saveCategory(categoryRequest);
+                });
+
+    }
+
+    @Test
+    void shouldSaveCategoryDuringSaveCategoryIfNameIsNotExist() {
+
+        CategoryRequest categoryRequest =new CategoryRequest();
+        categoryRequest.setId(1L);
+        categoryRequest.setName("name");
+
+        when(categoryRepository.findByName("name")).thenReturn(null);
+        when(categoryMapper.categoryRequestToCategory(categoryRequest)).thenReturn(category);
+        categoryService.saveCategory(categoryRequest);
+        verify(categoryRepository, times(1)).saveAndFlush(category);
+
+    }
+
+    @Test
+    void shouldCategoryNameNotExists() {
+        when(categoryRepository.findByName("name")).thenReturn(null);
+
+        assertNull(categoryRepository.findByName("name"));
+    }
+
+    @Test
+    void shouldCategoryNameExists() {
+        when(categoryRepository.findByName("name")).thenReturn(category);
+
+        assertNotNull(categoryRepository.findByName("name"));
     }
 
     @Test

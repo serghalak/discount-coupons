@@ -13,6 +13,7 @@ import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.EventService;
 import com.exadel.sandbox.service.TagService;
+import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -135,7 +136,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         if (isCategoryNameExists(categoryName)) {
-            throw new IllegalArgumentException("The category: "
+            throw new DuplicateNameException("The category: "
                     + categoryName + " is already exists");
         }
 
