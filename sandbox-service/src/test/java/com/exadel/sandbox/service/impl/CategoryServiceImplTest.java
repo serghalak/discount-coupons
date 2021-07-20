@@ -1,16 +1,13 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
-import com.exadel.sandbox.dto.request.event.EventRequest;
-import com.exadel.sandbox.dto.request.tag.TagRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.mappers.category.CategoryMapper;
-import com.exadel.sandbox.mappers.category.CategoryShortMapper;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Tag;
 import com.exadel.sandbox.repository.category.CategoryRepository;
-import com.exadel.sandbox.service.CategoryService;
 import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
@@ -41,8 +40,6 @@ class CategoryServiceImplTest {
     private CategoryRepository categoryRepository;
     @Mock
     private CategoryMapper categoryMapper;
-    @Mock
-    private CategoryShortMapper categoryShortMapper;
 
     @Mock
     private CategoryRequest categoryRequest;
@@ -51,7 +48,7 @@ class CategoryServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        category=new Category();
+        category = new Category();
         category.setId(1L);
         category.setName("some category");
         category.setDescription("some description");
@@ -131,7 +128,7 @@ class CategoryServiceImplTest {
 
         category.setTags(new HashSet<Tag>(Arrays.asList(new Tag())));
 
-        CategoryRequest categoryRequest =new CategoryRequest();
+        CategoryRequest categoryRequest = new CategoryRequest();
         categoryRequest.setId(1L);
         categoryRequest.setName("name");
 
@@ -142,12 +139,16 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void listCategoriesByPartOfName() {
-//        String categoryName;
-//
-//        categoryService.listCategoriesByPartOfName(null, null, null);
-//        assertEquals("", categoryName);
+    void listCategoriesByPartOfNameIfCategoryNameIsEmpty() {
 
+        PageImpl<Category> categoryPage =
+                new PageImpl<>(Arrays.asList(category),
+                        PageRequest.of(0, 5, Sort.by(DEFAULT_FIELD_SORT).ascending()), 1);
+        when(categoryRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(anyString(), any()))
+                .thenReturn(categoryPage);
+        PageList<CategoryResponse> categoryResponsePageList =
+                categoryService.listCategoriesByPartOfName("part", DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
+        assertNotNull(categoryResponsePageList);
 
     }
 
@@ -164,7 +165,7 @@ class CategoryServiceImplTest {
 
     @Test
     void shouldReturnCategoryResponseIfCategoryIsPresentCategoryById() {
-        CategoryResponse categoryResponse =new CategoryResponse();
+        CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setId(1L);
         categoryResponse.setName("name");
 
@@ -174,27 +175,50 @@ class CategoryServiceImplTest {
         when(categoryMapper.categoryToCategoryResponse(category)).thenReturn(categoryResponse);
 
         CategoryResponse categoryById = categoryService.findCategoryById(1L);
-        CategoryResponse categoryExpected=new CategoryResponse();
+        CategoryResponse categoryExpected = new CategoryResponse();
         categoryExpected.setId(1L);
         categoryExpected.setName("name");
         assertEquals(categoryExpected.getName(), categoryById.getName());
         assertEquals(categoryExpected.getId(), categoryById.getId());
 
     }
+
     @Test
-    void findCategoryByIdCheckReturnType() {
+    void shouldThrowExceptionFindCategoryByIdIfCategoryNotFound() {
 
-        //when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(category));
+        when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(null));
 
-//        System.out.println(categoryService.
-//                findCategoryById(1L));
-//        assertEquals(CategoryResponse.class,
-//                categoryService.findCategoryById(1L).getClass());
+        RuntimeException exception = assertThrows(EntityNotFoundException.class,
+                () -> {
+                    categoryService.findCategoryById(1L);
+                });
+    }
+
+    @Test
+    void shouldNotReturnNullFindCategoryByIdIfCategoryFound() {
+
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setId(1L);
+        categoryResponse.setName("name");
+
+        category.setTags(new HashSet<Tag>(Arrays.asList(new Tag())));
+
+        when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(category));
+        when(categoryMapper.categoryToCategoryResponse(category)).thenReturn(categoryResponse);
+
+        CategoryResponse categoryById = categoryService.findCategoryById(1L);
+        assertNotNull(categoryById);
 
     }
 
     @Test
     void listCategories() {
+        PageImpl<Category> categoryPage =
+                new PageImpl<>(Arrays.asList(category),
+                        PageRequest.of(0, 5, Sort.by(DEFAULT_FIELD_SORT).ascending()), 1);
+        when(categoryRepository.findAllByOrderByNameAsc(any())).thenReturn(categoryPage);
+        PageList<CategoryResponse> categoryResponsePageList = categoryService.listCategories(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
+        assertNotNull(categoryResponsePageList);
     }
 
     @Test
@@ -216,9 +240,10 @@ class CategoryServiceImplTest {
                     categoryService.saveCategory(categoryRequest);
                 });
     }
+
     @Test
     void shouldThrowExceptionDuringSaveCategoryIfNameIsExist() {
-        CategoryRequest categoryRequest =new CategoryRequest();
+        CategoryRequest categoryRequest = new CategoryRequest();
         categoryRequest.setName("name");
 
         when(categoryRepository.findByName("name")).thenReturn(category);
@@ -233,7 +258,7 @@ class CategoryServiceImplTest {
     @Test
     void shouldSaveCategoryDuringSaveCategoryIfNameIsNotExist() {
 
-        CategoryRequest categoryRequest =new CategoryRequest();
+        CategoryRequest categoryRequest = new CategoryRequest();
         categoryRequest.setId(1L);
         categoryRequest.setName("name");
 
@@ -258,23 +283,4 @@ class CategoryServiceImplTest {
         assertNotNull(categoryRepository.findByName("name"));
     }
 
-    @Test
-    void findAllCategoriesByVendorId() {
-    }
-
-    @Test
-    void findAllByVendorId() {
-    }
-
-    @Test
-    void findAllCategoryByLocationFilter() {
-    }
-
-    @Test
-    void findAllCategoryByVendorFilter() {
-    }
-
-    @Test
-    void findAllCategoryFilter() {
-    }
 }
