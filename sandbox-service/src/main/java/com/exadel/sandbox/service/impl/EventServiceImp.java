@@ -152,7 +152,7 @@ public class EventServiceImp implements EventService {
 
     private Sort getSortBySortingType(EventFilterRequest.SortingType sortingType) {
         switch (sortingType) {
-            case HOTEST:
+            case HOTTEST:
                 return Sort.by(Sort.Direction.ASC, "dateEnd");
             case NEWEST:
                 return Sort.by(Sort.Direction.DESC, "dateBegin");
