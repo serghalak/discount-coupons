@@ -25,4 +25,11 @@ public class EventFilterRequest {
 
     private Status status = Status.ACTIVE;
 
+    private SortingType sortingType = SortingType.HOTEST;
+
+    public enum SortingType {
+        NEWEST, HOTEST, POPULAR
+    }
+
+
 }

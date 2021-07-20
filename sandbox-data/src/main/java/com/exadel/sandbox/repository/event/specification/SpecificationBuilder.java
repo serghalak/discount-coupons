@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -17,7 +18,7 @@ public class SpecificationBuilder {
 
     private final EventRepository eventRepository;
 
-    public Page<Event> getEventsByParameters(Status status,
+    public Page<Event> getEventsByParameters(List<Status> status,
                                              Long cityId,
                                              boolean isCity,
                                              Set<Long> categoriesId,
@@ -60,11 +61,12 @@ public class SpecificationBuilder {
         };
     }
 
-    private Specification<Event> statusLike(Status status) {
+    private Specification<Event> statusLike(List<Status> statuses) {
 
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(
-                        root.get("status"), status);
+                criteriaBuilder.in(
+                        root.get("status"))
+                        .value(statuses);
     }
 
     private Specification<Event> cityLike(Long cityId) {

@@ -1,20 +1,18 @@
 package com.exadel.sandbox.service;
 
-import com.exadel.sandbox.dto.response.statistics.OrderStatisticsResponse;
-import com.exadel.sandbox.dto.response.statistics.SavedStatisticResponse;
-import com.exadel.sandbox.dto.response.statistics.ViewedStatisticResponse;
+import com.exadel.sandbox.dto.response.statistics.StatisticsResponse;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface StatisticsService {
 
-    List<OrderStatisticsResponse> getAllEventsFromUserOrderForPeriod(
+    List<StatisticsResponse> getAllEventsFromUserOrderForPeriod(
             LocalDate dateBegin, LocalDate dateEnd, Integer number);
 
-    List<SavedStatisticResponse> getAllEventsFromUserSavedForPeriod(
+    List<StatisticsResponse> getAllEventsFromUserSavedForPeriod(
             LocalDate dateBegin, LocalDate dateEnd, Integer number);
 
-    List<ViewedStatisticResponse> getAllEventsFromViewedForPeriod(
+    List<StatisticsResponse> getAllEventsFromViewedForPeriod(
             LocalDate dateBegin, LocalDate dateEnd, Integer number);
 }
