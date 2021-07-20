@@ -18,7 +18,6 @@ public class SpecificationBuilder {
 
     private final EventRepository eventRepository;
 
-    //    public Page<Event> getEventsByParameters(Status status,
     public Page<Event> getEventsByParameters(List<Status> status,
                                              Long cityId,
                                              boolean isCity,
@@ -26,7 +25,6 @@ public class SpecificationBuilder {
                                              Set<Long> tagsId,
                                              Set<Long> vendorsId,
                                              Pageable pageable) {
-//        final Specification<Event> initSpecification = Specification.where(statusLike(status).and(distinct()));
         final Specification<Event> initSpecification = Specification.where(statusLike(status).and(distinct()));
 
         return eventRepository.findAll(getSpecByFilterParameters(initSpecification, cityId, isCity,
@@ -63,12 +61,6 @@ public class SpecificationBuilder {
         };
     }
 
-    //    private Specification<Event> statusLike(Status status) {
-//
-//        return (root, query, criteriaBuilder) ->
-//                criteriaBuilder.equal(
-//                        root.get("status"), status);
-//    }
     private Specification<Event> statusLike(List<Status> statuses) {
 
         return (root, query, criteriaBuilder) ->

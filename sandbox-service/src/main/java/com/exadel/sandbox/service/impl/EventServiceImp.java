@@ -136,12 +136,6 @@ public class EventServiceImp implements EventService {
                 new PageList<>(
                         eventMapper.eventListToCustomEventResponseListByCountryId(aNew.getContent(),
                                 eventFilterRequest.getLocationId()), aNew);
-
-    }
-
-    private List<Status> getStatuses(Status status) {
-        return status.equals(Status.ACTIVE) ?
-                List.of(Status.ACTIVE, Status.PERPETUAL) : List.of(status);
     }
 
     private Sort getSorting(Status status, EventFilterRequest.SortingType sortingType) {
@@ -163,9 +157,8 @@ public class EventServiceImp implements EventService {
             case NEWEST:
                 return Sort.by(Sort.Direction.DESC, "dateBegin");
             default:
-                return Sort.by(Sort.Direction.DESC, "userSavedEvents");
+                return Sort.by(Sort.Direction.DESC, "viewedUsersEvents");
         }
-
     }
 
     @Override
