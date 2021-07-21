@@ -4,7 +4,7 @@ import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.EventFilterRequest;
 import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
-import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
+import com.exadel.sandbox.dto.response.event.EventDetailsResponseForAdmin;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.EventService;
@@ -94,7 +94,7 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public PageList<EventDetailsResponse> getAllEvents(
+    public PageList<EventDetailsResponseForAdmin> getAllEvents(
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false) Integer pageSize
     ) {

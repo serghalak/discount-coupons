@@ -5,6 +5,7 @@ import com.exadel.sandbox.dto.request.EventFilterRequest;
 import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
+import com.exadel.sandbox.dto.response.event.EventDetailsResponseForAdmin;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
@@ -56,11 +57,11 @@ public class EventServiceImp implements EventService {
     private final SpecificationBuilder specificationBuilder;
 
     @Override
-    public PageList<EventDetailsResponse> getAll(Integer pageNumber, Integer pageSize) {
+    public PageList<EventDetailsResponseForAdmin> getAll(Integer pageNumber, Integer pageSize) {
         final Page<Event> eventsPage = eventRepository.findAll(PageRequest.of(getPageNumber(pageNumber),
                 getPageSize(pageSize), Sort.by("id").descending()));
 
-        return new PageList<>(eventMapper.eventListToDetailEventResponse(eventsPage.getContent()), eventsPage);
+        return new PageList<>(eventMapper.eventListToEventDetailsResponseForAdmin(eventsPage.getContent()), eventsPage);
     }
 
     @Override
