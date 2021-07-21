@@ -19,6 +19,13 @@ public class MailUtil {
             "Sincerely yours, Exadel Coupons Team.\n\n\n" +
             "© Exadel Inc. All rights reserved. All trademarks are property of their respective owners in the US and other countries.";
 
+    private static final String MESSAGE_FOR_SUBSCRIBER = "Dear %s,\n" +
+            "You are subscribed for our actions \n" +
+            "click on the next link to visit this event %s\n\n" +
+            "Sincerely yours, Exadel Team.\n\n\n" +
+            "© Exadel Inc. All rights reserved. All trademarks are property of their respective owners in the US and other countries.";
+
+
     private final JavaMailSender emailSender;
 
     @Async
@@ -33,17 +40,21 @@ public class MailUtil {
 
 
     @Async
-    public void sendFavoriteMessage(String mailTo, String linkId) {
+    public void sendFavoriteMessage(String mailTo, String linkId, String userName) {
 
         var message = new SimpleMailMessage();
         message.setFrom("exadelteam2021@gmail.com");
-        message.setTo(mailTo);
+        message.setTo("serghalak@gmail.com");
         message.setSubject("your favorite event is started");
-        message.setText("Click on link to see a new exadel event " + URL_EVENT + linkId);
+        message.setText(setParameterToMailSubscriptionText(userName, linkId));
         emailSender.send(message);
     }
 
     private String setParameterToMailText(String userName, String vendorName, String endDate) {
         return String.format(MESSAGE, userName, vendorName, endDate);
+    }
+
+    private String setParameterToMailSubscriptionText(String userName, String linkId) {
+        return String.format(MESSAGE_FOR_SUBSCRIBER, userName,URL_EVENT + linkId);
     }
 }

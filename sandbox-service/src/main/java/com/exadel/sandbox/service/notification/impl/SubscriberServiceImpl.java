@@ -154,7 +154,7 @@ public class SubscriberServiceImpl implements SubscriberService {
         Set<User> totalSetOfUsers = unionSetsOfUsers(allUsersByCategoryFavorite, allUsersByVendorFavorite, allUsersByTagsFavorite);
 
         totalSetOfUsers.stream()
-                .forEach(user -> mailUtil.sendFavoriteMessage(user.getEmail(), String.valueOf(event.getId())));
+                .forEach(user -> mailUtil.sendFavoriteMessage(user.getEmail(), String.valueOf(event.getId()),user.getFirstName()));
 
     }
 
