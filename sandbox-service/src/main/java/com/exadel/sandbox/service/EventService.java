@@ -5,6 +5,7 @@ import com.exadel.sandbox.dto.request.EventFilterRequest;
 import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
+import com.exadel.sandbox.dto.response.event.EventDetailsResponseForAdmin;
 import org.springframework.http.ResponseEntity;
 
 public interface EventService {
@@ -19,7 +20,7 @@ public interface EventService {
 
     PageList<CustomEventResponse> getEventsByFilter(Long userId, EventFilterRequest eventFilterRequest, Integer pageNumber, Integer pageSize);
 
-    PageList<EventDetailsResponse> getAll(Integer pageNumber, Integer pageSize);
+    PageList<EventDetailsResponseForAdmin> getAll(Integer pageNumber, Integer pageSize);
 
     boolean deleteEventById(Long eventId);
 
