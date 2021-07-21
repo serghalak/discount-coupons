@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<EventResponseFoOrders> getAllFromOrder(Long userId) {
-               return eventMapper.eventToEventResponseFoOrder(userOrderRepository.getAllEventsFromUserOrder(userId));
+               return eventMapper.eventToEventResponseFoOrderWithDate(userOrderRepository.getAllEventsFromUserOrderTest(userId));
 
     }
 

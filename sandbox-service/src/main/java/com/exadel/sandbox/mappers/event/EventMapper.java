@@ -6,9 +6,10 @@ import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.event.EventResponse;
 import com.exadel.sandbox.dto.response.event.EventResponseFoOrders;
 import com.exadel.sandbox.dto.response.location.CustomLocationResponse;
+import com.exadel.sandbox.dto.response.location.LocationShortResponse;
+import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.location.LocationMapper;
 import com.exadel.sandbox.mappers.tag.TagMapper;
-import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Event;
@@ -34,7 +35,6 @@ public class EventMapper {
     private final ModelMapper mapper;
     private final LocationMapper locMapper;
     private final TagMapper tagMapper;
-    private final VendorShortMapper vendorShortMapper;
 
     public Event eventRequestToEvent(EventRequest eventRequest, Vendor vendor,
                                      Set<Location> locations, Category category, Set<Tag> tags) {
@@ -126,28 +126,15 @@ public class EventMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<EventResponseFoOrders> eventToEventResponseFoOrder(List<Event> events) {
-        return events.stream()
-                .map(event -> EventResponseFoOrders.builder()
-                        .id(event.getId())
-                        .gettingDate(event.getDateOfCreation())
-                        .description(event.getDescription())
-                        .vendorShortResponse(vendorShortMapper.vendorToVendorShortResponse(event.getVendor()))
-                        .dateEnd(event.getDateEnd())
-                        .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
-                        .build())
-                .collect(Collectors.toList());
-    }
-
     public List<EventResponseFoOrders> eventToEventResponseFoOrderWithDate(List<EventProjectionForOrders> events) {
         return events.stream()
                 .map(event -> EventResponseFoOrders.builder()
-                        .id(event.getE().getId())
+                        .id(event.getEventId())
                         .gettingDate(event.getDateEvent())
-                        .description(event.getE().getDescription())
-                        .vendorShortResponse(vendorShortMapper.vendorToVendorShortResponse(event.getE().getVendor()))
-                        .dateEnd(event.getE().getDateEnd())
-                        .locations(locMapper.setLocationToListShortLocation(event.getE().getLocations()))
+                        .description(event.getEventDescription())
+                        .vendorShortResponse(new VendorShortResponse(event.getVendorId(),event.getVendorName()))
+                        .dateEnd(event.getDateEnd())
+                        .locations(Set.of(new LocationShortResponse(event.getCityName(), event.getCountryName())))
                         .build())
                 .collect(Collectors.toList());
     }
