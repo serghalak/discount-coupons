@@ -1,10 +1,7 @@
 package com.exadel.sandbox.mappers.event;
 
 import com.exadel.sandbox.dto.request.event.EventRequest;
-import com.exadel.sandbox.dto.response.event.CustomEventResponse;
-import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
-import com.exadel.sandbox.dto.response.event.EventResponse;
-import com.exadel.sandbox.dto.response.event.EventResponseFoOrders;
+import com.exadel.sandbox.dto.response.event.*;
 import com.exadel.sandbox.dto.response.location.CustomLocationResponse;
 import com.exadel.sandbox.mappers.location.LocationMapper;
 import com.exadel.sandbox.mappers.tag.TagMapper;
@@ -159,13 +156,19 @@ public class EventMapper {
                         .shortDescription(event.getDescription())
                         .vendorName(event.getVendor().getName())
                         .vendorId(event.getVendor().getId())
-                        .locations(locMapper.convertLocToCustomLocResponseFavorites(event.getLocations(),id))
+                        .locations(locMapper.convertLocToCustomLocResponseFavorites(event.getLocations(), id))
                         .categoryId(event.getCategory().getId())
                         .categoryName(event.getCategory().getName())
                         .dateBegin(event.getDateBegin())
                         .dateEnd(event.getDateEnd())
                         .dateBegin(event.getDateBegin())
                         .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<EventDetailsResponseForAdmin> eventListToEventDetailsResponseForAdmin(List<Event> events) {
+        return events.stream()
+                .map(event -> mapper.map(event, EventDetailsResponseForAdmin.class))
                 .collect(Collectors.toList());
     }
 
