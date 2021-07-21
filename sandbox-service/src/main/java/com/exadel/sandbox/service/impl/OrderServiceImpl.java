@@ -15,7 +15,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -53,7 +55,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<EventResponseFoOrders> getAllFromOrder(Long userId) {
-               return eventMapper.eventToEventResponseFoOrderWithDate(userOrderRepository.getAllEventsFromUserOrderTest(userId));
+               return eventMapper.eventToEventResponseFoOrderWithDate(
+                       userOrderRepository.getAllEventsFromUserOrderTest(userId)).stream()
+                       .sorted(Comparator.comparing(EventResponseFoOrders::getGettingDate).reversed())
+                       .collect(Collectors.toList());
 
     }
 

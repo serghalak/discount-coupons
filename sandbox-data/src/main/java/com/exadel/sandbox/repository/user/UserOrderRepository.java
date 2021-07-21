@@ -31,10 +31,10 @@ public interface UserOrderRepository extends JpaRepository<User, Long> {
     void deleteFromUserOrder(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
     @Query(value = "SELECT  e.id as eventId,\n" +
-            "       uo.date_event as dateevent,\n" +
+            "       uo.date_event as dateEvent,\n" +
             "       e.description as eventDescription,\n" +
             "       v.id as vendorId, v.name as vendorName,\n" +
-            "       e.date_end as dateend,\n" +
+            "       e.date_end as dateEnd,\n" +
             "       c.name as cityName, c2.name as countryName\n" +
             "     FROM user_order uo\n" +
             "     join event e on uo.event_id = e.id\n" +
