@@ -2,18 +2,13 @@ package com.exadel.sandbox.dto.request.vendor;
 
 import com.exadel.sandbox.dto.request.location.VendorLocationRequest;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +24,8 @@ public class VendorRequest {
     private String description;
 
     @NotNull(message = "phoneNumber is mandatory")
+    @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$",
+            message = "Incorrect phone number")
     private String phoneNumber;
 
     @Email(message = "Incorrect email")

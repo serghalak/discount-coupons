@@ -1,10 +1,7 @@
 package com.exadel.sandbox.dto.request.vendor;
 
 import com.exadel.sandbox.dto.request.location.VendorLocationUpdateRequest;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -15,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = "locationRequests")
+@Builder
 public class VendorUpdateRequest {
 
     @NotNull(message = "Name is mandatory")

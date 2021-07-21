@@ -67,7 +67,7 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
     }
 
     @Override
-    public void create(VendorRequest request) {
+    public VendorDetailsResponse create(VendorRequest request) {
         checkVendorNameExisting(request.getName());
         var locations = request.getLocationRequests()
                 .stream()
@@ -75,11 +75,12 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
                 .collect(Collectors.toSet());
         var vendor = vendorMapper.vendorRequestToVendor(request);
         vendor.getLocations().addAll(locations);
-        repository.save(vendor);
+        var savedVendor = repository.save(vendor);
+        return vendorMapper.vendorToVendorDetailsResponse(savedVendor);
     }
 
     @Override
-    public void update(Long vendorId, VendorUpdateRequest request) {
+    public VendorDetailsResponse update(Long vendorId, VendorUpdateRequest request) {
         var vendorFromDB = repository.findById(vendorId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Not found vendor by id %d", vendorId)));
         if(!vendorFromDB.getName().equalsIgnoreCase(request.getName())){
@@ -92,7 +93,8 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
         var vendor = vendorMapper.vendorUpdateRequestToVendor(request);
         vendor.getLocations().addAll(locations);
         vendor.setId(vendorFromDB.getId());
-        repository.save(vendor);
+        var savedVendor = repository.save(vendor);
+        return vendorMapper.vendorToVendorDetailsResponse(savedVendor);
     }
 
     @Override
@@ -100,7 +102,8 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
         return repository.drop(id);
     }
 
-    private void checkVendorNameExisting(String name) {
+    @Override
+    public void checkVendorNameExisting(String name) {
         if (repository.findByName(name).isPresent()) {
             throw new DuplicateNameException("Vendor already exists");
         }
