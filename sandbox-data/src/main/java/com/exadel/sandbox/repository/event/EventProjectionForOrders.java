@@ -1,13 +1,26 @@
 package com.exadel.sandbox.repository.event;
 
-import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.model.vendorinfo.Vendor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface EventProjectionForOrders {
+    Long getEventId();
 
     LocalDateTime getDateEvent();
 
-    Event getE();
+    String getEventDescription();
+
+    Vendor getVendor();
+
+    Long getVendorId();
+
+    String getVendorName();
+
+    LocalDateTime getDateEnd();
+
+    String getCityName();
+
+    String getCountryName();
+
 }
