@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "subscription",
-        uniqueConstraints = {@UniqueConstraint(columnNames={"subscriber_type", "subscriber_id", "user_id"})})
+        uniqueConstraints = {@UniqueConstraint(columnNames={"subscriber_type", "subscriber_id","user_id"})})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

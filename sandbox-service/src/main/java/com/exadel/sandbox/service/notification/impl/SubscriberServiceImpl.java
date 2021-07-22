@@ -10,7 +10,9 @@ import com.exadel.sandbox.model.notification.SubscriberEnum;
 import com.exadel.sandbox.model.notification.Subscription;
 import com.exadel.sandbox.model.notification.SubscriptionResult;
 import com.exadel.sandbox.model.user.User;
+import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.repository.category.CategoryRepository;
+import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.notification.SubscriberRepository;
 import com.exadel.sandbox.repository.tag.TagRepository;
 import com.exadel.sandbox.repository.user.UserRepository;
@@ -20,14 +22,21 @@ import com.exadel.sandbox.service.UserService;
 import com.exadel.sandbox.service.exceptions.DuplicateNameException;
 import com.exadel.sandbox.service.notification.SubscriberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SubscriberServiceImpl implements SubscriberService {
@@ -37,6 +46,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     private final VendorRepository vendorRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
+    private final EventRepository eventRepository;
     private final EventService eventService;
     private final UserService userService;
     private final SuscriberMapper suscriberMapper;
@@ -92,6 +102,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     public boolean createEmailNotificationUsersBySubscription(Long eventId) {
 
         EventDetailsResponse eventById = eventService.getEventById(eventId);
+        eventRepository.updateEventStatus(eventId, Status.COMING_SOON.name());
         createNotificationUsers(eventById);
 
         return true;
@@ -147,7 +158,7 @@ public class SubscriberServiceImpl implements SubscriberService {
         Set<User> totalSetOfUsers = unionSetsOfUsers(allUsersByCategoryFavorite, allUsersByVendorFavorite, allUsersByTagsFavorite);
 
         totalSetOfUsers.stream()
-                .forEach(user -> mailUtil.sendFavoriteMessage(user.getEmail(), String.valueOf(event.getId())));
+                .forEach(user -> mailUtil.sendFavoriteMessage(user.getEmail(), String.valueOf(event.getId()),user.getFirstName()));
 
     }
 
@@ -158,10 +169,10 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     private Set<User> unionSetsOfUsers(Set<User>... userSets) {
-        Set<User> totalUserSet = new HashSet<>();
-        for (Set<User> userSet : userSets) {
-            totalUserSet.addAll(userSet);
-        }
-        return totalUserSet;
+
+        return Stream.of(userSets)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
+
     }
 }
