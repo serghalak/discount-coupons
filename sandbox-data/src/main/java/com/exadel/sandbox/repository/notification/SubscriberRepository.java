@@ -10,8 +10,6 @@ import java.util.Set;
 
 public interface SubscriberRepository extends JpaRepository<Subscription, Long> {
 
-    //Set<Subscription> findAllSubscriptionByUserIdAndSubscriberNameOrderBySubscriberNameAsc(Long userId, String subscriptionName);
-
     Subscription findByUserIdAndSubscriberIdAndSubscriberType(Long userId, Long subscriberId, String subscriberType);
 
     Set<Subscription> findAllByUserIdAndSubscriberTypeOrderBySubscriberNameAsc(Long userId, String subscriberType);

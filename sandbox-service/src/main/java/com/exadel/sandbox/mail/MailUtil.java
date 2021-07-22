@@ -44,7 +44,7 @@ public class MailUtil {
 
         var message = new SimpleMailMessage();
         message.setFrom("exadelteam2021@gmail.com");
-        message.setTo("serghalak@gmail.com");
+        message.setTo(mailTo);
         message.setSubject("your favorite event is started");
         message.setText(setParameterToMailSubscriptionText(userName, linkId));
         emailSender.send(message);

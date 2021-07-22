@@ -10,7 +10,9 @@ import com.exadel.sandbox.model.notification.SubscriberEnum;
 import com.exadel.sandbox.model.notification.Subscription;
 import com.exadel.sandbox.model.notification.SubscriptionResult;
 import com.exadel.sandbox.model.user.User;
+import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.repository.category.CategoryRepository;
+import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.notification.SubscriberRepository;
 import com.exadel.sandbox.repository.tag.TagRepository;
 import com.exadel.sandbox.repository.user.UserRepository;
@@ -44,6 +46,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     private final VendorRepository vendorRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
+    private final EventRepository eventRepository;
     private final EventService eventService;
     private final UserService userService;
     private final SuscriberMapper suscriberMapper;
@@ -99,6 +102,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     public boolean createEmailNotificationUsersBySubscription(Long eventId) {
 
         EventDetailsResponse eventById = eventService.getEventById(eventId);
+        eventRepository.updateEventStatus(eventId, Status.COMING_SOON.name());
         createNotificationUsers(eventById);
 
         return true;
