@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Service
 public class StatisticsReportToExcel {
-    private String[] sheetNames = {"Order Statistics", "Saved Statistics", "Viewed Statistics"};
+    private String[] sheetNames = {"Ordered Deals Statistics", "Favored Deals Statistics", "Viewed Deals Statistics"};
     private int rowNum = 0;
     Map<Integer, List<StatisticsResponse>> data;
     @Autowired
