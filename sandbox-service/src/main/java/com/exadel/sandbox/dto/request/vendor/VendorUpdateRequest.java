@@ -25,8 +25,7 @@ public class VendorUpdateRequest {
     private String description;
 
     @NotNull(message = "phoneNumber is mandatory")
-    @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$",
-            message = "Incorrect phone number")
+    @Pattern(regexp = "^\\+[0-9.()-]{11,18}$", message = "Incorrect phone number")
     private String phoneNumber;
 
     @Email(message = "Incorrect email")
