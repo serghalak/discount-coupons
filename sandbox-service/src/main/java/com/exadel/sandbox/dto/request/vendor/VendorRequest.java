@@ -24,7 +24,6 @@ public class VendorRequest {
     private String description;
 
     @NotNull(message = "phoneNumber is mandatory")
-    @Pattern(regexp = "^\\+[0-9.()-]{11,18}$", message = "Incorrect phone number")
     private String phoneNumber;
 
     @Email(message = "Incorrect email")
