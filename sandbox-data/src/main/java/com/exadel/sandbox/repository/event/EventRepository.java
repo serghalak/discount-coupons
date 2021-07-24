@@ -64,4 +64,10 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
     @Query(value = "update event set status = :status where id = :eventId ", nativeQuery = true)
     @Transactional
     void updateEventStatus(@Param("eventId") Long eventId, @Param("status") String status);
+
+    @Modifying
+    @Query(value = "update event set status = :status where date_end <= :currentDate", nativeQuery = true)
+    @Transactional
+    void updateEventStatusScheduled(@Param("status") String status,
+                           @Param("currentDate") LocalDateTime currentDate);
 }
