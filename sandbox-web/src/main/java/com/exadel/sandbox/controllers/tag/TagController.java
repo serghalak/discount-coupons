@@ -36,6 +36,7 @@ public class TagController {
     public ResponseEntity delete(@PathVariable Long id) {
         return service.remove(id)
                 ? ResponseEntity.noContent().build()
-                : ResponseEntity.unprocessableEntity().build();
+                : ResponseEntity.unprocessableEntity()
+                .body("You cannot delete tag. Tag is used");
     }
 }

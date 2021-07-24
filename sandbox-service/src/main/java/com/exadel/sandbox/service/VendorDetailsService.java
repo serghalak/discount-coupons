@@ -5,10 +5,8 @@ import com.exadel.sandbox.dto.request.vendor.VendorUpdateRequest;
 import com.exadel.sandbox.dto.response.filter.VendorFilterResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorDetailsResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
-import com.exadel.sandbox.model.vendorinfo.Vendor;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface VendorDetailsService {
 
@@ -22,9 +20,11 @@ public interface VendorDetailsService {
 
     List<VendorFilterResponse> findAllVendorFilter();
 
-    void create(VendorRequest request);
+    VendorDetailsResponse create(VendorRequest request);
 
-    void update(Long vendorId, VendorUpdateRequest request);
+    VendorDetailsResponse update(Long vendorId, VendorUpdateRequest request);
 
     boolean remove(Long id);
+
+    void checkVendorNameExisting(String name);
 }
