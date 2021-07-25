@@ -102,7 +102,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     public boolean createEmailNotificationUsersBySubscription(Long eventId) {
 
         EventDetailsResponse eventById = eventService.getEventById(eventId);
-        eventRepository.updateEventStatus(eventId, Status.COMING_SOON.name());
+        eventRepository.updateEventStatus(eventId, Status.ACTIVE.name());
         createNotificationUsers(eventById);
 
         return true;
