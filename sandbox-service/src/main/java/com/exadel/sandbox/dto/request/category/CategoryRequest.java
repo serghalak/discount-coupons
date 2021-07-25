@@ -26,7 +26,7 @@ public class CategoryRequest extends BaseEntity {
     @Size(max = 255, message = "Category description should not be more then 255")
     private String description;
 
-    @Size(min = 1, message = "Category has to have at least one tag")
+    //@Size(min = 1, message = "Category has to have at least one tag")
     private Set<@Valid TagRequest> tags = new HashSet<>();
 
 }

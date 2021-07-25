@@ -61,15 +61,6 @@ public class GlobalExceptionHandler {
         return getResponse(request, HttpStatus.CONFLICT, exception.getMessage());
     }
 
-//    private ResponseEntity<?> getResponse(HttpServletRequest request, HttpStatus httpStatus, Exception exception) {
-//        log.error("Exception raised = {} :: URL = {}", exception.getMessage(), request.getRequestURL());
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("code", httpStatus.value() + " / " + httpStatus.getReasonPhrase());
-//        response.put("message", exception.getMessage());
-//        response.put("path", request.getRequestURI());
-//        return new ResponseEntity<>(response, httpStatus);
-//    }
 
     private ResponseEntity<?> getResponse(HttpServletRequest request, HttpStatus httpStatus, String message) {
         log.error("Exception raised = {} :: URL = {}", message, request.getRequestURL());
