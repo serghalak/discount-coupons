@@ -78,7 +78,7 @@ public class LocationMapper {
 
     private Location getLocationByCityId(Set<Location> locations, Long cityId) {
         return locations.stream()
-                .filter(loc -> loc.getCity().getId().equals(cityId))
+//                .filter(loc -> loc.getCity().getId().equals(cityId))
                 .findFirst()
                 .orElseThrow();
     }
