@@ -228,19 +228,19 @@ public class EventServiceImp implements EventService {
         return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
     }
 
-    private PageList<CustomEventResponse> getAllEventsByDescriptionNotAdmin(Long userId, Long cityId, String search,
+    public PageList<CustomEventResponse> getAllEventsByDescriptionNotAdmin(Long userId, Long cityId, String search,
                                                                            Integer pageNumber, Integer pageSize) {
 
         cityId = cityId == null ? cityRepository.findCityByUserId(userId).getId() : cityId;
 
-        Page<Event> eventsPage = eventRepository.findEventByDescriptionIsAdmin(("%" + search + "%"),
-                PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
+        Page<Event> eventsPage = eventRepository.findEventByDescription(("%" + search + "%"),
+                cityId, PageRequest.of(getPageNumber(pageNumber), getPageSize(pageSize),
                         Sort.by(Sort.Direction.DESC, "dateEnd")));
         return new PageList<>(eventMapper.
                 eventListToCustomEventResponseListByCityId(eventsPage.getContent(), cityId), eventsPage);
     }
 
-    private PageList<EventDetailsResponse> getAllEventsByDescriptionIsAdmin(String search,
+    public PageList<EventDetailsResponse> getAllEventsByDescriptionIsAdmin(String search,
                                                                            Integer pageNumber, Integer pageSize) {
 
         Page<Event> eventsPage = eventRepository.findEventByDescriptionIsAdmin(("%" + search + "%"),
