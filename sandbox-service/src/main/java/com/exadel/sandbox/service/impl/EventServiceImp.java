@@ -89,7 +89,7 @@ public class EventServiceImp implements EventService {
         return getAllEventsByDescriptionIsAdmin(search, pageNumber, pageSize);
     }
 
-    private PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, List<Status> statuses, Sort sort, Integer pageNumber, Integer pageSize) {
+    public PageList<CustomEventResponse> getEventResponsesByCityAndStatus(Long cityId, List<Status> statuses, Sort sort, Integer pageNumber, Integer pageSize) {
 
         Page<Event> eventsPage = eventRepository.findEventByCityIdAndStatuses(cityId,
                 statuses,
