@@ -1,6 +1,8 @@
 package com.exadel.sandbox.security;
 
 import com.exadel.sandbox.exeption.CustomAuthenticationEntryPoint;
+import com.exadel.sandbox.security.config.SecurityConfig;
+import com.exadel.sandbox.security.filters.InitialAuthenticationFilter;
 import com.exadel.sandbox.security.filters.JwtRequestFilter;
 import com.exadel.sandbox.service.impl.UserSecurityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -27,6 +30,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
         prePostEnabled = true,
         securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private SecurityConfig securityConfig;
+
+    public InitialAuthenticationFilter initialAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
+        InitialAuthenticationFilter filter =
+                new InitialAuthenticationFilter(securityConfig);
+        return filter;
+    }
+
 
     @Autowired
     private UserSecurityServiceImpl userService;
@@ -59,8 +72,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        http
+                .addFilterAt(initialAuthenticationFilter(authenticationManager())
+                        , BasicAuthenticationFilter.class);
+
+
         http.cors()
                 .and()
                 .authorizeRequests()
