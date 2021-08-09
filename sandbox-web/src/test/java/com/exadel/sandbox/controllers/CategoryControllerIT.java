@@ -1,123 +1,165 @@
 package com.exadel.sandbox.controllers;
 
-import com.exadel.sandbox.model.notification.SubscriberEnum;
-import com.exadel.sandbox.security.utill.JwtUtil;
-import com.exadel.sandbox.service.*;
-import com.exadel.sandbox.service.filter.FilterService;
-import com.exadel.sandbox.service.impl.UserSecurityServiceImpl;
-import com.exadel.sandbox.service.impl.ViewedEventService;
-import com.exadel.sandbox.service.notification.SubscriberService;
-import com.exadel.sandbox.service.statistics.StatisticsReportToExcel;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @PropertySource({"classpath:testing.properties"})
-public class CategoryControllerIT {
+public class CategoryControllerIT extends BaseIT {
 
-    @Autowired
-    WebApplicationContext wac;
+    private static final String JSON_BODY="{\n" +
+            "    \"id\": 25,\n" +
+            "    \"name\": \"transort\",\n" +
+            "    \"description\": \"Info about rent cars\",\n" +
+            "    \"tags\": [\n" +
+            "        {\n" +
+            "            \"id\": 125,\n" +
+            "            \"name\": \"track11\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": 115,\n" +
+            "            \"name\": \"miniven\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": 135,\n" +
+            "            \"name\": \"sport cars\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": 105,\n" +
+            "            \"name\": \"jeep\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"name\":\"bus\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"name\":\"jeep\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
 
-    MockMvc mockMvc;
-
-    @MockBean
-    CategoryService categoryService;
-
-    @MockBean
-    EventService eventService;
-
-    @MockBean
-    ViewedEventService viewedEventService;
-
-    @MockBean
-    JwtUtil jwtUtil;
-
-    @MockBean
-    FavouriteService favouriteService;
-
-    @MockBean
-    FilterService filterService;
-
-    @MockBean
-    OrderService orderService;
-
-    @MockBean
-    UserService userService;
-
-    @MockBean
-    UserSecurityServiceImpl userSecurityService;
-
-    @MockBean
-    CityService cityService;
-
-    @MockBean
-    CountryService countryService;
-
-    @MockBean
-    LocationService locationService;
-
-    @MockBean
-    StatisticsService statisticsService;
-
-    @MockBean
-    TagService tagService;
-
-    @MockBean
-    VendorDetailsService vendorDetailsService;
-
-    @MockBean
-    VendorService vendorService;
-
-    @MockBean
-    SubscriberService subscriberService;
-
-    @MockBean
-    StatisticsReportToExcel statisticsReportToExcel;
-
-//    @Value("${spring.security.user.name}")
-//    String username;
-//
-//    @Value("${spring.security.user.password}")
-//    String password;
-
-    @BeforeEach
-    void setUp(){
-        mockMvc= MockMvcBuilders
-                .webAppContextSetup(wac)
-                .apply(springSecurity())
-                .build();
+    @Test
+    @WithMockUser("spring")
+    void deleteCategoryByIdWithAuthority() throws Exception {
+        mockMvc.perform(delete("/api/category/1"))
+                .andExpect(status().isNoContent());
     }
 
-    @WithMockUser("spring")
     @Test
-    void findCategories() throws Exception{
+    void deleteCategoryByIdWithoutAuthority() throws Exception {
+        mockMvc.perform(delete("/api/category/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser("spring")
+    void updateCategoryWithAuthority() throws Exception {
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .put("/api/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(JSON_BODY);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateCategoryWithoutAuthority() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders
+                .put("/api/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(JSON_BODY);
+
+        mockMvc.perform(request)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser("spring")
+    void findCategoryByOfPartNameCategoryWithAuthority() throws Exception {
+        mockMvc.perform(get("/api/categoryname/somepartofname"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findCategoryByOfPartNameCategoryWithoutAuthority() throws Exception {
+        mockMvc.perform(get("/api/categoryname/somepartofname"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser("spring")
+    void findCategoryByIdWithAuthority() throws Exception {
+        mockMvc.perform(get("/api/category/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findCategoryByIdWithoutAuthority() throws Exception {
+        mockMvc.perform(get("/api/category/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+
+    @Test
+    @WithMockUser("spring")
+    void getAllCategoriesWithAuthority() throws Exception {
         mockMvc.perform(get("/api/category"))
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void getAllCategoriesWithoutAuthority() throws Exception {
+        mockMvc.perform(get("/api/category"))
+                .andExpect(status().isUnauthorized());
+    }
 
-//    @Test
-//    void findCategoriesWithHttpBasicAuthentication() throws Exception{
-//
-//        System.out.println(">>>Username: " + username);
-//        System.out.println(">>>Password: " + password);
-//
-//        mockMvc.perform(get("/api/category")
-//                .with(httpBasic("svitlana@gmail.com","12345")))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    @WithMockUser("spring")
+    void createCategoryWithAuthority() throws Exception {
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/api/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(JSON_BODY);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createCategoryWithoutAuthority() throws Exception {
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/api/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(JSON_BODY);
+
+        mockMvc.perform(request)
+                .andExpect(status().isUnauthorized());
+    }
+
+
+    @Test
+    @Disabled
+    void findCategoriesWithHttpBasicAuthentication() throws Exception{
+
+        mockMvc.perform(get("/api/category")
+                .with(httpBasic("svitlana@gmail.com","12345")))
+                .andExpect(status().isOk());
+    }
 }
