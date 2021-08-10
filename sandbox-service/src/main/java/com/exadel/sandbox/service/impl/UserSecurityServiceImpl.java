@@ -10,26 +10,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-@Service
-public class UserSecurityServiceImpl implements UserDetailsService {
+//@Service
+public class UserSecurityServiceImpl /*implements UserDetailsService*/ {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        var user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException("No user found for " + email + ".");
-        }
-        return DetailsUser.builder()
-                .id(user.getId())
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .email(user.getEmail())
-                .isEnabled(true)
-                .role(Set.of(user.getRole()))
-                .build();
-    }
+//    @Autowired
+//    private UserRepository userRepository;
+//
+//    @Override
+//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//        var user = userRepository.findByEmail(email);
+//        if (user == null) {
+//            throw new UsernameNotFoundException("No user found for " + email + ".");
+//        }
+//        return DetailsUser.builder()
+//                .id(user.getId())
+//                .username(user.getEmail())
+//                .password(user.getPassword())
+//                .email(user.getEmail())
+//                .isEnabled(true)
+//                .role(Set.of(user.getRole()))
+//                .build();
+//    }
 
 }

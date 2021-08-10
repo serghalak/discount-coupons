@@ -50,4 +50,12 @@ class SandboxApplicationTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void findCategoriesWithHttpBasicAuthentication() throws Exception{
+
+        mvc.perform(get("/api/category")
+                .with(httpBasic("svitlana@gmail.com","12345")))
+                .andExpect(status().isOk());
+    }
+
 }

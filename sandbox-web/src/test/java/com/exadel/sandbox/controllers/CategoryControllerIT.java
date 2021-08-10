@@ -159,7 +159,7 @@ public class CategoryControllerIT extends BaseIT {
     void findCategoriesWithHttpBasicAuthentication() throws Exception{
 
         mockMvc.perform(get("/api/category")
-                .with(httpBasic("svitlana@gmail.com","12345")))
+                .with(httpBasic("spring","guru")))
                 .andExpect(status().isOk());
     }
 }
